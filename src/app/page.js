@@ -1,10 +1,10 @@
 import { locations } from "../data/companyData";
-import Sidebar from "../components/layout/Sidebar";
 import DailyBriefHeader from "../components/briefing/DailyBriefHeader";
 import HealthCard from "../components/cards/HealthCard";
 import MissionCard from "../components/cards/MissionCard";
 import ImpactCard from "../components/cards/ImpactCard";
 import DailyBrief from "../components/briefing/DailyBrief";
+import AppLayout from "../components/layout/AppLayout";
 
 
 function formatCurrency(amount) {
@@ -17,11 +17,8 @@ function formatCurrency(amount) {
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen bg-slate-950 text-white">
-      <Sidebar />
-
-      <main className="flex-1 p-8">
-        <section className="max-w-7xl mx-auto">
+    <AppLayout>
+      <section className="max-w-7xl mx-auto">
           <DailyBriefHeader name="Tyson" />
 
           <p className="text-slate-300 mt-4 max-w-3xl">
@@ -48,7 +45,6 @@ export default function Home() {
                         impact="+$1,180/week"/>
 
         </section>
-      </main>
-    </div>
-  );
+      </AppLayout>
+    );
 }

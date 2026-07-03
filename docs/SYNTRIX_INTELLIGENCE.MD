@@ -2,15 +2,28 @@
 
 ## Mission
 
-Help operators make better decisions.
+Help operators make better decisions through explainable operational intelligence.
 
-## Principles
+---
+
+## Every AI insight must answer:
+
+1. What should I do?
+2. Why?
+3. What's the business impact?
+4. How confident are we?
+5. What evidence supports this?
+
+---
+
+## AI Principles
 
 - Explain before visualizing.
 - Quantify business impact.
 - Express confidence.
 - Show supporting evidence.
-- Recommend actions, not just observations.
+- Recommend actions.
+- Never hide reasoning.
 
 ## Core Capabilities
 

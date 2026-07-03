@@ -1,14 +1,14 @@
 import AppLayout from "../../../components/layout/AppLayout";
 import Card from "../../../components/ui/Card";
-import { locations } from "../../../mock/locations";
+import { locations } from "../../../data/locations";
 
-import AIInvestigationCard from "../../../components/locations/AIInvestigationCard";
-import { investigations } from "../../../mock/investigations";
+import OperationalAssessment from "../../../components/locations/OperationalAssessment";
+import { assessments } from "../../../data/assessments";
 
 export default async function LocationDetailPage({ params }) {
   const { id } = await params;
   const location = locations.find((store) => store.id === id);
-  const investigation = investigations[location.id];
+  const assessment = assessments[location.id];
 
   if (!location) {
     return (
@@ -58,8 +58,7 @@ export default async function LocationDetailPage({ params }) {
           </Card>
         </div>
 
-        <AIInvestigationCard investigation={investigation} />
-        
+        <OperationalAssessment assessment={assessment} />
       </section>
     </AppLayout>
   );

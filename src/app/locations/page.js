@@ -2,7 +2,7 @@ import AppLayout from "../../components/layout/AppLayout";
 import LocationToolbar from "../../components/locations/LocationToolbar";
 import LocationTable from "../../components/locations/LocationTable";
 
-import { locations } from "../../mock/locations";
+import { locations } from "../../data/locations";
 
 export default function LocationsPage() {
   return (
@@ -14,9 +14,7 @@ export default function LocationsPage() {
               LOCATIONS
             </p>
 
-            <h1 className="mt-3 text-5xl font-bold">
-              Compare Every Location
-            </h1>
+            <h1 className="mt-3 text-5xl font-bold">Compare Every Location</h1>
 
             <p className="mt-4 max-w-3xl text-slate-300">
               Compare performance across every location, region, and district.

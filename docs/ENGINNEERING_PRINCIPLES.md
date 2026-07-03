@@ -19,3 +19,6 @@
 ## 9. Design first. Code second.
 
 ## 10. The product philosophy always wins.
+
+## 11. Keep files honest.
+A file should only import what it actually uses.

@@ -1,0 +1,17 @@
+export const company = {
+  id: "ember-hospitality-group",
+  name: "Ember Hospitality Group",
+  industry: "Restaurant Group",
+  headquarters: "Dallas, TX",
+  totalLocations: 18,
+  operatingStates: ["Texas"],
+  ceo: "Tyson Hoang",
+  businessHealth: 91,
+  healthStatus: "Excellent",
+  confidence: 98,
+  previousDaySales: 482310,
+  salesChangeVsLastWeek: 4.8,
+  primeCost: 59.8,
+  primeCostChangeVsLastWeek: -1.1,
+  dailyBriefGeneratedAt: "7:03 AM",
+};

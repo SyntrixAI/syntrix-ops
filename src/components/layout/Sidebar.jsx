@@ -1,33 +1,126 @@
-const navItems = [
-  "Home",
-  "Command Center",
-  "Locations",
-  "Inventory",
-  "Labor",
-  "Finance",
-  "Reports",
-  "AI Copilot",
-  "Settings",
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const navigation = [
+  {
+    title: "TODAY",
+    items: [
+      {
+        label: "Daily Briefing",
+        href: "/",
+      },
+    ],
+  },
+  {
+    title: "OPERATE",
+    items: [
+      {
+        label: "Operations",
+        href: "/operations",
+      },
+      {
+        label: "Locations",
+        href: "/locations",
+      },
+      {
+        label: "Inventory",
+        href: "/inventory",
+      },
+      {
+        label: "Labor",
+        href: "/labor",
+      },
+      {
+        label: "Finance",
+        href: "/finance",
+      },
+    ],
+  },
+  {
+    title: "ANALYZE",
+    items: [
+      {
+        label: "Reports",
+        href: "/reports",
+      },
+    ],
+  },
+  {
+    title: "AI",
+    items: [
+      {
+        label: "AI Copilot",
+        href: "/copilot",
+      },
+    ],
+  },
+  {
+    title: "SYSTEM",
+    items: [
+      {
+        label: "Settings",
+        href: "/settings",
+      },
+    ],
+  },
 ];
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
   return (
-    <aside className="hidden md:flex min-h-screen w-64 flex-col border-r border-slate-800 bg-slate-950 p-6">
+    <aside className="hidden md:flex min-h-screen w-72 flex-col border-r border-slate-800 bg-slate-950 p-6">
       <div>
-        <p className="text-5xl font-bold text-white">Syntrix</p>
-        <p className="mt-1 text-md text-slate-500">AI Operating System</p>
+        <h1 className="text-5xl font-bold text-white">Syntrix</h1>
+
+        <p className="mt-2 text-sm text-slate-500">
+          AI Operating System
+        </p>
       </div>
 
-      <nav className="mt-10 space-y-2">
-        {navItems.map((item) => (
-          <button
-            key={item}
-            className="w-full rounded-xl px-4 py-3 text-left text-lg text-slate-400 hover:bg-slate-900 hover:text-white"
-          >
-            {item}
-          </button>
+      <nav className="mt-12 flex-1 space-y-8">
+        {navigation.map((section) => (
+          <div key={section.title}>
+            <p className="mb-3 px-3 text-xs font-bold tracking-[0.2em] text-slate-500">
+              {section.title}
+            </p>
+
+            <div className="space-y-1">
+              {section.items.map((item) => {
+                const active = pathname === item.href;
+
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className={`flex items-center justify-between rounded-xl px-4 py-3 transition-all ${
+                      active
+                        ? "bg-cyan-500/10 text-cyan-400"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-white"
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
         ))}
       </nav>
+
+      <div className="border-t border-slate-800 pt-6">
+        <div className="rounded-xl bg-slate-900 p-4">
+          <p className="text-xs uppercase tracking-wider text-slate-500">
+            System
+          </p>
+
+          <p className="mt-2 text-sm text-green-400">
+            ● All Systems Operational
+          </p>
+        </div>
+      </div>
     </aside>
   );
 }

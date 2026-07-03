@@ -48,11 +48,11 @@ const navigation = [
     ],
   },
   {
-    title: "AI",
+    title: "Intelligence",
     items: [
       {
-        label: "AI Copilot",
-        href: "/copilot",
+        label: "Syntrix Intelligence",
+        href: "/intelligence",
       },
     ],
   },

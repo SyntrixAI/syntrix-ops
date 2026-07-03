@@ -127,3 +127,14 @@ This page assists decision making.
 9. Investigation belongs in Location Detail.
 
 10. AI helps users understand, decide, and act.
+
+11. AI should always explain its confidence.
+
+## AI Principles
+
+1. AI never replaces the data.
+2. AI explains the data.
+3. AI quantifies business impact.
+4. AI expresses confidence.
+5. AI recommendations must be explainable.
+6. Users can always drill into supporting evidence.

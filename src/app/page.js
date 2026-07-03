@@ -3,9 +3,9 @@ import AppLayout from "../components/layout/AppLayout";
 import DailyBriefHeader from "../components/briefing/DailyBriefHeader";
 import DailyBrief from "../components/briefing/DailyBrief";
 
-import HealthCard from "../components/cards/HealthCard";
-import MissionCard from "../components/cards/MissionCard";
-import ImpactCard from "../components/cards/ImpactCard";
+import HealthCard from "../components/briefing/HealthCard";
+import MissionCard from "../components/briefing/MissionCard";
+import ImpactCard from "../components/briefing/ImpactCard";
 
 import { company } from "../mock/company";
 import { dailyBrief } from "../mock/dailyBrief";

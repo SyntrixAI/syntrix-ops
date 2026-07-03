@@ -22,3 +22,5 @@
 
 ## 11. Keep files honest.
 A file should only import what it actually uses.
+
+## 12. AI recommendations must be traceable to data.

@@ -1,3 +1,6 @@
+import Card from "../ui/Card";
+
+
 export default function DailyBrief({
   headline,
   findings,
@@ -5,7 +8,7 @@ export default function DailyBrief({
   impact,
 }) {
   return (
-    <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900 p-8">
+    <Card className="mt-8">
       <h2 className="text-3xl font-bold text-white">
         Daily Brief
       </h2>
@@ -45,6 +48,6 @@ export default function DailyBrief({
           {impact}
         </p>
       </div>
-    </div>
+    </Card>
   );
 }

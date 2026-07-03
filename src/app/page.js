@@ -29,13 +29,13 @@ export default function Home() {
             which stores need attention before problems become expensive.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-10">
             
             <HealthCard score={91} status="Excellent" confidence={98} />
 
-            <ImpactCard amount="+$1,180" period="per week"/>
-
             <MissionCard location="Austin South" action="Review staffing"/>
+
+            <ImpactCard amount="+$1,180" period="per week"/>
             
           </div>
               <DailyBrief headline="Revenue increased 4.2% while prime cost improved 0.8%."

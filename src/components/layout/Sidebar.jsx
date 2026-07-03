@@ -5,17 +5,12 @@ import { usePathname } from "next/navigation";
 
 const navigation = [
   {
-    title: "TODAY",
+    title: "WORKFLOW",
     items: [
       {
         label: "Daily Briefing",
         href: "/",
       },
-    ],
-  },
-  {
-    title: "OPERATE",
-    items: [
       {
         label: "Operations",
         href: "/operations",
@@ -25,22 +20,9 @@ const navigation = [
         href: "/locations",
       },
       {
-        label: "Inventory",
-        href: "/inventory",
+        label: "Execution",
+        href: "/execution",
       },
-      {
-        label: "Labor",
-        href: "/labor",
-      },
-      {
-        label: "Finance",
-        href: "/finance",
-      },
-    ],
-  },
-  {
-    title: "ANALYZE",
-    items: [
       {
         label: "Reports",
         href: "/reports",
@@ -48,7 +30,7 @@ const navigation = [
     ],
   },
   {
-    title: "Intelligence",
+    title: "INTELLIGENCE",
     items: [
       {
         label: "Syntrix Intelligence",
@@ -76,7 +58,7 @@ export default function Sidebar() {
         <h1 className="text-5xl font-bold text-white">Syntrix</h1>
 
         <p className="mt-2 text-sm text-slate-500">
-          AI Operating System
+          Operational Decision Platform
         </p>
       </div>
 

@@ -1,11 +1,26 @@
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
-import ConfidenceIndicator from "../ui/ConfidenceIndicator";
+import ConfidenceIndicator from "./ConfidenceIndicator";
 import { getConfidenceLevel } from "../../lib/confidence";
-import EvidenceList from "../intelligence/EvidenceList";
+import EvidenceList from "./EvidenceList";
+import BusinessImpact from "./BusinessImpact";
+import Recommendation from "./Recommendation";
 
 export default function OperationalAssessment({ assessment }) {
   const confidence = getConfidenceLevel(assessment.confidence);
+  
+  if (!assessment) {
+  return (
+    <AppLayout>
+      <section className="mx-auto max-w-7xl">
+        <h1 className="text-4xl font-bold">{location.name}</h1>
+        <p className="mt-4 text-slate-400">
+          No operational assessment is available for this location yet.
+        </p>
+      </section>
+    </AppLayout>
+  );
+}
 
   return (
     <Card className="mt-8">
@@ -28,24 +43,12 @@ export default function OperationalAssessment({ assessment }) {
         </p>
       </div>
 
-      <div className="mt-8">
-        <p className="text-sm font-semibold text-slate-400">
-          Recommended Decision
-        </p>
-        <p className="mt-2 text-xl font-semibold text-white">
-          {assessment.recommendation}
-        </p>
-      </div>
+      <Recommendation recommendation={assessment.recommendation} />
 
-      <div className="mt-8 rounded-xl border border-cyan-500/20 bg-slate-950 p-6">
-        <p className="text-sm text-slate-400">Estimated Recoverable Profit</p>
-
-        <h3 className="mt-2 text-4xl font-bold text-green-400">
-          +${assessment.estimatedRecovery.toLocaleString()}
-        </h3>
-
-        <p className="text-slate-400">per week</p>
-      </div>
+      <BusinessImpact
+        weeklyRecovery={assessment.businessImpact.weeklyRecovery}
+        annualRecovery={assessment.businessImpact.annualRecovery}
+      />
 
       <div className="mt-8">
         <ConfidenceIndicator
@@ -54,6 +57,13 @@ export default function OperationalAssessment({ assessment }) {
         />
         <EvidenceList evidence={assessment.evidence} />
       </div>
+
+      <div className="mt-10 flex justify-end border-t border-slate-800 pt-6">
+         <button className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400">
+            Send to Execution →
+        </button>
+      </div>
+
     </Card>
   );
 }

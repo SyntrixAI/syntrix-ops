@@ -1,0 +1,1 @@
+Syntrix exists to help leaders run better businesses by turning operational data into clear, explainable decisions that drive measurable business outcomes.

@@ -1,5 +1,5 @@
-import Card from "./Card";
-import Badge from "./Badge";
+import Card from "../ui/Card";
+import Badge from "../ui/Badge";
 
 export default function ConfidenceIndicator({ score, confidence }) {
   return (

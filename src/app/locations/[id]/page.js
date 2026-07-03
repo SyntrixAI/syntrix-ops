@@ -2,14 +2,13 @@ import AppLayout from "../../../components/layout/AppLayout";
 import Card from "../../../components/ui/Card";
 import { locations } from "../../../data/locations";
 
-import OperationalAssessment from "../../../components/locations/OperationalAssessment";
+import OperationalAssessment from "../../../components/intelligence/OperationalAssessment";
 import { assessments } from "../../../data/assessments";
 
 export default async function LocationDetailPage({ params }) {
   const { id } = await params;
   const location = locations.find((store) => store.id === id);
-  const assessment = assessments[location.id];
-
+  
   if (!location) {
     return (
       <AppLayout>
@@ -17,6 +16,16 @@ export default async function LocationDetailPage({ params }) {
       </AppLayout>
     );
   }
+
+const assessment = assessments[location.id];
+
+if (!assessment) {
+  return (
+    <AppLayout>
+      <h1 className="text-4xl font-bold">Assessment not found</h1>
+    </AppLayout>
+  );
+}
 
   return (
     <AppLayout>

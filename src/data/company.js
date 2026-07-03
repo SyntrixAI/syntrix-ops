@@ -7,7 +7,7 @@ export const company = {
   operatingStates: ["Texas"],
   ceo: "Tyson Hoang",
   businessHealth: 91,
-  healthStatus: "Excellent",
+  healthStatus: "Healthy",
   confidence: 98,
   previousDaySales: 482310,
   salesChangeVsLastWeek: 4.8,

@@ -2,23 +2,24 @@ import Link from "next/link";
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
 
-export default function OperationCard({ operation }) {
-  
-  const priorityTone = {
-  critical: "danger",
-  warning: "warning",
-  info: "info",
+export default function InvestigationItem({ operation }) {
+  const severityTone = {
+    critical: "danger",
+    warning: "warning",
+    info: "info",
   };
-  
 
   return (
     <Card className="transition hover:border-cyan-500/40 hover:bg-slate-800/60">
       <div className="flex items-start justify-between gap-6">
         <div>
           <div className="flex items-center gap-3">
-            
-            <Badge tone={priorityTone[operation.priority]}>
-              {operation.priority}
+            <span className="text-sm font-semibold text-slate-500">
+              #{operation.priorityRank}
+            </span>
+
+            <Badge tone={severityTone[operation.severity]}>
+              {operation.severity}
             </Badge>
 
             <span className="text-sm text-slate-500">
@@ -38,9 +39,9 @@ export default function OperationCard({ operation }) {
         </div>
 
         <div className="text-right">
-          <p className="text-sm text-slate-500">Confidence</p>
-          <p className="text-2xl font-bold text-cyan-400">
-            {operation.confidence}%
+          <p className="text-sm text-slate-500">Primary Action</p>
+          <p className="text-xl font-bold text-cyan-400">
+            {operation.primaryAction}
           </p>
 
           <p className="mt-4 text-sm text-slate-500">Estimated Impact</p>

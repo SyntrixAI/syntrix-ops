@@ -2,15 +2,15 @@ import AppLayout from "../../components/layout/AppLayout";
 
 import OperationsSummary from "../../components/operations/OperationsSummary";
 import OperationsQueue from "../../components/operations/InvestigationQueue";
-import { operationsQueue } from "../../data/operations";
+import { priorities } from "../../data/priorities";
 
 export default function OperationsPage() {
-  const activeInvestigations = operationsQueue.length;
-  const criticalInvestigations = operationsQueue.filter(
-    (operation) => operation.priority === "critical",
+  const activeInvestigations = priorities.length;
+  const criticalInvestigations = priorities.filter(
+    (priority) => priority.severity === "critical",
   ).length;
-  const monitoring = operationsQueue.filter(
-    (operation) => operation.status === "Monitoring",
+  const monitoring = priorities.filter(
+    (priority) => priority.status === "monitoring",
   ).length;
 
   return (
@@ -28,9 +28,10 @@ export default function OperationsPage() {
           activeInvestigations={activeInvestigations}
           criticalInvestigations={criticalInvestigations}
           monitoring={monitoring}
-          lastUpdated="10:42 AM"
+          lastUpdated="Live"
         />
-        <OperationsQueue operations={operationsQueue} />
+
+        <OperationsQueue operations={priorities} />
       </section>
     </AppLayout>
   );

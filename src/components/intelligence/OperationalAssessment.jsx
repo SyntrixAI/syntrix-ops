@@ -7,20 +7,21 @@ import BusinessImpact from "./BusinessImpact";
 import Recommendation from "./Recommendation";
 
 export default function OperationalAssessment({ assessment }) {
-  const confidence = getConfidenceLevel(assessment.confidence);
-  
   if (!assessment) {
-  return (
-    <AppLayout>
-      <section className="mx-auto max-w-7xl">
-        <h1 className="text-4xl font-bold">{location.name}</h1>
-        <p className="mt-4 text-slate-400">
-          No operational assessment is available for this location yet.
+    return (
+      <Card className="mt-8">
+        <h2 className="text-2xl font-bold text-white">
+          No operational assessment available
+        </h2>
+
+        <p className="mt-3 text-slate-400">
+          Syntrix has not generated an assessment for this location yet.
         </p>
-      </section>
-    </AppLayout>
-  );
-}
+      </Card>
+    );
+  }
+
+  const confidence = getConfidenceLevel(assessment.confidence);
 
   return (
     <Card className="mt-8">
@@ -38,6 +39,7 @@ export default function OperationalAssessment({ assessment }) {
 
       <div className="mt-8">
         <p className="text-sm font-semibold text-slate-400">Assessment</p>
+
         <p className="mt-2 text-lg leading-8 text-slate-300">
           {assessment.assessment}
         </p>
@@ -55,15 +57,15 @@ export default function OperationalAssessment({ assessment }) {
           score={assessment.confidence}
           confidence={confidence}
         />
+
         <EvidenceList evidence={assessment.evidence} />
       </div>
 
       <div className="mt-10 flex justify-end border-t border-slate-800 pt-6">
-         <button className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400">
-            Send to Execution →
+        <button className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400">
+          Send to Execution →
         </button>
       </div>
-
     </Card>
   );
 }

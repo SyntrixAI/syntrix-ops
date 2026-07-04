@@ -19,13 +19,7 @@ export default async function LocationDetailPage({ params }) {
 
 const assessment = assessments[location.id];
 
-if (!assessment) {
-  return (
-    <AppLayout>
-      <h1 className="text-4xl font-bold">Assessment not found</h1>
-    </AppLayout>
-  );
-}
+
 
   return (
     <AppLayout>

@@ -50,10 +50,10 @@ export default function InvestigationItem({ operation }) {
           </p>
 
           <Link
-            href={`/locations/${operation.locationId}`}
-            className="mt-5 inline-block font-semibold text-cyan-400 hover:text-cyan-300"
-          >
-            Investigate →
+              href={`/operations/investigations/${operation.id}`}
+              className="mt-5 inline-block font-semibold text-cyan-400 hover:text-cyan-300"
+        >
+              Investigate →
           </Link>
         </div>
       </div>

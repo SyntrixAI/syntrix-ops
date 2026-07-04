@@ -1,0 +1,1 @@
+export { getInvestigation } from "./getInvestigation";

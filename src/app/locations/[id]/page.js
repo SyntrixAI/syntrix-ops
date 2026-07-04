@@ -1,6 +1,10 @@
 import AppLayout from "../../../components/layout/AppLayout";
 import OperationalAssessment from "../../../components/intelligence/OperationalAssessment";
 import { getLocationWorkspace } from "../../../lib/services";
+import LocationOverview from "../../../components/locations/LocationOverview";
+import LocationOperations from "../../../components/locations/LocationOperations";
+import LocationExecution from "../../../components/locations/LocationExecution";
+import LocationActivity from "../../../components/locations/LocationActivity";
 
 export default async function LocationPage({ params }) {
   const { id } = await params;
@@ -33,7 +37,11 @@ export default async function LocationPage({ params }) {
           How is this location performing, and what should we do next?
         </p>
 
-        <OperationalAssessment assessment={workspace.overview.assessment} />
+        <LocationOverview overview={workspace.overview} />
+        <LocationOperations operations={workspace.operations} />
+        <LocationExecution execution={workspace.execution} />
+        <LocationActivity activity={workspace.activity} />
+        
       </section>
     </AppLayout>
   );

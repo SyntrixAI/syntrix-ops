@@ -4,6 +4,9 @@ import OperationsSummary from "../../components/operations/OperationsSummary";
 import OperationsQueue from "../../components/operations/InvestigationQueue";
 import { priorities } from "../../data/priorities";
 
+import LiveSignalTimeline from "../../components/operations/LiveSignalTimeline";
+import { liveTimeline } from "../../data/liveTimeline";
+
 export default function OperationsPage() {
   const activeInvestigations = priorities.length;
   const criticalInvestigations = priorities.filter(
@@ -32,6 +35,10 @@ export default function OperationsPage() {
         />
 
         <OperationsQueue operations={priorities} />
+
+        <LiveSignalTimeline timeline={liveTimeline} />
+
+
       </section>
     </AppLayout>
   );

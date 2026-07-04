@@ -1,0 +1,1 @@
+export { getLocationWorkspace } from "./getLocationWorkspace";

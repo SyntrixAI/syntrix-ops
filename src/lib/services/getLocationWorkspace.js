@@ -5,6 +5,7 @@ import { assessments } from "../../data/assessments";
 import { executionItems } from "../../data/executionItems";
 import { liveTimeline } from "../../data/liveTimeline";
 import { locationHealth } from "../../data/locationHealth";
+import { operationalMemory } from "../../data/operationalMemory";
 
 export function getLocationWorkspace(locationId) {
   const location = locations.find(
@@ -35,6 +36,7 @@ export function getLocationWorkspace(locationId) {
   overview: {
     health: locationHealth[location.id],
     assessment: assessments[location.id],
+    memory: operationalMemory[location.id],
   },
 
   operations: {

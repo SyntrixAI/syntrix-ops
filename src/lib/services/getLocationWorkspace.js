@@ -30,18 +30,30 @@ export function getLocationWorkspace(locationId) {
   );
 
   return {
-    location,
-    health: locationHealth[location.id],
-    signals: locationSignals,
-    assessment: assessments[location.id],
-    priorities: locationPriorities,
-    executionItems: locationExecutionItems,
-    timeline: locationTimeline,
+  location,
 
-    counts: {
-      signals: locationSignals.length,
-      priorities: locationPriorities.length,
-      executionItems: locationExecutionItems.length,
-    },
-  };
+  overview: {
+    health: locationHealth[location.id],
+    assessment: assessments[location.id],
+  },
+
+  operations: {
+    signals: locationSignals,
+    priorities: locationPriorities,
+  },
+
+  execution: {
+    items: locationExecutionItems,
+  },
+
+  activity: {
+    timeline: locationTimeline,
+  },
+
+  counts: {
+    signals: locationSignals.length,
+    priorities: locationPriorities.length,
+    executionItems: locationExecutionItems.length,
+  },
+};
 }

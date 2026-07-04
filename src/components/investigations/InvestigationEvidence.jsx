@@ -1,6 +1,6 @@
 import Card from "../ui/Card";
-import ConfidenceIndicator from "../intelligence/ConfidenceIndicator";
-import EvidenceList from "../intelligence/EvidenceList";
+import ConfidenceIndicator from "../business/Confidence";
+import EvidenceList from "../business/Evidence";
 import { getConfidenceLevel } from "../../lib/confidence";
 
 export default function InvestigationEvidence({ investigation }) {

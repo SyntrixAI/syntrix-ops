@@ -1,6 +1,6 @@
 import Card from "../ui/Card";
-import BusinessImpact from "../intelligence/BusinessImpact";
-import Recommendation from "../intelligence/Recommendation";
+import BusinessImpact from "../business/BusinessImpact";
+import Recommendation from "../business/Recommendation";
 
 export default function InvestigationOverview({ investigation }) {
   const { priority, assessment } = investigation;

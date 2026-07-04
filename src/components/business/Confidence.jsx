@@ -1,7 +1,7 @@
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
 
-export default function ConfidenceIndicator({ score, confidence }) {
+export default function Confidence ({ score, confidence }) {
   return (
     <Card>
       <div className="flex items-center justify-between">

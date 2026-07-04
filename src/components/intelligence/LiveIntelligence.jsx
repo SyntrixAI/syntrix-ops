@@ -1,7 +1,7 @@
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
-import ConfidenceIndicator from "./ConfidenceIndicator";
-import EvidenceList from "./EvidenceList";
+import ConfidenceIndicator from "../business/Confidence";
+import EvidenceList from "../business/Evidence";
 import { getConfidenceLevel } from "../../lib/confidence";
 
 export default function LiveIntelligence({

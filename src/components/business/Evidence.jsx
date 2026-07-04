@@ -1,6 +1,6 @@
 import Card from "../ui/Card";
 
-export default function EvidenceList({ evidence }) {
+export default function Evidence({ evidence }) {
   return (
     <Card className="mt-8">
       <p className="font-semibold text-cyan-400">Supporting Evidence</p>

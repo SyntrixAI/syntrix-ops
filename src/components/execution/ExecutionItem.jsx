@@ -1,6 +1,6 @@
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
-import ConfidenceIndicator from "../intelligence/ConfidenceIndicator";
+import ConfidenceIndicator from "../business/Confidence";
 import { getConfidenceLevel } from "../../lib/confidence";
 
 export default function ExecutionItem({ execution }) {

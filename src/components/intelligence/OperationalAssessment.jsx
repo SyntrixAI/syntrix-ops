@@ -1,10 +1,10 @@
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
-import ConfidenceIndicator from "./ConfidenceIndicator";
+import ConfidenceIndicator from "../business/Confidence";
 import { getConfidenceLevel } from "../../lib/confidence";
-import EvidenceList from "./EvidenceList";
-import BusinessImpact from "./BusinessImpact";
-import Recommendation from "./Recommendation";
+import EvidenceList from "../business/Evidence";
+import BusinessImpact from "../business/BusinessImpact";
+import Recommendation from "../business/Recommendation";
 
 export default function OperationalAssessment({ assessment }) {
   if (!assessment) {

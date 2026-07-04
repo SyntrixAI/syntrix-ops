@@ -1,10 +1,10 @@
 import AppLayout from "../../../../components/layout/AppLayout";
 import InvestigationHeader from "../../../../components/investigations/InvestigationHeader";
-import InvestigationOverview from "../../../../components/investigations/InvestigationOverview";
 import InvestigationEvidence from "../../../../components/investigations/InvestigationEvidence";
 import InvestigationTimeline from "../../../../components/investigations/InvestigationTimeline";
 import InvestigationActions from "../../../../components/investigations/InvestigationActions";
 import InvestigationActivity from "../../../../components/investigations/InvestigationActivity";
+import SyntrixAssessment from "../../../../components/compositions/SyntrixAssessment";
 
 import { getInvestigation } from "../../../../lib/selectors";
 
@@ -32,7 +32,7 @@ export default async function InvestigationPage({ params }) {
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
-            <InvestigationOverview investigation={investigation} />
+            <SyntrixAssessment assessment={investigation.assessment} />
             <InvestigationEvidence investigation={investigation} />
             <InvestigationTimeline investigation={investigation} />
             <InvestigationActivity activity={investigation.activity} />

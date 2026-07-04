@@ -1,5 +1,5 @@
 import Card from "../ui/Card";
-import OperationalAssessment from "../intelligence/OperationalAssessment";
+import SyntrixAssessment from "../compositions/SyntrixAssessment";
 
 export default function LocationOverview({ overview }) {
   const { health, assessment } = overview;
@@ -23,7 +23,7 @@ export default function LocationOverview({ overview }) {
         </div>
       </Card>
 
-      <OperationalAssessment assessment={assessment} />
+      <SyntrixAssessment assessment={assessment} />
     </section>
   );
 }

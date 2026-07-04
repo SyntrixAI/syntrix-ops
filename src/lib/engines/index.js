@@ -6,3 +6,4 @@ export { generateDailyBrief } from "./briefingEngine";
 export { generateAssessments } from "./assessmentEngine";
 export { generateLiveTimeline } from "./timelineEngine";
 export { generateActivityFeed } from "./activityEngine";
+export { generateLocationHealth } from "./healthEngine";

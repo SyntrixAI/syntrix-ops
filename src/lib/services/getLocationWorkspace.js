@@ -4,6 +4,7 @@ import { priorities } from "../../data/priorities";
 import { assessments } from "../../data/assessments";
 import { executionItems } from "../../data/executionItems";
 import { liveTimeline } from "../../data/liveTimeline";
+import { locationHealth } from "../../data/locationHealth";
 
 export function getLocationWorkspace(locationId) {
   const location = locations.find(
@@ -30,6 +31,7 @@ export function getLocationWorkspace(locationId) {
 
   return {
     location,
+    health: locationHealth[location.id],
     signals: locationSignals,
     assessment: assessments[location.id],
     priorities: locationPriorities,

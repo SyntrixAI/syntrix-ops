@@ -3,6 +3,7 @@ import { assessments } from "../../data/assessments";
 import { executionItems } from "../../data/executionItems";
 import { signals } from "../../data/signals";
 import { activityFeed } from "../../data/activityFeed";
+import { contextInsights } from "../../data/contextInsights";
 
 export function getInvestigation(id) {
   const priority = priorities.find(
@@ -26,5 +27,6 @@ export function getInvestigation(id) {
     executionItem,
     relatedSignal,
     activity: activityFeed[priority.id] || [],
+    context: contextInsights[priority.id] || null,
   };
 }

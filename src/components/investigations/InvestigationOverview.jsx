@@ -8,11 +8,11 @@ export default function InvestigationOverview({ investigation }) {
   return (
     <Card>
       <p className="text-sm font-semibold text-cyan-400">
-        Executive Assessment
+        Syntrix Assessment
       </p>
 
       <p className="mt-4 text-lg leading-8 text-slate-300">
-        {assessment?.assessment ?? priority.description}
+        {assessment?.assessment || priority.description}
       </p>
 
       {assessment?.recommendation && (

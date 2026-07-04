@@ -9,15 +9,15 @@ export default function InvestigationActions({ investigation }) {
       <p className="text-sm font-semibold text-cyan-400">Next Action</p>
 
       <h2 className="mt-3 text-2xl font-bold text-white">
-        {executionItem?.title ?? priority.primaryAction}
+        {executionItem?.title || priority.primaryAction}
       </h2>
 
       <p className="mt-3 text-slate-400">
-        Owner: {executionItem?.owner ?? "Operations Lead"}
+        Owner: {executionItem?.owner || "Operations Lead"}
       </p>
 
       <p className="mt-1 text-slate-400">
-        Status: {executionItem?.status ?? "Recommended"}
+        Status: {executionItem?.status || "Recommended"}
       </p>
 
       <div className="mt-6 flex flex-col gap-3">

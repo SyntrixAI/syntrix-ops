@@ -4,6 +4,7 @@ import LocationOverview from "../../../components/locations/LocationOverview";
 import LocationOperations from "../../../components/locations/LocationOperations";
 import LocationExecution from "../../../components/locations/LocationExecution";
 import LocationActivity from "../../../components/locations/LocationActivity";
+import WorkspaceHeader from "../../../components/business/WorkspaceHeader";
 
 export default async function LocationPage({ params }) {
   const { id } = await params;
@@ -24,17 +25,12 @@ export default async function LocationPage({ params }) {
   return (
     <AppLayout>
       <section className="mx-auto max-w-7xl">
-        <p className="text-sm font-semibold text-cyan-400">
-          LOCATION WORKSPACE
-        </p>
-
-        <h1 className="mt-4 text-5xl font-bold text-white">
-          {workspace.location.name}
-        </h1>
-
-        <p className="mt-4 text-slate-300">
-          How is this location performing, and what should we do next?
-        </p>
+        <WorkspaceHeader
+          eyebrow="Location Workspace"
+          title={workspace.location.name}
+          decision="How is this location performing and what should I do next?"
+          updatedAt="Updated 2 minutes ago"
+        />
 
         <LocationOverview overview={workspace.overview} />
         <LocationOperations operations={workspace.operations} />

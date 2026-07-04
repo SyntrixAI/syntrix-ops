@@ -6,6 +6,7 @@ import InvestigationActions from "../../../../components/investigations/Investig
 import InvestigationActivity from "../../../../components/investigations/InvestigationActivity";
 import SyntrixAssessment from "../../../../components/compositions/SyntrixAssessment";
 import InvestigationContext from "../../../../components/investigations/InvestigationReasoning";
+import WorkspaceHeader from "../../../../components/business/WorkspaceHeader";
 
 import { getInvestigation } from "../../../../lib/selectors";
 
@@ -29,7 +30,12 @@ export default async function InvestigationPage({ params }) {
   return (
     <AppLayout>
       <section className="mx-auto max-w-7xl">
-        <InvestigationHeader investigation={investigation} />
+        <WorkspaceHeader
+           eyebrow="Investigation"
+           title={investigation.priority.title}
+           decision="Why is this happening and what action should I take?"
+           updatedAt="Updated 5 minutes ago"
+        />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">

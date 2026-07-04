@@ -24,3 +24,14 @@
 A file should only import what it actually uses.
 
 ## 12. AI recommendations must be traceable to data.
+
+Product engineering standards.
+
+One decision per page.
+One responsibility per component.
+Every engine produces a reusable business object.
+Services assemble workspaces.
+Components consume business objects.
+Never show AI without evidence.
+Never prioritize before explaining.
+Every page should tell a story that ends with a decision.

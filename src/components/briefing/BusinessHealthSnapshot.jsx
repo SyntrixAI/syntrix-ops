@@ -4,12 +4,12 @@ export default function BusinessHealthSnapshot({ company }) {
   return (
     <Card className="mt-8">
       <p className="text-sm font-semibold uppercase tracking-widest text-cyan-400">
-        Business Health Snapshot
+        Company Operational Health Snapshot
       </p>
 
       <div className="mt-6 flex items-end justify-between border-b border-slate-800 pb-6">
         <div>
-          <p className="text-sm text-slate-500">Business Health</p>
+          <p className="text-sm text-slate-500">Operational Health</p>
           <p className="mt-2 text-5xl font-bold text-green-400">
             {company.businessHealth}
           </p>

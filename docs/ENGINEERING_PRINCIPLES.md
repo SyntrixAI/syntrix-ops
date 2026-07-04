@@ -35,3 +35,14 @@ Components consume business objects.
 Never show AI without evidence.
 Never prioritize before explaining.
 Every page should tell a story that ends with a decision.
+Never pause product development for large-scale cleanup.
+
+Instead:
+
+Whenever a file is modified:
+
+• Remove dead code.
+• Adopt current conventions.
+• Improve readability.
+• Reduce duplication.
+• Leave the file cleaner than before.

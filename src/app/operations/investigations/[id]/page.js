@@ -1,5 +1,4 @@
 import AppLayout from "../../../../components/layout/AppLayout";
-import InvestigationHeader from "../../../../components/investigations/InvestigationHeader";
 import InvestigationEvidence from "../../../../components/investigations/InvestigationEvidence";
 import InvestigationTimeline from "../../../../components/investigations/InvestigationTimeline";
 import InvestigationActions from "../../../../components/investigations/InvestigationActions";

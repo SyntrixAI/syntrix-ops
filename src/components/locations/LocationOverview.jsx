@@ -1,5 +1,6 @@
 import Card from "../ui/Card";
 import SyntrixAssessment from "../compositions/SyntrixAssessment";
+import OperationalMemoryPanel from "./OperationalMemoryPanel";
 
 export default function LocationOverview({ overview }) {
   const { health, assessment } = overview;
@@ -23,7 +24,10 @@ export default function LocationOverview({ overview }) {
         </div>
       </Card>
 
+      <OperationalMemoryPanel memory={overview.memory} />
+
       <SyntrixAssessment assessment={assessment} />
+      
     </section>
   );
 }

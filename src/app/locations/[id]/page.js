@@ -1,5 +1,4 @@
 import AppLayout from "../../../components/layout/AppLayout";
-import OperationalAssessment from "../../../components/intelligence/OperationalAssessment";
 import { getLocationWorkspace } from "../../../lib/services";
 import LocationOverview from "../../../components/locations/LocationOverview";
 import LocationOperations from "../../../components/locations/LocationOperations";
@@ -41,7 +40,6 @@ export default async function LocationPage({ params }) {
         <LocationOperations operations={workspace.operations} />
         <LocationExecution execution={workspace.execution} />
         <LocationActivity activity={workspace.activity} />
-        
       </section>
     </AppLayout>
   );

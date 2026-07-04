@@ -5,6 +5,7 @@ import { company } from "../data/company";
 import { dailyBrief } from "../data/dailyBrief";
 import { locations } from "../data/locations";
 import { assessments } from "../data/assessments";
+import { signals } from "../data/signals";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
           company={company}
           locations={locations}
           assessments={assessments}
+          signals={signals}
         />
       </section>
     </AppLayout>

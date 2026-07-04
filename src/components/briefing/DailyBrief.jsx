@@ -3,12 +3,14 @@ import PriorityQueue from "./PriorityQueue";
 import BusinessHealthSnapshot from "./BusinessHealthSnapshot";
 import TopLocationsToWatch from "./TopLocationsToWatch";
 import SuggestedSchedule from "./SuggestedSchedule";
+import SignalFeed from "../intelligence/SignalFeed";
 
 export default function DailyBrief({
   dailyBrief,
   company,
   locations,
   assessments,
+  signals,
 }) {
   const locationsToWatch = [...locations]
     .sort((a, b) => a.healthScore - b.healthScore)
@@ -26,7 +28,11 @@ export default function DailyBrief({
         assessments={assessments}/>
       </div>
 
-      <SuggestedSchedule schedule={dailyBrief.schedule} />
+      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <SignalFeed signals={signals} />
+
+        <SuggestedSchedule schedule={dailyBrief.schedule} />
+      </div>
     </>
   );
 }

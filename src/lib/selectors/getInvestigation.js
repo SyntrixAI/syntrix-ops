@@ -2,6 +2,7 @@ import { priorities } from "../../data/priorities";
 import { assessments } from "../../data/assessments";
 import { executionItems } from "../../data/executionItems";
 import { signals } from "../../data/signals";
+import { activityFeed } from "../../data/activityFeed";
 
 export function getInvestigation(id) {
   const priority = priorities.find(
@@ -24,5 +25,6 @@ export function getInvestigation(id) {
     assessment,
     executionItem,
     relatedSignal,
+    activity: activityFeed[priority.id] || [],
   };
 }

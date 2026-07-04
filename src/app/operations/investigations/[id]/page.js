@@ -4,11 +4,14 @@ import InvestigationOverview from "../../../../components/investigations/Investi
 import InvestigationEvidence from "../../../../components/investigations/InvestigationEvidence";
 import InvestigationTimeline from "../../../../components/investigations/InvestigationTimeline";
 import InvestigationActions from "../../../../components/investigations/InvestigationActions";
+import InvestigationActivity from "../../../../components/investigations/InvestigationActivity";
 
 import { getInvestigation } from "../../../../lib/selectors";
 
-export default function InvestigationPage({ params }) {
-  const investigation = getInvestigation(params.id);
+export default async function InvestigationPage({ params }) {
+  const { id } = await params;
+
+  const investigation = getInvestigation(id);
 
   if (!investigation) {
     return (
@@ -32,6 +35,7 @@ export default function InvestigationPage({ params }) {
             <InvestigationOverview investigation={investigation} />
             <InvestigationEvidence investigation={investigation} />
             <InvestigationTimeline investigation={investigation} />
+            <InvestigationActivity activity={investigation.activity} />
           </div>
 
           <div>

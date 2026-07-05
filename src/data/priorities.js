@@ -1,4 +1,5 @@
 import { signals } from "./signals";
-import { prioritizeSignals } from "../lib/engines/decisionEngine";
+import { memorySnapshots } from "./memorySnapshots";
+import { prioritizeSignals } from "../lib/engines";
 
-export const priorities = prioritizeSignals(signals);
+export const priorities = prioritizeSignals(signals, memorySnapshots);

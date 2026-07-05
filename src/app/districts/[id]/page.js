@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AppLayout from "../../../components/layout/AppLayout";
-import { getDistrictWorkspace, getUserContext } from "../../../lib/services";
+import WorkspaceBreadcrumbs from "../../../components/business/WorkspaceBreadcrumbs";
+import { getDistrictWorkspace, getUserContext, getWorkspaceContext } from "../../../lib/services";
 import WorkspaceHeader from "../../../components/business/WorkspaceHeader";
 import HealthOverview from "../../../components/business/HealthOverview";
 import KeyInsights from "../../../components/business/KeyInsights";
@@ -15,6 +16,7 @@ export default async function DistrictPage({ params }) {
   const { id } = await params;
   const user = getUserContext();
   const workspace = getDistrictWorkspace(user, id);
+  const context = getWorkspaceContext({ type: "district", id, });
 
   if (!workspace) {
     return (
@@ -42,6 +44,8 @@ export default async function DistrictPage({ params }) {
   return (
     <AppLayout>
       <section className="mx-auto max-w-7xl space-y-8">
+        <WorkspaceBreadcrumbs items={context?.items} />
+        
         <WorkspaceHeader
           eyebrow="District Workspace"
           title={district.name}

@@ -1,5 +1,5 @@
 import AppLayout from "../../../components/layout/AppLayout";
-import { getLocationWorkspace } from "../../../lib/services";
+import { getLocationWorkspace, getUserContext } from "../../../lib/services";
 import LocationOverview from "../../../components/locations/LocationOverview";
 import LocationOperations from "../../../components/locations/LocationOperations";
 import LocationExecution from "../../../components/locations/LocationExecution";
@@ -9,7 +9,8 @@ import DecisionBanner from "../../../components/business/DecisionBanner";
 
 export default async function LocationPage({ params }) {
   const { id } = await params;
-  const workspace = getLocationWorkspace(id);
+  const user = getUserContext();
+  const workspace = getLocationWorkspace(user, id);
 
   if (!workspace) {
     return (

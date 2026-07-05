@@ -6,13 +6,22 @@ import { executionItems } from "../../data/executionItems";
 import { liveTimeline } from "../../data/liveTimeline";
 import { locationHealth } from "../../data/locationHealth";
 import { operationalMemory } from "../../data/operationalMemory";
+import { expandScope } from "../engines";
 
-export function getLocationWorkspace(locationId) {
+export function getLocationWorkspace(user,locationId) {
   const location = locations.find(
     (location) => String(location.id) === String(locationId)
   );
 
   if (!location) return null;
+
+  const accessible = expandScope(user?.scope);
+
+  const canAccessLocation = accessible.locations.some(
+    (accessibleLocation) => accessibleLocation.id === location.id,
+  );
+
+  if (!canAccessLocation) return null;
 
   const locationSignals = signals.filter(
     (signal) => signal.locationId === location.id

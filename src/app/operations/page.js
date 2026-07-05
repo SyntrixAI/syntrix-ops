@@ -1,31 +1,53 @@
 import AppLayout from "../../components/layout/AppLayout";
 
+import WorkspaceHeader from "../../components/business/WorkspaceHeader";
+import WorkspaceSection from "../../components/business/WorkspaceSection";
+import KeyInsights from "../../components/business/KeyInsights";
+
 import OperationsSummary from "../../components/operations/OperationsSummary";
 import OperationsQueue from "../../components/operations/InvestigationQueue";
-import { priorities } from "../../data/priorities";
-
 import LiveSignalTimeline from "../../components/operations/LiveSignalTimeline";
+
+import { priorities } from "../../data/priorities";
 import { liveTimeline } from "../../data/liveTimeline";
 
 export default function OperationsPage() {
   const activeInvestigations = priorities.length;
+
   const criticalInvestigations = priorities.filter(
     (priority) => priority.severity === "critical",
   ).length;
+
   const monitoring = priorities.filter(
     (priority) => priority.status === "monitoring",
   ).length;
 
+  const topPriority = priorities[0];
+
+  const executiveInsights = priorities
+    .flatMap((priority) =>
+      (priority.insights ?? []).map((insight) => ({
+        ...insight,
+        id: `${priority.id}-${insight.id}`,
+        title: `${priority.location}: ${insight.title}`,
+        description: insight.description,
+      })),
+    )
+    .slice(0, 3);
+
   return (
     <AppLayout>
-      <section className="max-w-7xl mx-auto">
-        <p className="text-sm font-semibold text-cyan-400">OPERATIONS</p>
+      <section className="mx-auto max-w-7xl space-y-8">
+        <WorkspaceHeader
+          eyebrow="Operations Workspace"
+          title="Live Operations"
+          decision="What requires leadership attention right now?"
+          updatedAt="Updated live"
+        />
 
-        <h1 className="mt-4 text-5xl font-bold text-white">Live Operations</h1>
-
-        <p className="mt-4 max-w-3xl text-slate-300">
-          Show me where and what I need to investigate right now.
-        </p>
+        {topPriority && (
+          <KeyInsights insights={executiveInsights} />
+        )}
 
         <OperationsSummary
           activeInvestigations={activeInvestigations}
@@ -34,11 +56,21 @@ export default function OperationsPage() {
           lastUpdated="Live"
         />
 
-        <OperationsQueue operations={priorities} />
+        <WorkspaceSection
+          label="Operations"
+          title="Priority Queue"
+          description="Ranked investigations based on severity, business impact, confidence, effort, and operational trend."
+        >
+          <OperationsQueue operations={priorities} />
+        </WorkspaceSection>
 
-        <LiveSignalTimeline timeline={liveTimeline} />
-
-
+        <WorkspaceSection
+          label="Signals"
+          title="Live Operational Activity"
+          description="Recent operational signals Syntrix is observing across the business."
+        >
+          <LiveSignalTimeline timeline={liveTimeline} />
+        </WorkspaceSection>
       </section>
     </AppLayout>
   );

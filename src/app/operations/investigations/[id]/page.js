@@ -1,7 +1,7 @@
 import AppLayout from "../../../../components/layout/AppLayout";
 import InvestigationEvidence from "../../../../components/investigations/InvestigationEvidence";
 import InvestigationTimeline from "../../../../components/investigations/InvestigationTimeline";
-import InvestigationActions from "../../../../components/investigations/InvestigationActions";
+import ExecutionPlaybook from "../../../../components/investigations/ExecutionPlaybook";
 import InvestigationActivity from "../../../../components/investigations/InvestigationActivity";
 import SyntrixAssessment from "../../../../components/compositions/SyntrixAssessment";
 import InvestigationContext from "../../../../components/investigations/InvestigationReasoning";
@@ -58,7 +58,7 @@ export default async function InvestigationPage({ params }) {
         </div>
 
         <div>
-          <InvestigationActions investigation={investigation} />
+          <ExecutionPlaybook investigation={investigation} />
         </div>
       </div>
     </section>

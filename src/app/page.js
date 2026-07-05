@@ -1,25 +1,66 @@
 import AppLayout from "../components/layout/AppLayout";
-import DailyBriefHeader from "../components/briefing/DailyBriefHeader";
-import DailyBrief from "../components/briefing/DailyBrief";
-import { company } from "../data/company";
-import { dailyBrief } from "../data/dailyBrief";
-import { locations } from "../data/locations";
-import { assessments } from "../data/assessments";
-import { signals } from "../data/signals";
+
+import WorkspaceHeader from "../components/business/WorkspaceHeader";
+import HealthOverview from "../components/business/HealthOverview";
+import DecisionBanner from "../components/business/DecisionBanner";
+import KeyInsights from "../components/business/KeyInsights";
+import WorkspaceSection from "../components/business/WorkspaceSection";
+
+import OperationsQueue from "../components/operations/InvestigationQueue";
+import ExecutionQueue from "../components/execution/ExecutionQueue";
+
+import { getDailyBrief } from "../lib/services";
 
 export default function Home() {
+  const brief = getDailyBrief();
+
+  const {
+    health,
+    topDecision,
+    executiveInsights,
+    criticalInvestigations,
+    executionQueue,
+  } = brief;
+
   return (
     <AppLayout>
-      <section className="mx-auto max-w-7xl">
-        <DailyBriefHeader name="Tyson" />
-
-        <DailyBrief
-          dailyBrief={dailyBrief}
-          company={company}
-          locations={locations}
-          assessments={assessments}
-          signals={signals}
+      <section className="mx-auto max-w-7xl space-y-8">
+        <WorkspaceHeader
+          eyebrow="Daily Brief"
+          title="Good Morning, Tyson"
+          decision="Here is what deserves your attention today."
+          updatedAt="Updated live"
         />
+
+        <HealthOverview health={health} />
+
+        {topDecision && (
+          <DecisionBanner
+            decision={topDecision.primaryAction}
+            impact={`+$${topDecision.estimatedImpact.toLocaleString()}/wk`}
+            confidence={`${topDecision.confidence ?? 90}% confidence`}
+            rationale={topDecision.rationale}
+            actionLabel="Open Investigation"
+          />
+        )}
+
+        <KeyInsights insights={executiveInsights} />
+
+        <WorkspaceSection
+          label="Critical"
+          title="Critical Investigations"
+          description="The highest-priority investigations leadership should review first."
+        >
+          <OperationsQueue operations={criticalInvestigations} />
+        </WorkspaceSection>
+
+        <WorkspaceSection
+          label="Execution"
+          title="Active Playbooks"
+          description="Recommended actions currently in motion."
+        >
+          <ExecutionQueue executions={executionQueue} />
+        </WorkspaceSection>
       </section>
     </AppLayout>
   );

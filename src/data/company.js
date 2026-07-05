@@ -1,6 +1,6 @@
 export const company = {
-  id: "ember-hospitality-group",
-  name: "Ember Hospitality Group",
+  id: "syntrix-demo",
+  name: "Syntrix Demo Group",
   industry: "Restaurant Group",
   headquarters: "Dallas, TX",
   totalLocations: 18,
@@ -14,4 +14,5 @@ export const company = {
   primeCost: 59.8,
   primeCostChangeVsLastWeek: -1.1,
   dailyBriefGeneratedAt: "7:03 AM",
+  tagline: "An AI-powered operating system for multi-location businesses.",
 };

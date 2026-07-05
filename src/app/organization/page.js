@@ -10,7 +10,6 @@ import OperationsQueue from "../../components/operations/InvestigationQueue";
 import ExecutionQueue from "../../components/execution/ExecutionQueue";
 import HierarchyToolbar from "../../components/business/HierarchyToolbar";
 import HierarchyTable from "../../components/business/HierarchyTable";
-import { generateNarrative, generateEntityMetrics, } from "../../lib/engines";
 import { getOrganizationWorkspace, getUserContext } from "../../lib/services";
 
 export default function OrganizationPage() {
@@ -24,13 +23,6 @@ export default function OrganizationPage() {
     execution,
     organization,
   } = workspace;
-  
-  const hierarchyRows = getHierarchyRows(
-  user,
-  organization,
-  metrics,
-  operations.priorities,
-);
 
   return (
     <AppLayout>
@@ -86,7 +78,7 @@ export default function OrganizationPage() {
                     count={getOrganizationCount(user, organization)}
                 />
 
-                <HierarchyTable rows={hierarchyRows} />
+                <HierarchyTable rows={organization.entities} />
             </div>
         </WorkspaceSection>
 
@@ -154,74 +146,6 @@ function getWorkspaceTitle(user, organization) {
   return "Organization";
 }
 
-function getHierarchyRows(user, organization, metrics, priorities = []) {
-  if (user.scope.level === "company") {
-    return organization.regions.map((region) => {
-      const narrative = generateNarrative({
-        name: region.name,
-        metrics,
-        priorities,
-        action: {
-          label: "Open",
-          href: `/organization/regions/${region.id}`,
-        },
-      });
-
-      return {
-        id: region.id,
-        subtitle: "Region",
-        ...narrative,
-      };
-    });
-  }
-
-  if (user.scope.level === "region") {
-    return organization.districts.map((district) => {
-      const narrative = generateNarrative({
-        name: district.name,
-        metrics,
-        priorities,
-        action: {
-          label: "Open",
-          href: `/districts/${district.id}`,
-        },
-      });
-
-      return {
-        id: district.id,
-        subtitle: "District",
-        ...narrative,
-      };
-    });
-  }
-
-  return organization.locations.map((location) => {
-    const locationPriorities = getScopedPriorities(
-        [location.id],
-        priorities,
-    );
-    const locationMetrics = generateEntityMetrics({
-        metrics,
-        priorities: locationPriorities,
-        });
-    const narrative = generateNarrative({
-      name: location.name,
-      metrics: locationMetrics,
-      priorities: locationPriorities,
-      action: {
-        label: "Open",
-        href: `/locations/${location.id}`,
-      },
-    });
-
-    return {
-      id: location.id,
-      subtitle: `${location.city}, ${location.state}`,
-      ...narrative,
-    };
-  });
-}
-
 function getComparisonLabel(user) {
   if (user.scope.level === "company") return "Regions";
   if (user.scope.level === "region") return "Districts";
@@ -238,10 +162,4 @@ function getComparisonTitle(user) {
   if (user.scope.level === "location") return "Assigned Location";
 
   return "Organization";
-}
-
-function getScopedPriorities(locationIds, priorities) {
-  return priorities.filter((priority) =>
-    locationIds.includes(priority.locationId),
-  );
 }

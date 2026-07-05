@@ -1,7 +1,13 @@
 import { priorities } from "../../data/priorities";
 import { executionItems } from "../../data/executionItems";
 import { locationHealth } from "../../data/locationHealth";
-import { generateExecutiveMetrics, expandScope } from "../engines";
+import { generateExecutiveMetrics,
+          generateEntityMetrics,
+          generateNarrative,
+          expandScope,
+          getChildren,
+          getDescendantLocations,
+ } from "../engines";
 
 export function getOrganizationWorkspace(user) {
   const accessible = expandScope(user?.scope);
@@ -41,6 +47,13 @@ export function getOrganizationWorkspace(user) {
     )
     .slice(0, 5);
 
+  const entities = getOrganizationEntities({
+    user,
+    organization: accessible,
+    metrics,
+    priorities: scopedPriorities,
+  });
+
   return {
     user,
     scope: accessible,
@@ -72,6 +85,7 @@ export function getOrganizationWorkspace(user) {
       regions: accessible.regions,
       districts: accessible.districts,
       locations: accessible.locations,
+      entities,
     },
   };
 }
@@ -107,4 +121,108 @@ function getScopeLabel(user) {
   if (user.scope.level === "location") return "This location";
 
   return "This organization";
+}
+
+function getOrganizationEntities({
+  user,
+  organization,
+  metrics,
+  priorities,
+}) {
+  const currentEntity = getCurrentEntity(user, organization);
+
+  const children = getChildren(currentEntity);
+
+  const entities = children.length > 0 ? children : [currentEntity];
+
+  return entities.filter(Boolean).map((entity) => {
+    const entityLocations = getDescendantLocations(entity);
+
+    const locationIds = entityLocations.map((location) => location.id);
+
+    const entityPriorities = priorities.filter((priority) =>
+      locationIds.includes(priority.locationId),
+    );
+
+    const entityMetrics = generateEntityMetrics({
+      metrics,
+      priorities: entityPriorities,
+    });
+
+    const narrative = generateNarrative({
+      name: entity.name,
+      metrics: entityMetrics,
+      priorities: entityPriorities,
+      action: {
+        label: "Open",
+        href: getEntityHref(entity),
+      },
+    });
+
+    return {
+      id: entity.id,
+      subtitle: getEntitySubtitle(entity),
+      type: entity.type,
+      ...narrative,
+    };
+  });
+}
+
+function getCurrentEntity(user, organization) {
+  if (user.scope.level === "company") {
+    return {
+      ...organization.company,
+      type: "company",
+    };
+  }
+
+  if (user.scope.level === "region") {
+    return {
+      ...organization.regions[0],
+      type: "region",
+    };
+  }
+
+  if (user.scope.level === "district") {
+    return {
+      ...organization.districts[0],
+      type: "district",
+    };
+  }
+
+  if (user.scope.level === "location") {
+    return {
+      ...organization.locations[0],
+      type: "location",
+    };
+  }
+
+  return null;
+}
+
+function getEntityHref(entity) {
+  if (entity.type === "region") {
+    return `/organization/regions/${entity.id}`;
+  }
+
+  if (entity.type === "district") {
+    return `/districts/${entity.id}`;
+  }
+
+  if (entity.type === "location") {
+    return `/locations/${entity.id}`;
+  }
+
+  return "/organization";
+}
+
+function getEntitySubtitle(entity) {
+  if (entity.type === "region") return "Region";
+  if (entity.type === "district") return "District";
+
+  if (entity.type === "location") {
+    return `${entity.city}, ${entity.state}`;
+  }
+
+  return "Organization";
 }

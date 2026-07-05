@@ -88,7 +88,7 @@ export default function ExecutionQueue({ executions }) {
             {(item.risk || item.followUp) && (
               <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
                 <h4 className="font-semibold text-white">
-                  Risk & Follow-up
+                  Execution Notes
                 </h4>
 
                 {item.risk && (

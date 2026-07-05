@@ -14,3 +14,4 @@ export { generateInsights } from "./insightsEngine";
 export { generateExecutiveMetrics } from "./metricsEngine";
 export { expandScope } from "./scopeEngine";
 export { generateNarrative } from "./narrativeEngine";
+export { generateEntityMetrics } from "./entityMetricsEngine";

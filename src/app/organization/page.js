@@ -10,7 +10,7 @@ import OperationsQueue from "../../components/operations/InvestigationQueue";
 import ExecutionQueue from "../../components/execution/ExecutionQueue";
 import HierarchyToolbar from "../../components/business/HierarchyToolbar";
 import HierarchyTable from "../../components/business/HierarchyTable";
-import { generateNarrative } from "../../lib/engines";
+import { generateNarrative, generateEntityMetrics, } from "../../lib/engines";
 import { getOrganizationWorkspace, getUserContext } from "../../lib/services";
 
 export default function OrganizationPage() {
@@ -200,20 +200,10 @@ function getHierarchyRows(user, organization, metrics, priorities = []) {
         [location.id],
         priorities,
     );
-    const locationMetrics = {
-    ...metrics,
-
-    activePriorities: locationPriorities.length,
-
-    criticalPriorities: locationPriorities.filter(
-        (priority) => priority.priorityScore >= 90,
-    ).length,
-
-    estimatedRecovery: locationPriorities.reduce(
-        (sum, priority) => sum + (priority.estimatedImpact ?? 0),
-        0,
-    ),
-    };
+    const locationMetrics = generateEntityMetrics({
+        metrics,
+        priorities: locationPriorities,
+        });
     const narrative = generateNarrative({
       name: location.name,
       metrics: locationMetrics,

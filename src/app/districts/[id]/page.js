@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AppLayout from "../../../components/layout/AppLayout";
+import WorkspacePage from "../../../components/layout/WorkspacePage";
 import WorkspaceBreadcrumbs from "../../../components/business/WorkspaceBreadcrumbs";
 import { getDistrictWorkspace, getUserContext, getWorkspaceContext } from "../../../lib/services";
 import WorkspaceHeader from "../../../components/business/WorkspaceHeader";
@@ -44,7 +45,7 @@ export default async function DistrictPage({ params }) {
 
   return (
     <AppLayout>
-      <section className="mx-auto max-w-7xl space-y-8">
+      <WorkspacePage>
         <WorkspaceBreadcrumbs items={context?.items} />
 
         <WorkspaceHeader
@@ -133,7 +134,7 @@ export default async function DistrictPage({ params }) {
         >
           <ExecutionQueue executions={execution.items} />
         </WorkspaceSection>
-      </section>
+      </WorkspacePage>
     </AppLayout>
   );
 }

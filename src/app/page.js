@@ -1,4 +1,5 @@
 import AppLayout from "../components/layout/AppLayout";
+import WorkspacePage from "../components/layout/WorkspacePage";
 import WorkspaceHeader from "../components/business/WorkspaceHeader";
 import HealthOverview from "../components/business/HealthOverview";
 import DecisionBanner from "../components/business/DecisionBanner";
@@ -23,7 +24,7 @@ export default function Home() {
 
   return (
     <AppLayout>
-      <section className="mx-auto max-w-7xl space-y-8">
+      <WorkspacePage>
         <WorkspaceHeader
           eyebrow="Daily Brief"
           title={`Good Morning, ${user.name}`}
@@ -60,7 +61,7 @@ export default function Home() {
         >
           <ExecutionQueue executions={executionQueue} />
         </WorkspaceSection>
-      </section>
+      </WorkspacePage>
     </AppLayout>
   );
 }

@@ -1,4 +1,5 @@
 import AppLayout from "../../../../components/layout/AppLayout";
+import WorkspacePage from "../../../../components/layout/WorkspacePage";
 import InvestigationEvidence from "../../../../components/investigations/InvestigationEvidence";
 import InvestigationTimeline from "../../../../components/investigations/InvestigationTimeline";
 import ExecutionPlaybook from "../../../../components/investigations/ExecutionPlaybook";
@@ -32,7 +33,7 @@ export default async function InvestigationPage({ params }) {
 
   return (
   <AppLayout>
-    <section className="mx-auto max-w-7xl space-y-8">
+    <WorkspacePage>
       <WorkspaceBreadcrumbs items={context?.items} />
 
       <WorkspaceHeader
@@ -67,7 +68,7 @@ export default async function InvestigationPage({ params }) {
           <ExecutionPlaybook investigation={investigation} />
         </div>
       </div>
-    </section>
+    </WorkspacePage>
   </AppLayout>
 );
 }

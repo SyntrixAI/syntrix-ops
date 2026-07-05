@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Card from "../../components/ui/Card";
+import WorkspacePage from "../../components/layout/WorkspacePage";
 import AppLayout from "../../components/layout/AppLayout";
 import WorkspaceHeader from "../../components/business/WorkspaceHeader";
 import WorkspaceStatus from "../../components/business/WorkspaceStatus";
@@ -29,7 +30,7 @@ export default function OrganizationPage() {
 
   return (
     <AppLayout>
-      <section className="mx-auto max-w-7xl space-y-8">
+      <WorkspacePage>
         <WorkspaceHeader
           eyebrow={getWorkspaceEyebrow(user)}
           title={getWorkspaceTitle(user, organization)}
@@ -101,7 +102,7 @@ export default function OrganizationPage() {
         >
           <ExecutionQueue executions={execution.items} />
         </WorkspaceSection>
-      </section>
+      </WorkspacePage>
     </AppLayout>
   );
 }

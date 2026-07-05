@@ -1,4 +1,5 @@
 import AppLayout from "../../../components/layout/AppLayout";
+import WorkspacePage from "../../../components/layout/WorkspacePage";
 import { getLocationWorkspace, getUserContext, getWorkspaceContext } from "../../../lib/services";
 import WorkspaceBreadcrumbs from "../../../components/business/WorkspaceBreadcrumbs";
 import LocationOverview from "../../../components/locations/LocationOverview";
@@ -28,7 +29,7 @@ export default async function LocationPage({ params }) {
 
   return (
     <AppLayout>
-      <section className="mx-auto max-w-7xl">
+      <WorkspacePage>
         <WorkspaceBreadcrumbs items={context?.items} />
         
         <WorkspaceHeader
@@ -60,7 +61,7 @@ export default async function LocationPage({ params }) {
         <LocationOperations operations={workspace.operations} />
         <LocationExecution execution={workspace.execution} />
         <LocationActivity activity={workspace.activity} />
-      </section>
+      </WorkspacePage>
     </AppLayout>
   );
 }

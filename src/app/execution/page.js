@@ -1,5 +1,5 @@
 import AppLayout from "../../components/layout/AppLayout";
-
+import WorkspacePage from "../../components/layout/WorkspacePage";
 import WorkspaceHeader from "../../components/business/WorkspaceHeader";
 import WorkspaceSection from "../../components/business/WorkspaceSection";
 
@@ -12,7 +12,7 @@ import { opportunityPipeline } from "../../data/executions";
 export default function ExecutionPage() {
   return (
     <AppLayout>
-      <section className="mx-auto max-w-7xl space-y-8">
+      <WorkspacePage>
         <WorkspaceHeader
           eyebrow="Execution Workspace"
           title="Execution Playbooks"
@@ -35,7 +35,7 @@ export default function ExecutionPage() {
         >
           <ExecutionQueue executions={executionItems} />
         </WorkspaceSection>
-      </section>
+      </WorkspacePage>
     </AppLayout>
   );
 }

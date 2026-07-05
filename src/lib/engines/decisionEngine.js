@@ -28,6 +28,7 @@ export function prioritizeSignals(signals, operationalMemory = {}) {
         priorityScore: calculatePriorityScore(signal, memory),
         primaryAction: getPrimaryAction(signal),
         scoreDrivers: getScoreDrivers(signal, memory),
+        rationale: buildDecisionRationale(signal, memory),
       };
     })
     .sort((a, b) => b.priorityScore - a.priorityScore)
@@ -108,4 +109,21 @@ function getScoreDrivers(signal, memory) {
       value: memory?.trend ?? "Unknown",
     },
   ];
+}
+
+function buildDecisionRationale(signal, memory) {
+  return {
+    headline:
+      "This recommendation provides the strongest operational improvement currently available.",
+
+    reasons: [
+      `${signal.severity} severity signal detected.`,
+      `Estimated weekly impact of $${(
+        signal.estimatedImpact ?? 0
+      ).toLocaleString()}.`,
+      `Confidence is ${signal.confidence ?? 90}%.`,
+      `Estimated effort: ${signal.effort ?? "Medium"}.`,
+      `Operational trend: ${memory?.trend ?? "Unknown"}.`,
+    ],
+  };
 }

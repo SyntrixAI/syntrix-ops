@@ -6,13 +6,14 @@ export default function DecisionBanner({
   decision,
   impact,
   confidence,
+  rationale,
   actionLabel = "Review Decision",
 }) {
   if (!decision) return null;
 
   return (
-    <Card className="mt-8 border-cyan-500/30 bg-cyan-500/5">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <Card className="border-cyan-500/30 bg-cyan-500/5">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-cyan-400">
             {label}
@@ -23,18 +24,26 @@ export default function DecisionBanner({
           </h2>
 
           <div className="mt-5 flex flex-wrap gap-3">
-            {impact && (
-              <Badge tone="success">
-                {impact}
-              </Badge>
-            )}
+            {impact && <Badge tone="success">{impact}</Badge>}
 
-            {confidence && (
-              <Badge tone="info">
-                {confidence}
-              </Badge>
-            )}
+            {confidence && <Badge tone="info">{confidence}</Badge>}
           </div>
+
+          {rationale?.reasons?.length > 0 && (
+            <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+              <p className="text-sm font-semibold text-slate-300">
+                Why this recommendation?
+              </p>
+
+              <ul className="mt-3 space-y-2">
+                {rationale.reasons.map((reason) => (
+                  <li key={reason} className="text-sm leading-6 text-slate-400">
+                    • {reason}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <button className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400">

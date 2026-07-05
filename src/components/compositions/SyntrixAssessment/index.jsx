@@ -11,7 +11,7 @@ export default function SyntrixAssessment({ assessment }) {
   const confidence = getConfidenceLevel(assessment.confidence);
 
   return (
-    <Card className="mt-8">
+    <Card>
       <div className="space-y-8">
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-cyan-400">

@@ -7,7 +7,7 @@ export default function PriorityScore({ priority }) {
   const interpretation = getPriorityInterpretation(priority.priorityScore);
 
   return (
-    <Card className="mt-8 border-cyan-500/20">
+    <Card className="border-cyan-500/20">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-cyan-400">

@@ -29,40 +29,39 @@ export default async function InvestigationPage({ params }) {
   }
 
   return (
-    <AppLayout>
-      <section className="mx-auto max-w-7xl">
+  <AppLayout>
+    <section className="mx-auto max-w-7xl space-y-8">
+      <WorkspaceHeader
+        eyebrow="Investigation"
+        title={investigation.priority.title}
+        decision="Why is this happening and what action should I take?"
+        updatedAt="Updated 5 minutes ago"
+      />
 
-        <WorkspaceHeader
-           eyebrow="Investigation"
-           title={investigation.priority.title}
-           decision="Why is this happening and what action should I take?"
-           updatedAt="Updated 5 minutes ago"
-        />
+      <DecisionBanner
+        decision={investigation.priority.primaryAction}
+        impact={`+$${investigation.priority.estimatedImpact.toLocaleString()}/wk`}
+        confidence={`${investigation.assessment?.confidence ?? 90}% confidence`}
+        rationale={investigation.priority.rationale}
+        actionLabel="Send to Execution"
+      />
 
-        <DecisionBanner
-           decision={investigation.priority.primaryAction}
-           impact={`+$${investigation.priority.estimatedImpact.toLocaleString()}/wk`}
-           confidence={`${investigation.assessment?.confidence ?? 90}% confidence`}
-           actionLabel="Send to Execution"
-        />
+      <PriorityScore priority={investigation.priority} />
 
-        <PriorityScore priority={investigation.priority} />
-
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="space-y-8 lg:col-span-2">
-            <SyntrixAssessment assessment={investigation.assessment} />
-            <InvestigationContext context={investigation.context}/>
-            <InvestigationEvidence investigation={investigation} />
-            <InvestigationTimeline investigation={investigation} />
-            <InvestigationActivity activity={investigation.activity} />
-          </div>
-        <div>
-
-        <InvestigationActions investigation={investigation} />
-
-          </div>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="space-y-8 lg:col-span-2">
+          <SyntrixAssessment assessment={investigation.assessment} />
+          <InvestigationContext context={investigation.context} />
+          <InvestigationEvidence investigation={investigation} />
+          <InvestigationTimeline investigation={investigation} />
+          <InvestigationActivity activity={investigation.activity} />
         </div>
-      </section>
-    </AppLayout>
-  );
+
+        <div>
+          <InvestigationActions investigation={investigation} />
+        </div>
+      </div>
+    </section>
+  </AppLayout>
+);
 }

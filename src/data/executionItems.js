@@ -1,4 +1,5 @@
 import { priorities } from "./priorities";
-import { generateExecutionItems } from "../lib/engines/executionEngine";
+import { recommendations } from "./recommendations";
+import { generateExecutionItems } from "../lib/engines";
 
-export const executionItems = generateExecutionItems(priorities);
+export const executionItems = generateExecutionItems(priorities, recommendations);

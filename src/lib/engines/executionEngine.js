@@ -1,28 +1,39 @@
-export function generateExecutionItems(priorities) {
-  return priorities.map((priority) => ({
-    id: `exec-${priority.id}`,
-    priorityId: priority.id,
+export function generateExecutionItems(priorities, recommendations = {}) {
+  return priorities.map((priority) => {
+    const recommendation = recommendations[priority.id];
 
-    title: priority.primaryAction,
-    location: priority.location,
-    locationId: priority.locationId,
+    return {
+      id: `exec-${priority.id}`,
+      priorityId: priority.id,
 
-    sourceAssessment: priority.title,
+      title: recommendation?.title ?? priority.primaryAction,
+      location: priority.location,
+      locationId: priority.locationId,
 
-    businessImpact: {
-      weeklyRecovery: priority.estimatedImpact ?? 0,
-    },
+      sourceAssessment: priority.title,
+      description: recommendation?.action ?? priority.title,
 
-    confidence: priority.confidence ?? getDefaultConfidence(priority),
+      businessImpact: {
+        weeklyRecovery:
+          recommendation?.expectedImpact?.weeklyRecovery ??
+          priority.estimatedImpact ??
+          0,
+      },
 
-    whyNow: getWhyNow(priority),
+      confidence: priority.confidence ?? getDefaultConfidence(priority),
 
-    effort: priority.effort,
-    estimatedTime: priority.estimatedTime,
+      whyNow: recommendation?.reasoning ?? getWhyNow(priority),
 
-    owner: getDefaultOwner(priority),
-    status: getExecutionStatus(priority),
-  }));
+      effort: recommendation?.effort ?? priority.effort,
+      estimatedTime: recommendation?.estimatedTime ?? priority.estimatedTime,
+
+      dependencies: recommendation?.dependencies ?? [],
+      risk: recommendation?.risk ?? null,
+
+      owner: getDefaultOwner(priority),
+      status: getExecutionStatus(priority),
+    };
+  });
 }
 
 function getDefaultConfidence(priority) {

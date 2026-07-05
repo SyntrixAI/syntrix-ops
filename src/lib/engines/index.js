@@ -9,3 +9,4 @@ export { generateActivityFeed } from "./activityEngine";
 export { generateLocationHealth } from "./healthEngine";
 export { generateContextInsights } from "./contextEngine";
 export { generateOperationalMemory } from "./memoryEngine";
+export { generateRecommendations } from "./recommendationEngine";

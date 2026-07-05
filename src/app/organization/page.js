@@ -25,6 +25,8 @@ export default function OrganizationPage() {
     organization,
   } = workspace;
 
+ const hierarchyRows = getHierarchyRows(user, organization, metrics);
+
   return (
     <AppLayout>
       <section className="mx-auto max-w-7xl space-y-8">
@@ -79,10 +81,8 @@ export default function OrganizationPage() {
             count={getOrganizationCount(user, organization)}
         />
 
-        <HierarchyTable
-            user={user}
-            organization={organization}
-        />
+        <HierarchyTable rows={hierarchyRows} />
+
         </div>
         </WorkspaceSection>
 
@@ -148,6 +148,48 @@ function getWorkspaceTitle(user, organization) {
   }
 
   return "Organization";
+}
+
+function getHierarchyRows(user, organization, metrics) {
+  if (user.scope.level === "company") {
+    return organization.regions.map((region) => ({
+      id: region.id,
+      name: region.name,
+      subtitle: "Region",
+      type: "Region",
+      status: metrics.healthStatus,
+      health: metrics.operationalHealth,
+      activePriorities: metrics.activePriorities,
+      estimatedRecovery: metrics.estimatedRecovery,
+      href: `/organization/regions/${region.id}`,
+    }));
+  }
+
+  if (user.scope.level === "region") {
+    return organization.districts.map((district) => ({
+      id: district.id,
+      name: district.name,
+      subtitle: "District",
+      type: "District",
+      status: metrics.healthStatus,
+      health: metrics.operationalHealth,
+      activePriorities: metrics.activePriorities,
+      estimatedRecovery: metrics.estimatedRecovery,
+      href: `/districts/${district.id}`,
+    }));
+  }
+
+  return organization.locations.map((location) => ({
+    id: location.id,
+    name: location.name,
+    subtitle: `${location.city}, ${location.state}`,
+    type: "Location",
+    status: metrics.healthStatus,
+    health: metrics.operationalHealth,
+    activePriorities: metrics.activePriorities,
+    estimatedRecovery: metrics.estimatedRecovery,
+    href: `/locations/${location.id}`,
+  }));
 }
 
 function getComparisonLabel(user) {

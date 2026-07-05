@@ -1,32 +1,64 @@
 import { priorities } from "../../data/priorities";
 import { executionItems } from "../../data/executionItems";
 import { locationHealth } from "../../data/locationHealth";
-import { executiveMetrics } from "../../data/executiveMetrics";
+import { generateExecutiveMetrics, expandScope } from "../engines";
 
-export function getDailyBrief() {
-  const topPriority = priorities[0];
+export function getDailyBrief(user) {
+  const accessible = expandScope(user?.scope);
 
-  const executiveInsights = priorities
-    .flatMap((priority) => priority.insights ?? [])
-    .slice(0, 3);
+  const locationIds = accessible.locations.map((location) => location.id);
 
-  const criticalInvestigations = priorities.filter(
-    (priority) => priority.priorityScore >= 90
+  const scopedPriorities = priorities.filter((priority) =>
+    locationIds.includes(priority.locationId),
   );
 
-  const healthScores = Object.values(locationHealth);
+  const scopedExecutionItems = executionItems.filter((item) =>
+    locationIds.includes(item.locationId),
+  );
 
-  const averageHealth =
-    healthScores.reduce((sum, health) => sum + health.score, 0) /
-    healthScores.length;
+  const scopedHealth = accessible.locations.reduce((healthByLocation, location) => {
+    if (locationHealth[location.id]) {
+      healthByLocation[location.id] = locationHealth[location.id];
+    }
+
+    return healthByLocation;
+  }, {});
+
+  const metrics = generateExecutiveMetrics({
+    locations: accessible.locations,
+    locationHealth: scopedHealth,
+    priorities: scopedPriorities,
+    executionItems: scopedExecutionItems,
+  });
+
+  const topPriority = scopedPriorities[0];
+
+  const executiveInsights = scopedPriorities
+    .flatMap((priority) =>
+      (priority.insights ?? []).map((insight) => ({
+        ...insight,
+        id: `${priority.id}-${insight.id}`,
+        title: `${priority.location}: ${insight.title}`,
+      })),
+    )
+    .slice(0, 3);
+
+  const criticalInvestigations = scopedPriorities.filter(
+    (priority) => priority.priorityScore >= 90,
+  );
 
   return {
+    user,
+
+    scope: accessible,
+
     health: {
-      score: Math.round(averageHealth),
-      status: averageHealth >= 80 ? "Healthy" : "Watch",
+      score: metrics.operationalHealth,
+      status: metrics.healthStatus,
+      summary: getBriefHealthSummary(user, metrics),
     },
 
-    metrics: executiveMetrics,
+    metrics,
 
     topDecision: topPriority,
 
@@ -34,6 +66,39 @@ export function getDailyBrief() {
 
     criticalInvestigations,
 
-    executionQueue: executionItems.slice(0, 5),
+    executionQueue: scopedExecutionItems.slice(0, 5),
   };
+}
+
+function getBriefHealthSummary(user, metrics) {
+  const scopeLabel = getScopeLabel(user);
+
+  if (metrics.operationalHealth === null) {
+    return `${scopeLabel} does not have enough operational data yet.`;
+  }
+
+  if (metrics.operationalHealth >= 85) {
+    return `${scopeLabel} is operating within healthy thresholds.`;
+  }
+
+  if (metrics.operationalHealth >= 70) {
+    return `${scopeLabel} is stable but has operational signals worth reviewing.`;
+  }
+
+  if (metrics.operationalHealth >= 50) {
+    return `${scopeLabel} has active operational risk requiring leadership attention.`;
+  }
+
+  return `${scopeLabel} requires immediate operational attention.`;
+}
+
+function getScopeLabel(user) {
+  if (!user?.scope) return "This workspace";
+
+  if (user.scope.level === "company") return "The company";
+  if (user.scope.level === "region") return "This region";
+  if (user.scope.level === "district") return "This district";
+  if (user.scope.level === "location") return "This location";
+
+  return "This workspace";
 }

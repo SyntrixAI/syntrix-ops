@@ -3,6 +3,7 @@ import { getDistrict } from "../selectors";
 import { locationHealth } from "../../data/locationHealth";
 import { priorities } from "../../data/priorities";
 import { executionItems } from "../../data/executionItems";
+import { generateExecutiveMetrics } from "../engines";
 
 export function getDistrictWorkspace(id) {
   const districtEntity = getDistrict(id);
@@ -20,6 +21,21 @@ export function getDistrictWorkspace(id) {
   const districtExecutionItems = executionItems.filter((item) =>
     locationIds.includes(item.locationId),
   );
+
+  const districtHealth = locations.reduce((healthByLocation, location) => {
+  if (locationHealth[location.id]) {
+    healthByLocation[location.id] = locationHealth[location.id];
+  }
+
+  return healthByLocation;
+    }, {});
+    
+    const metrics = generateExecutiveMetrics({
+    locations,
+    locationHealth: districtHealth,
+    priorities: districtPriorities,
+    executionItems: districtExecutionItems,
+        });
 
   const executiveInsights = districtPriorities
     .flatMap((priority) =>
@@ -57,6 +73,8 @@ export function getDistrictWorkspace(id) {
       },
       insights: executiveInsights,
     },
+
+    metrics,
 
     operations: {
       priorities: districtPriorities,

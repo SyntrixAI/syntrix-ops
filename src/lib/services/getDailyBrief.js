@@ -1,6 +1,7 @@
 import { priorities } from "../../data/priorities";
 import { executionItems } from "../../data/executionItems";
 import { locationHealth } from "../../data/locationHealth";
+import { executiveMetrics } from "../../data/executiveMetrics";
 
 export function getDailyBrief() {
   const topPriority = priorities[0];
@@ -24,6 +25,8 @@ export function getDailyBrief() {
       score: Math.round(averageHealth),
       status: averageHealth >= 80 ? "Healthy" : "Watch",
     },
+
+    metrics: executiveMetrics,
 
     topDecision: topPriority,
 

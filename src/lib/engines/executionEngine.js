@@ -29,6 +29,8 @@ export function generateExecutionItems(priorities, recommendations = {}) {
 
       dependencies: recommendation?.dependencies ?? [],
       risk: recommendation?.risk ?? null,
+      successCriteria: recommendation?.successCriteria ?? [],
+      followUp: recommendation?.followUp ?? null,
 
       owner: getDefaultOwner(priority),
       status: getExecutionStatus(priority),

@@ -20,6 +20,8 @@ export function generateRecommendations(priorities = []) {
 
       dependencies: getDependencies(priority),
       risk: getRisk(priority),
+      successCriteria: getSuccessCriteria(priority),
+      followUp: getFollowUp(priority),
     };
 
     return recommendationsByPriority;
@@ -74,4 +76,39 @@ function getRisk(priority) {
   if (priority.severity === "critical") return "Delay may increase weekly profit leakage.";
   if (priority.severity === "warning") return "Variance may continue if not reviewed.";
   return "Low risk. Continue monitoring for repeat pattern.";
+}
+
+function getSuccessCriteria(priority) {
+  if (priority.category === "Labor") {
+    return [
+      "Labor returns to target range.",
+      "Service levels remain stable.",
+      "No increase in guest complaints.",
+    ];
+  }
+
+  if (priority.category === "Inventory") {
+    return [
+      "Inventory variance decreases.",
+      "Waste is documented.",
+      "Receiving matches purchase records.",
+    ];
+  }
+
+  return [
+    "Recommendation completed.",
+    "Operational metric improves.",
+  ];
+}
+
+function getFollowUp(priority) {
+  if (priority.category === "Labor") {
+    return "Review labor performance after the next completed shift.";
+  }
+
+  if (priority.category === "Inventory") {
+    return "Audit inventory again after the next receiving cycle.";
+  }
+
+  return "Verify operational improvement during the next review.";
 }

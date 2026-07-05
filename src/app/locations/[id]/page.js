@@ -1,5 +1,6 @@
 import AppLayout from "../../../components/layout/AppLayout";
-import { getLocationWorkspace, getUserContext } from "../../../lib/services";
+import { getLocationWorkspace, getUserContext, getWorkspaceContext } from "../../../lib/services";
+import WorkspaceBreadcrumbs from "../../../components/business/WorkspaceBreadcrumbs";
 import LocationOverview from "../../../components/locations/LocationOverview";
 import LocationOperations from "../../../components/locations/LocationOperations";
 import LocationExecution from "../../../components/locations/LocationExecution";
@@ -11,6 +12,7 @@ export default async function LocationPage({ params }) {
   const { id } = await params;
   const user = getUserContext();
   const workspace = getLocationWorkspace(user, id);
+  const context = getWorkspaceContext({ type: "location", id, });
 
   if (!workspace) {
     return (
@@ -27,6 +29,8 @@ export default async function LocationPage({ params }) {
   return (
     <AppLayout>
       <section className="mx-auto max-w-7xl">
+        <WorkspaceBreadcrumbs items={context?.items} />
+        
         <WorkspaceHeader
           eyebrow="Location Workspace"
           title={workspace.location.name}

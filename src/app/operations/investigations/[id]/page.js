@@ -9,13 +9,14 @@ import WorkspaceHeader from "../../../../components/business/WorkspaceHeader";
 import DecisionBanner from "../../../../components/business/DecisionBanner";
 import PriorityScore from "../../../../components/business/PriorityScore";
 import KeyInsights from "../../../../components/business/KeyInsights";
-
+import WorkspaceBreadcrumbs from "../../../../components/business/WorkspaceBreadcrumbs";
+import { getWorkspaceContext } from "../../../../lib/services";
 import { getInvestigation } from "../../../../lib/selectors";
 
 export default async function InvestigationPage({ params }) {
   const { id } = await params;
-
   const investigation = getInvestigation(id);
+  const context = getWorkspaceContext({ type: "investigation", id, });
 
   if (!investigation) {
     return (
@@ -32,6 +33,8 @@ export default async function InvestigationPage({ params }) {
   return (
   <AppLayout>
     <section className="mx-auto max-w-7xl space-y-8">
+      <WorkspaceBreadcrumbs items={context?.items} />
+
       <WorkspaceHeader
         eyebrow="Investigation"
         title={investigation.priority.title}

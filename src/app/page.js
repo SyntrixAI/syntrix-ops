@@ -22,6 +22,8 @@ export default function Home() {
     executionQueue,
   } = brief;
 
+  const topExecutionItem = executionQueue[0];
+
   return (
     <AppLayout>
       <WorkspacePage>
@@ -36,9 +38,13 @@ export default function Home() {
 
         {topDecision && (
           <DecisionBanner
-            decision={topDecision.primaryAction}
-            impact={`+$${topDecision.estimatedImpact.toLocaleString()}/wk`}
-            confidence={`${topDecision.confidence ?? 90}% confidence`}
+            decision={topExecutionItem?.title ?? topDecision.primaryAction}
+            impact={`+$${(
+              topExecutionItem?.businessImpact?.weeklyRecovery ??
+              topDecision.estimatedImpact ??
+              0
+            ).toLocaleString()}/wk`}
+            confidence={`${topExecutionItem?.confidence ?? topDecision.confidence ?? 90}% confidence`}
             rationale={topDecision.rationale}
             actionLabel="Open Investigation"
           />

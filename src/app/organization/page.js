@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Card from "../../components/ui/Card";
 import WorkspacePage from "../../components/layout/WorkspacePage";
 import AppLayout from "../../components/layout/AppLayout";
@@ -11,7 +10,7 @@ import OperationsQueue from "../../components/operations/InvestigationQueue";
 import ExecutionQueue from "../../components/execution/ExecutionQueue";
 import HierarchyToolbar from "../../components/business/HierarchyToolbar";
 import HierarchyTable from "../../components/business/HierarchyTable";
-
+import { generateNarrative } from "../../lib/engines";
 import { getOrganizationWorkspace, getUserContext } from "../../lib/services";
 
 export default function OrganizationPage() {
@@ -25,8 +24,13 @@ export default function OrganizationPage() {
     execution,
     organization,
   } = workspace;
-
- const hierarchyRows = getHierarchyRows(user, organization, metrics);
+  
+  const hierarchyRows = getHierarchyRows(
+  user,
+  organization,
+  metrics,
+  operations.priorities,
+);
 
   return (
     <AppLayout>
@@ -72,19 +76,18 @@ export default function OrganizationPage() {
         </WorkspaceSection>
 
         <WorkspaceSection
-          label={getComparisonLabel(user)}
-          title={getComparisonTitle(user)}
-          description="Compare the operational units within your scope."
-        >
-          <div className="space-y-4">
-        <HierarchyToolbar
             label={getComparisonLabel(user)}
-            count={getOrganizationCount(user, organization)}
-        />
+            title={getComparisonTitle(user)}
+            description="Compare the operational units within your scope."
+        >
+            <div className="space-y-4">
+                <HierarchyToolbar
+                    label={getComparisonLabel(user)}
+                    count={getOrganizationCount(user, organization)}
+                />
 
-        <HierarchyTable rows={hierarchyRows} />
-
-        </div>
+                <HierarchyTable rows={hierarchyRows} />
+            </div>
         </WorkspaceSection>
 
         <WorkspaceSection
@@ -151,58 +154,82 @@ function getWorkspaceTitle(user, organization) {
   return "Organization";
 }
 
-function getHierarchyRows(user, organization, metrics) {
+function getHierarchyRows(user, organization, metrics, priorities = []) {
   if (user.scope.level === "company") {
-    return organization.regions.map((region) => ({
-      id: region.id,
-      name: region.name,
-      subtitle: "Region",
-      type: "Region",
-      status: metrics.healthStatus,
-      health: metrics.operationalHealth,
-      activePriorities: metrics.activePriorities,
-      estimatedRecovery: metrics.estimatedRecovery,
-      href: `/organization/regions/${region.id}`,
-      situation:
-        metrics.activePriorities > 0
-            ? `${metrics.activePriorities} active priorities require review.`
-            : "No major operational issues detected.",
-    }));
+    return organization.regions.map((region) => {
+      const narrative = generateNarrative({
+        name: region.name,
+        metrics,
+        priorities,
+        action: {
+          label: "Open",
+          href: `/organization/regions/${region.id}`,
+        },
+      });
+
+      return {
+        id: region.id,
+        subtitle: "Region",
+        ...narrative,
+      };
+    });
   }
 
   if (user.scope.level === "region") {
-    return organization.districts.map((district) => ({
-      id: district.id,
-      name: district.name,
-      subtitle: "District",
-      type: "District",
-      status: metrics.healthStatus,
-      health: metrics.operationalHealth,
-      activePriorities: metrics.activePriorities,
-      estimatedRecovery: metrics.estimatedRecovery,
-      href: `/districts/${district.id}`,
-      situation:
-        metrics.activePriorities > 0
-            ? `${metrics.activePriorities} active priorities require review.`
-            : "No major operational issues detected.",
-    }));
+    return organization.districts.map((district) => {
+      const narrative = generateNarrative({
+        name: district.name,
+        metrics,
+        priorities,
+        action: {
+          label: "Open",
+          href: `/districts/${district.id}`,
+        },
+      });
+
+      return {
+        id: district.id,
+        subtitle: "District",
+        ...narrative,
+      };
+    });
   }
 
-  return organization.locations.map((location) => ({
-    id: location.id,
-    name: location.name,
-    subtitle: `${location.city}, ${location.state}`,
-    type: "Location",
-    status: metrics.healthStatus,
-    health: metrics.operationalHealth,
-    activePriorities: metrics.activePriorities,
-    estimatedRecovery: metrics.estimatedRecovery,
-    href: `/locations/${location.id}`,
-    situation:
-      metrics.activePriorities > 0
-        ? `${metrics.activePriorities} active priorities require review.`
-        : "No major operational issues detected.",
-  }));
+  return organization.locations.map((location) => {
+    const locationPriorities = getScopedPriorities(
+        [location.id],
+        priorities,
+    );
+    const locationMetrics = {
+    ...metrics,
+
+    activePriorities: locationPriorities.length,
+
+    criticalPriorities: locationPriorities.filter(
+        (priority) => priority.priorityScore >= 90,
+    ).length,
+
+    estimatedRecovery: locationPriorities.reduce(
+        (sum, priority) => sum + (priority.estimatedImpact ?? 0),
+        0,
+    ),
+    };
+    const narrative = generateNarrative({
+      name: location.name,
+      metrics: locationMetrics,
+      priorities: locationPriorities,
+      action: {
+        label: "Open",
+        href: `/locations/${location.id}`,
+      },
+    });
+
+    return {
+      id: location.id,
+      subtitle: `${location.city}, ${location.state}`,
+      ...narrative,
+    };
+  });
 }
 
 function getComparisonLabel(user) {
@@ -221,4 +248,10 @@ function getComparisonTitle(user) {
   if (user.scope.level === "location") return "Assigned Location";
 
   return "Organization";
+}
+
+function getScopedPriorities(locationIds, priorities) {
+  return priorities.filter((priority) =>
+    locationIds.includes(priority.locationId),
+  );
 }

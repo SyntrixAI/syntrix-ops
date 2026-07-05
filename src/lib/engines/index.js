@@ -13,3 +13,4 @@ export { generateRecommendations } from "./recommendationEngine";
 export { generateInsights } from "./insightsEngine";
 export { generateExecutiveMetrics } from "./metricsEngine";
 export { expandScope } from "./scopeEngine";
+export { generateNarrative } from "./narrativeEngine";

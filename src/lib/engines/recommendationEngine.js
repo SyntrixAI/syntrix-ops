@@ -29,31 +29,45 @@ export function generateRecommendations(priorities = []) {
 }
 
 function getRecommendationTitle(priority) {
-  if (priority.category === "Labor") return "Adjust labor deployment";
-  if (priority.category === "Inventory") return "Review inventory variance";
-  if (priority.category === "Sales") return "Monitor sales recovery";
+  if (priority.category === "Labor") {
+    return `Adjust labor deployment at ${priority.location}`;
+  }
+
+  if (priority.category === "Inventory") {
+    return `Audit inventory variance at ${priority.location}`;
+  }
+
+  if (priority.category === "Sales") {
+    return `Review sales recovery at ${priority.location}`;
+  }
 
   return priority.primaryAction ?? "Review operational issue";
 }
 
 function getRecommendedAction(priority) {
   if (priority.category === "Labor") {
-    return "Review staffing against forecast and reduce excess labor where demand no longer supports scheduled coverage.";
+    return `Review staffing against current demand at ${priority.location} and reduce excess labor where sales no longer support scheduled coverage.`;
   }
 
   if (priority.category === "Inventory") {
-    return "Audit usage, receiving, and waste patterns to confirm the source of variance.";
+    return `Audit inventory usage, receiving records, and waste logs at ${priority.location} to identify the source of variance.`;
   }
 
   if (priority.category === "Sales") {
-    return "Continue monitoring recovery and compare results against promotion expectations.";
+    return `Compare hourly sales recovery at ${priority.location} against forecast and promotion expectations before changing staffing or inventory plans.`;
   }
 
   return priority.primaryAction ?? "Review this issue with the operating team.";
 }
 
 function getRecommendationReasoning(priority) {
-  return `${priority.location} is ranked #${priority.priorityRank} with a Priority Score of ${priority.priorityScore}. Syntrix estimates a weekly recovery opportunity of $${(priority.estimatedImpact ?? 0).toLocaleString()} with ${priority.effort ?? "Medium"} effort.`;
+  const topInsight = priority.insights?.[0];
+
+  const insightText = topInsight
+    ? ` Key insight: ${topInsight.description}`
+    : "";
+
+  return `${priority.location} is ranked #${priority.priorityRank} with a Priority Score of ${priority.priorityScore}. Syntrix estimates a weekly recovery opportunity of $${(priority.estimatedImpact ?? 0).toLocaleString()} with ${priority.effort ?? "Medium"} effort.${insightText}`;
 }
 
 function getDependencies(priority) {
@@ -73,9 +87,15 @@ function getDependencies(priority) {
 }
 
 function getRisk(priority) {
-  if (priority.severity === "critical") return "Delay may increase weekly profit leakage.";
-  if (priority.severity === "warning") return "Variance may continue if not reviewed.";
-  return "Low risk. Continue monitoring for repeat pattern.";
+  if (priority.severity === "critical") {
+    return `Delay may allow the issue at ${priority.location} to continue increasing weekly profit leakage.`;
+  }
+
+  if (priority.severity === "warning") {
+    return `Variance at ${priority.location} may continue if not reviewed by the operating team.`;
+  }
+
+  return `Low immediate risk at ${priority.location}. Continue monitoring for repeat patterns.`;
 }
 
 function getSuccessCriteria(priority) {
@@ -103,12 +123,16 @@ function getSuccessCriteria(priority) {
 
 function getFollowUp(priority) {
   if (priority.category === "Labor") {
-    return "Review labor performance after the next completed shift.";
+    return `Review labor performance at ${priority.location} after the next completed shift.`;
   }
 
   if (priority.category === "Inventory") {
-    return "Audit inventory again after the next receiving cycle.";
+    return `Audit inventory at ${priority.location} again after the next receiving cycle.`;
   }
 
-  return "Verify operational improvement during the next review.";
+  if (priority.category === "Sales") {
+    return `Review sales performance at ${priority.location} after the next daypart.`;
+  }
+
+  return `Verify operational improvement at ${priority.location} during the next review.`;
 }

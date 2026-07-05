@@ -1,14 +1,22 @@
 import { getDistrict } from "../selectors";
-
+import { expandScope } from "../engines";
 import { locationHealth } from "../../data/locationHealth";
 import { priorities } from "../../data/priorities";
 import { executionItems } from "../../data/executionItems";
 import { generateExecutiveMetrics } from "../engines";
 
-export function getDistrictWorkspace(id) {
+export function getDistrictWorkspace(user, id) {
   const districtEntity = getDistrict(id);
 
   if (!districtEntity) return null;
+
+  const accessible = expandScope(user?.scope);
+
+  const canAccessDistrict = accessible.districts.some(
+    (accessibleDistrict) => accessibleDistrict.id === districtEntity.district.id,
+  );
+
+  if (!canAccessDistrict) return null;
 
   const { district, region, company, locations } = districtEntity;
 

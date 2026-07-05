@@ -83,18 +83,10 @@ function expandLocationScope(locationId) {
 
   if (!location) return emptyScope();
 
-  const district = districts.find(
-    (district) => district.id === location.districtId,
-  );
-
-  const region = district
-    ? regions.find((region) => region.id === district.regionId)
-    : null;
-
   return {
     company,
-    regions: region ? [region] : [],
-    districts: district ? [district] : [],
+    regions: [],
+    districts: [],
     locations: [location],
   };
 }

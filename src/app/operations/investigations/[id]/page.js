@@ -6,6 +6,7 @@ import InvestigationActivity from "../../../../components/investigations/Investi
 import SyntrixAssessment from "../../../../components/compositions/SyntrixAssessment";
 import InvestigationContext from "../../../../components/investigations/InvestigationReasoning";
 import WorkspaceHeader from "../../../../components/business/WorkspaceHeader";
+import DecisionBanner from "../../../../components/business/DecisionBanner";
 
 import { getInvestigation } from "../../../../lib/selectors";
 
@@ -34,6 +35,13 @@ export default async function InvestigationPage({ params }) {
            title={investigation.priority.title}
            decision="Why is this happening and what action should I take?"
            updatedAt="Updated 5 minutes ago"
+        />
+
+        <DecisionBanner
+           decision={investigation.priority.primaryAction}
+           impact={`+$${investigation.priority.estimatedImpact.toLocaleString()}/wk`}
+           confidence={`${investigation.assessment?.confidence ?? 90}% confidence`}
+           actionLabel="Send to Execution"
         />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">

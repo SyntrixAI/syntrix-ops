@@ -22,3 +22,4 @@ export {
   getDescendantLocations,
   isDescendant,
 } from "./hierarchyEngine";
+export { getScopedPriorities } from "./priorityScopeEngine";

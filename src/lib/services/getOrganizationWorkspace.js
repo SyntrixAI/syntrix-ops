@@ -7,6 +7,7 @@ import { generateExecutiveMetrics,
           expandScope,
           getChildren,
           getDescendantLocations,
+          getScopedPriorities,
  } from "../engines";
 
 export function getOrganizationWorkspace(user) {
@@ -136,13 +137,11 @@ function getOrganizationEntities({
   const entities = children.length > 0 ? children : [currentEntity];
 
   return entities.filter(Boolean).map((entity) => {
-    const entityLocations = getDescendantLocations(entity);
+    const descendantLocations = getDescendantLocations(entity);
 
-    const locationIds = entityLocations.map((location) => location.id);
+    const locationIds = descendantLocations.map(location => location.id);
 
-    const entityPriorities = priorities.filter((priority) =>
-      locationIds.includes(priority.locationId),
-    );
+    const entityPriorities = getScopedPriorities(priorities, locationIds);
 
     const entityMetrics = generateEntityMetrics({
       metrics,

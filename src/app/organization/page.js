@@ -162,6 +162,10 @@ function getHierarchyRows(user, organization, metrics) {
       activePriorities: metrics.activePriorities,
       estimatedRecovery: metrics.estimatedRecovery,
       href: `/organization/regions/${region.id}`,
+      situation:
+        metrics.activePriorities > 0
+            ? `${metrics.activePriorities} active priorities require review.`
+            : "No major operational issues detected.",
     }));
   }
 
@@ -176,6 +180,10 @@ function getHierarchyRows(user, organization, metrics) {
       activePriorities: metrics.activePriorities,
       estimatedRecovery: metrics.estimatedRecovery,
       href: `/districts/${district.id}`,
+      situation:
+        metrics.activePriorities > 0
+            ? `${metrics.activePriorities} active priorities require review.`
+            : "No major operational issues detected.",
     }));
   }
 
@@ -189,6 +197,10 @@ function getHierarchyRows(user, organization, metrics) {
     activePriorities: metrics.activePriorities,
     estimatedRecovery: metrics.estimatedRecovery,
     href: `/locations/${location.id}`,
+    situation:
+      metrics.activePriorities > 0
+        ? `${metrics.activePriorities} active priorities require review.`
+        : "No major operational issues detected.",
   }));
 }
 

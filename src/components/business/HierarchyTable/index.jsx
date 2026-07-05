@@ -1,4 +1,5 @@
-import HierarchyRow from "../HierarchyRow";
+import WorkspaceList from "../WorkspaceList";
+import ExecutiveRow from "../ExecutiveRow";
 
 export default function HierarchyTable({ rows = [] }) {
   if (!rows.length) {
@@ -10,20 +11,29 @@ export default function HierarchyTable({ rows = [] }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
-      <div className="grid grid-cols-7 border-b border-slate-800 px-6 py-4 text-sm font-semibold uppercase tracking-wider text-slate-400">
-        <div>Name</div>
-        <div>Type</div>
-        <div>Status</div>
-        <div>Health</div>
-        <div>Priorities</div>
-        <div>Recovery</div>
-        <div></div>
-      </div>
-
+    <WorkspaceList>
       {rows.map((row) => (
-        <HierarchyRow key={row.id} row={row} />
+        <ExecutiveRow
+          key={row.id}
+          title={row.name}
+          subtitle={row.subtitle}
+          status={row.status}
+          situation={row.situation ?? getDefaultSituation(row)}
+          opportunity={`+$${(row.estimatedRecovery ?? 0).toLocaleString()}/wk`}
+          action={{
+            label: "Open",
+            href: row.href,
+          }}
+        />
       ))}
-    </div>
+    </WorkspaceList>
   );
+}
+
+function getDefaultSituation(row) {
+  if (row.activePriorities > 0) {
+    return `${row.activePriorities} active priorities require review.`;
+  }
+
+  return "No major operational issues detected.";
 }

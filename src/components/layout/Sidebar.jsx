@@ -3,53 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navigation = [
-  {
-    title: "WORKFLOW",
-    items: [
-      {
-        label: "Daily Briefing",
-        href: "/",
-      },
-      {
-        label: "Operations",
-        href: "/operations",
-      },
-      {
-        label: "Locations",
-        href: "/locations",
-      },
-      {
-        label: "Execution",
-        href: "/execution",
-      },
-      {
-        label: "Reports",
-        href: "/reports",
-      },
-    ],
-  },
-  {
-    title: "INTELLIGENCE",
-    items: [
-      {
-        label: "Syntrix Intelligence",
-        href: "/intelligence",
-      },
-    ],
-  },
-  {
-    title: "SYSTEM",
-    items: [
-      {
-        label: "Settings",
-        href: "/settings",
-      },
-    ],
-  },
-];
-
-export default function Sidebar() {
+export default function Sidebar({ navigation = [] }) {
   const pathname = usePathname();
 
   return (

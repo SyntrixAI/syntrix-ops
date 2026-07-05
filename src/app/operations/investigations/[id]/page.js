@@ -7,6 +7,7 @@ import SyntrixAssessment from "../../../../components/compositions/SyntrixAssess
 import InvestigationContext from "../../../../components/investigations/InvestigationReasoning";
 import WorkspaceHeader from "../../../../components/business/WorkspaceHeader";
 import DecisionBanner from "../../../../components/business/DecisionBanner";
+import PriorityScore from "../../../../components/business/PriorityScore";
 
 import { getInvestigation } from "../../../../lib/selectors";
 
@@ -30,6 +31,7 @@ export default async function InvestigationPage({ params }) {
   return (
     <AppLayout>
       <section className="mx-auto max-w-7xl">
+
         <WorkspaceHeader
            eyebrow="Investigation"
            title={investigation.priority.title}
@@ -44,6 +46,8 @@ export default async function InvestigationPage({ params }) {
            actionLabel="Send to Execution"
         />
 
+        <PriorityScore priority={investigation.priority} />
+
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
             <SyntrixAssessment assessment={investigation.assessment} />
@@ -52,9 +56,10 @@ export default async function InvestigationPage({ params }) {
             <InvestigationTimeline investigation={investigation} />
             <InvestigationActivity activity={investigation.activity} />
           </div>
+        <div>
 
-          <div>
-            <InvestigationActions investigation={investigation} />
+        <InvestigationActions investigation={investigation} />
+
           </div>
         </div>
       </section>

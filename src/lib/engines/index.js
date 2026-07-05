@@ -15,3 +15,10 @@ export { generateExecutiveMetrics } from "./metricsEngine";
 export { expandScope } from "./scopeEngine";
 export { generateNarrative } from "./narrativeEngine";
 export { generateEntityMetrics } from "./entityMetricsEngine";
+export {
+  getChildren,
+  getParent,
+  getAncestors,
+  getDescendantLocations,
+  isDescendant,
+} from "./hierarchyEngine";

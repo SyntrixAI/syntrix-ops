@@ -10,3 +10,4 @@ export { generateLocationHealth } from "./healthEngine";
 export { generateContextInsights } from "./contextEngine";
 export { generateOperationalMemory } from "./memoryEngine";
 export { generateRecommendations } from "./recommendationEngine";
+export { generateInsights } from "./insightsEngine";

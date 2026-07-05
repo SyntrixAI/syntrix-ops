@@ -1,3 +1,5 @@
+import { generateInsights } from "./insightsEngine";
+
 const severityScore = {
   critical: 35,
   warning: 22,
@@ -22,6 +24,7 @@ export function prioritizeSignals(signals, operationalMemory = {}) {
     .filter((signal) => signal.status !== "resolved")
     .map((signal) => {
       const memory = getMemoryTrend(signal, operationalMemory);
+      const insights = generateInsights(signal, memory);
 
       return {
         ...signal,
@@ -29,6 +32,7 @@ export function prioritizeSignals(signals, operationalMemory = {}) {
         primaryAction: getPrimaryAction(signal),
         scoreDrivers: getScoreDrivers(signal, memory),
         rationale: buildDecisionRationale(signal, memory),
+        insights,
       };
     })
     .sort((a, b) => b.priorityScore - a.priorityScore)

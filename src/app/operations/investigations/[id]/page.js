@@ -8,6 +8,7 @@ import InvestigationContext from "../../../../components/investigations/Investig
 import WorkspaceHeader from "../../../../components/business/WorkspaceHeader";
 import DecisionBanner from "../../../../components/business/DecisionBanner";
 import PriorityScore from "../../../../components/business/PriorityScore";
+import KeyInsights from "../../../../components/business/KeyInsights";
 
 import { getInvestigation } from "../../../../lib/selectors";
 
@@ -47,6 +48,8 @@ export default async function InvestigationPage({ params }) {
       />
 
       <PriorityScore priority={investigation.priority} />
+
+      <KeyInsights insights={investigation.priority.insights} />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">

@@ -6,6 +6,7 @@ import WorkspaceHeader from "../../../components/business/WorkspaceHeader";
 import HealthOverview from "../../../components/business/HealthOverview";
 import KeyInsights from "../../../components/business/KeyInsights";
 import WorkspaceSection from "../../../components/business/WorkspaceSection";
+import WorkspaceStatus from "../../../components/business/WorkspaceStatus";
 import OperationsQueue from "../../../components/operations/InvestigationQueue";
 import ExecutionQueue from "../../../components/execution/ExecutionQueue";
 import Card from "../../../components/ui/Card";
@@ -45,12 +46,19 @@ export default async function DistrictPage({ params }) {
     <AppLayout>
       <section className="mx-auto max-w-7xl space-y-8">
         <WorkspaceBreadcrumbs items={context?.items} />
-        
+
         <WorkspaceHeader
           eyebrow="District Workspace"
           title={district.name}
           decision="Which locations in this district need leadership attention?"
           updatedAt="Updated live"
+        />
+
+        <WorkspaceStatus
+          status={metrics.healthStatus}
+          activePriorities={metrics.activePriorities}
+          criticalPriorities={metrics.criticalPriorities}
+          estimatedRecovery={metrics.estimatedRecovery}
         />
 
         <HealthOverview health={overview.health} />

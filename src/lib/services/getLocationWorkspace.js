@@ -1,12 +1,11 @@
 import { locations } from "../../data/locations";
 import { signals } from "../../data/signals";
-import { priorities } from "../../data/priorities";
 import { assessments } from "../../data/assessments";
-import { executionItems } from "../../data/executionItems";
 import { liveTimeline } from "../../data/liveTimeline";
 import { locationHealth } from "../../data/locationHealth";
 import { operationalMemory } from "../../data/operationalMemory";
 import { expandScope } from "../engines";
+import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
 export function getLocationWorkspace(user,locationId) {
   const location = locations.find(
@@ -27,12 +26,14 @@ export function getLocationWorkspace(user,locationId) {
     (signal) => signal.locationId === location.id
   );
 
-  const locationPriorities = priorities.filter(
-    (priority) => priority.locationId === location.id
+  const scoped = getScopedWorkspaceData(user);
+
+  const locationPriorities = scoped.priorities.filter(
+    (priority) => priority.locationId === location.id,
   );
 
-  const locationExecutionItems = executionItems.filter(
-    (item) => item.locationId === location.id
+  const locationExecutionItems = scoped.executionItems.filter(
+    (item) => item.locationId === location.id,
   );
 
   const locationTimeline = liveTimeline.filter(

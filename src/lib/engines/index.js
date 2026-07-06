@@ -23,3 +23,4 @@ export {
   isDescendant,
 } from "./hierarchyEngine";
 export { getScopedPriorities } from "./priorityScopeEngine";
+export { getScopedExecutionItems } from "./executionScopeEngine";

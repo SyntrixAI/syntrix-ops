@@ -24,3 +24,4 @@ export {
 } from "./hierarchyEngine";
 export { getScopedPriorities } from "./priorityScopeEngine";
 export { getScopedExecutionItems } from "./executionScopeEngine";
+export { getScopedLocationIds } from "./locationScopeEngine";

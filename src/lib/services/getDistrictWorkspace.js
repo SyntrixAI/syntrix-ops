@@ -1,9 +1,8 @@
 import { getDistrict } from "../selectors";
-import { expandScope } from "../engines";
 import { locationHealth } from "../../data/locationHealth";
-import { priorities } from "../../data/priorities";
-import { executionItems } from "../../data/executionItems";
 import { generateExecutiveMetrics } from "../engines";
+import { expandScope } from "../engines";
+import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
 export function getDistrictWorkspace(user, id) {
   const districtEntity = getDistrict(id);
@@ -20,13 +19,15 @@ export function getDistrictWorkspace(user, id) {
 
   const { district, region, company, locations } = districtEntity;
 
+  const scoped = getScopedWorkspaceData(user);
+
   const locationIds = locations.map((location) => location.id);
 
-  const districtPriorities = priorities.filter((priority) =>
+  const districtPriorities = scoped.priorities.filter((priority) =>
     locationIds.includes(priority.locationId),
   );
 
-  const districtExecutionItems = executionItems.filter((item) =>
+  const districtExecutionItems = scoped.executionItems.filter((item) =>
     locationIds.includes(item.locationId),
   );
 

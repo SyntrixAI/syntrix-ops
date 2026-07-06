@@ -1,20 +1,12 @@
-import { priorities } from "../../data/priorities";
-import { executionItems } from "../../data/executionItems";
 import { locationHealth } from "../../data/locationHealth";
-import { generateExecutiveMetrics, expandScope } from "../engines";
+import { generateExecutiveMetrics } from "../engines";
+import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
 export function getDailyBrief(user) {
-  const accessible = expandScope(user?.scope);
-
-  const locationIds = accessible.locations.map((location) => location.id);
-
-  const scopedPriorities = priorities.filter((priority) =>
-    locationIds.includes(priority.locationId),
-  );
-
-  const scopedExecutionItems = executionItems.filter((item) =>
-    locationIds.includes(item.locationId),
-  );
+  const scoped = getScopedWorkspaceData(user);
+  const accessible = scoped.organization;
+  const scopedPriorities = scoped.priorities;
+  const scopedExecutionItems = scoped.executionItems;
 
   const scopedHealth = accessible.locations.reduce((healthByLocation, location) => {
     if (locationHealth[location.id]) {

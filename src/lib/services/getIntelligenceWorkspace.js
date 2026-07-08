@@ -4,10 +4,11 @@ import { buildRecommendationContext, buildExecutiveBrief } from "../intelligence
 export function getIntelligenceWorkspace(user) {
   const scoped = getScopedWorkspaceData(user);
 
-  const intelligenceItems = [...scoped.priorities]
-    .sort((a, b) => b.priorityScore - a.priorityScore)
+  const intelligenceItems = scoped.priorities
     .map(buildRecommendationContext)
     .filter(Boolean);
+
+  const rankedItems = buildOpportunityRanking(intelligenceItems);
 
   const executiveBrief = buildExecutiveBrief({
     intelligenceItems,
@@ -15,7 +16,7 @@ export function getIntelligenceWorkspace(user) {
     scopedExecutionItems: scoped.executionItems,
   });
 
-  const topItem = intelligenceItems[0];
+  const topItem = rankedItems[0];
 
   return {
     user,
@@ -31,8 +32,8 @@ export function getIntelligenceWorkspace(user) {
     executiveBrief,
 
     intelligence: {
-      items: intelligenceItems,
-      topOpportunities: intelligenceItems.slice(0, 5),
+      items: rankedItems,
+      topOpportunities: rankedItems.slice(0, 5),
     },
   };
 }

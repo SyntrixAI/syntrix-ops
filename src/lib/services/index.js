@@ -7,3 +7,4 @@ export { getOrganizationWorkspace } from "./getOrganizationWorkspace";
 export { createWorkspace } from "./createWorkspace";
 export { getNavigation } from "./navigationService";
 export { getScopedWorkspaceData } from "./getScopedWorkspaceData";
+export { getOperationsWorkspace } from "./getOperationsWorkspace";

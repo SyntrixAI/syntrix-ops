@@ -9,3 +9,4 @@ export { getNavigation } from "./navigationService";
 export { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 export { getOperationsWorkspace } from "./getOperationsWorkspace";
 export { getExecutionWorkspace } from "./getExecutionWorkspace";
+export { getOperationalMemory } from "./getOperationalMemory";

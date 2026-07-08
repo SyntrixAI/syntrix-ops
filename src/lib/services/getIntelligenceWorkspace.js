@@ -1,5 +1,10 @@
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
-import { buildRecommendationContext, buildExecutiveBrief } from "../intelligence";
+import {
+  buildRecommendationContext,
+  buildExecutiveBrief,
+  buildOpportunityRanking,
+  buildExecutiveDecision,
+} from "../intelligence";
 
 export function getIntelligenceWorkspace(user) {
   const scoped = getScopedWorkspaceData(user);
@@ -10,13 +15,18 @@ export function getIntelligenceWorkspace(user) {
 
   const rankedItems = buildOpportunityRanking(intelligenceItems);
 
+  const decisionItems = rankedItems.map((item) => ({
+    ...item,
+    executiveDecision: buildExecutiveDecision(item),
+  }));
+
   const executiveBrief = buildExecutiveBrief({
     intelligenceItems,
     scopedPriorities: scoped.priorities,
     scopedExecutionItems: scoped.executionItems,
   });
 
-  const topItem = rankedItems[0];
+  const topItem = decisionItems[0];
 
   return {
     user,
@@ -32,8 +42,8 @@ export function getIntelligenceWorkspace(user) {
     executiveBrief,
 
     intelligence: {
-      items: rankedItems,
-      topOpportunities: rankedItems.slice(0, 5),
+      items: decisionItems,
+      topOpportunities: decisionItems.slice(0, 5),
     },
   };
 }

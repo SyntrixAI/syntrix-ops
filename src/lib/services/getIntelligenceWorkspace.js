@@ -1,14 +1,19 @@
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
-import { buildRecommendationContext } from "../intelligence";
+import { buildRecommendationContext, buildExecutiveBrief } from "../intelligence";
 
 export function getIntelligenceWorkspace(user) {
   const scoped = getScopedWorkspaceData(user);
 
-  const priorities = scoped.priorities;
+  const intelligenceItems = [...scoped.priorities]
+    .sort((a, b) => b.priorityScore - a.priorityScore)
+    .map(buildRecommendationContext)
+    .filter(Boolean);
 
-  const intelligenceItems = priorities.map((priority) =>
-    buildRecommendationContext(priority),
-  ).filter(Boolean);
+  const executiveBrief = buildExecutiveBrief({
+    intelligenceItems,
+    scopedPriorities: scoped.priorities,
+    scopedExecutionItems: scoped.executionItems,
+  });
 
   const topItem = intelligenceItems[0];
 
@@ -22,6 +27,8 @@ export function getIntelligenceWorkspace(user) {
         "Executive reasoning generated from priorities, recommendations, root causes, trends, and operational memory.",
       topInsight: topItem,
     },
+
+    executiveBrief,
 
     intelligence: {
       items: intelligenceItems,

@@ -1,7 +1,5 @@
 import Card from "../../components/ui/Card";
-import WorkspacePage from "../../components/layout/WorkspacePage";
-import AppLayout from "../../components/layout/AppLayout";
-import WorkspaceHeader from "../../components/business/WorkspaceHeader";
+import ExecutiveWorkspace from "../../components/layout/ExecutiveWorkspace";
 import WorkspaceStatus from "../../components/business/WorkspaceStatus";
 import HealthOverview from "../../components/business/HealthOverview";
 import KeyInsights from "../../components/business/KeyInsights";
@@ -25,80 +23,75 @@ export default function OrganizationPage() {
   } = workspace;
 
   return (
-    <AppLayout>
-      <WorkspacePage>
-        <WorkspaceHeader
-          eyebrow={getWorkspaceEyebrow(user)}
-          title={getWorkspaceTitle(user, organization)}
-          decision="How is my organization performing, and where should I focus?"
-          updatedAt="Updated live"
-        />
+    <ExecutiveWorkspace
+      eyebrow={getWorkspaceEyebrow(user)}
+      title={getWorkspaceTitle(user, organization)}
+      decision="How is my organization performing, and where should I focus?"
+    >
 
-        <WorkspaceStatus
-          status={metrics.healthStatus}
-          activePriorities={metrics.activePriorities}
-          criticalPriorities={metrics.criticalPriorities}
-          estimatedRecovery={metrics.estimatedRecovery}
-        />
+      <WorkspaceStatus
+        status={metrics.healthStatus}
+        activePriorities={metrics.activePriorities}
+        criticalPriorities={metrics.criticalPriorities}          estimatedRecovery={metrics.estimatedRecovery}
+      />
 
-        <HealthOverview health={overview.health} />
+       <HealthOverview health={overview.health} />
 
-        <KeyInsights insights={overview.insights} />
+      <KeyInsights insights={overview.insights} />
 
-        <WorkspaceSection
-          label="Organization Metrics"
-          title="Executive Metrics"
-          description="A scope-aware snapshot of operational health, priorities, execution, and estimated recovery."
-        >
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <MetricCard label="Locations" value={metrics.totalLocations} />
-            <MetricCard
-              label="Operational Health"
-              value={metrics.operationalHealth}
-            />
-            <MetricCard
-              label="Active Priorities"
-              value={metrics.activePriorities}
-            />
-            <MetricCard
-              label="Estimated Recovery"
-              value={`+$${metrics.estimatedRecovery.toLocaleString()}/wk`}
-            />
-          </div>
-        </WorkspaceSection>
+      <WorkspaceSection
+        label="Organization Metrics"
+        title="Executive Metrics"
+        description="A scope-aware snapshot of operational health, priorities, execution, and estimated recovery."
+      >
+       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <MetricCard label="Locations" value={metrics.totalLocations} />
+          <MetricCard
+            label="Operational Health"
+            value={metrics.operationalHealth}
+          />
+          <MetricCard
+            label="Active Priorities"
+            value={metrics.activePriorities}
+          />
+          <MetricCard
+            label="Estimated Recovery"
+            value={`+$${metrics.estimatedRecovery.toLocaleString()}/wk`}
+          />
+        </div>
+      </WorkspaceSection>
 
-        <WorkspaceSection
+      <WorkspaceSection
+        label={getComparisonLabel(user)}
+        title={getComparisonTitle(user)}
+        description="Compare the operational units within your scope."
+      >
+        <div className="space-y-4">
+          <HierarchyToolbar
             label={getComparisonLabel(user)}
-            title={getComparisonTitle(user)}
-            description="Compare the operational units within your scope."
-        >
-            <div className="space-y-4">
-                <HierarchyToolbar
-                    label={getComparisonLabel(user)}
-                    count={getOrganizationCount(user, organization)}
-                />
+                  count={getOrganizationCount(user, organization)}
+          />
 
-                <HierarchyTable rows={organization.entities} />
-            </div>
-        </WorkspaceSection>
+          <HierarchyTable rows={organization.entities} />
+        </div>
+      </WorkspaceSection>
 
-        <WorkspaceSection
-          label="Operations"
-          title="Priority Queue"
-          description="Prioritized investigations within your organization scope."
-        >
-          <OperationsQueue operations={operations.priorities} />
-        </WorkspaceSection>
+      <WorkspaceSection
+        label="Operations"
+        title="Priority Queue"
+        description="Prioritized investigations within your organization scope."
+      >
+        <OperationsQueue operations={operations.priorities} />
+      </WorkspaceSection>
 
-        <WorkspaceSection
-          label="Execution"
-          title="Execution Playbooks"
-          description="Recommended operational actions currently in motion."
-        >
-          <ExecutionQueue executions={execution.items} />
-        </WorkspaceSection>
-      </WorkspacePage>
-    </AppLayout>
+      <WorkspaceSection
+        label="Execution"
+        title="Execution Playbooks"
+        description="Recommended operational actions currently in motion."
+      >
+        <ExecutionQueue executions={execution.items} />
+      </WorkspaceSection>
+    </ExecutiveWorkspace>
   );
 }
 

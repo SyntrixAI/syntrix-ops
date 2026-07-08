@@ -13,6 +13,7 @@ import KeyInsights from "../../../../components/business/KeyInsights";
 import WorkspaceBreadcrumbs from "../../../../components/business/WorkspaceBreadcrumbs";
 import { getWorkspaceContext } from "../../../../lib/services";
 import { getInvestigation } from "../../../../lib/selectors";
+import InvestigationIntelligence from "../../../../components/investigations/InvestigationIntelligence";
 
 export default async function InvestigationPage({ params }) {
   const { id } = await params;
@@ -59,6 +60,7 @@ export default async function InvestigationPage({ params }) {
         <div className="space-y-8 lg:col-span-2">
           <SyntrixAssessment assessment={investigation.assessment} />
           <InvestigationContext context={investigation.context} />
+          <InvestigationIntelligence intelligence={investigation.intelligence} />
           <InvestigationEvidence investigation={investigation} />
           <InvestigationTimeline investigation={investigation} />
           <InvestigationActivity activity={investigation.activity} />

@@ -1,7 +1,4 @@
-import AppLayout from "../../components/layout/AppLayout";
-import WorkspacePage from "../../components/layout/WorkspacePage";
-
-import WorkspaceHeader from "../../components/business/WorkspaceHeader";
+import ExecutiveWorkspace from "../../components/layout/ExecutiveWorkspace";
 import WorkspaceSection from "../../components/business/WorkspaceSection";
 import KeyInsights from "../../components/business/KeyInsights";
 
@@ -17,32 +14,28 @@ export default function OperationsPage() {
   const { overview, metrics, operations } = workspace;
 
   return (
-    <AppLayout>
-      <WorkspacePage>
-        <WorkspaceHeader
-          eyebrow="Operations Workspace"
-          title="Live Operations"
-          decision="What requires leadership attention right now?"
-          updatedAt="Updated live"
-        />
+    <ExecutiveWorkspace
+      eyebrow="Operations Workspace"
+      title="Live Operations"
+      decision="What requires leadership attention right now?"
+    >
 
-        <KeyInsights insights={overview.insights} />
+      <KeyInsights insights={overview.insights} />
 
-        <OperationsSummary
-          activeInvestigations={metrics.activePriorities}
-          criticalInvestigations={metrics.criticalPriorities}
-          monitoring={metrics.monitoring}
-          lastUpdated="Live"
-        />
+      <OperationsSummary
+        activeInvestigations={metrics.activePriorities}
+        criticalInvestigations={metrics.criticalPriorities}
+        monitoring={metrics.monitoring}
+        lastUpdated="Live"
+      />
 
-        <WorkspaceSection
-          label="Operations"
-          title="Priority Queue"
-          description="Ranked investigations based on severity, business impact, confidence, effort, and operational trend."
-        >
-          <OperationsQueue operations={operations.priorities} />
-        </WorkspaceSection>
-      </WorkspacePage>
-    </AppLayout>
+      <WorkspaceSection
+        label="Operations"
+        title="Priority Queue"
+        description="Ranked investigations based on severity, business impact, confidence, effort, and operational trend."
+      >
+        <OperationsQueue operations={operations.priorities} />
+      </WorkspaceSection>
+    </ExecutiveWorkspace>
   );
 }

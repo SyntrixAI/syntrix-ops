@@ -1,10 +1,12 @@
 import { locationHealth } from "../../data/locationHealth";
-import { generateExecutiveMetrics,
-          generateEntityMetrics,
-          generateNarrative,
-          getChildren,
-          getDescendantLocations,
- } from "../engines";
+import {
+  generateExecutiveMetrics,
+  generateEntityMetrics,
+  generateNarrative,
+  getChildren,
+  getDescendantLocations,
+  getScopedPriorities,
+} from "../engines";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
 export function getOrganizationWorkspace(user) {

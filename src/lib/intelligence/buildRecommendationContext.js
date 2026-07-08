@@ -6,10 +6,7 @@ export function buildRecommendationContext(priority) {
 
   const recommendation = recommendations[priority.id];
 
-  const memory = getOperationalMemory({
-    locationId: priority.locationId,
-    category: priority.category,
-  });
+  const memory = getOperationalMemory(priority.locationId);
 
   return {
     priority,
@@ -17,24 +14,7 @@ export function buildRecommendationContext(priority) {
     rootCauses: recommendation?.rootCauses ?? [],
     trends: recommendation?.trends ?? [],
     memory,
-    memorySummary: getMemorySummary(memory),
+  memorySummary:
+  memory?.summary ?? "No historical operational memory available yet.",
   };
-}
-
-function getMemorySummary(memory = []) {
-  if (!memory.length) {
-    return "No similar historical intervention found yet.";
-  }
-
-  const bestMatch = memory[0];
-
-  const recovery = bestMatch.outcome?.weeklyRecovery;
-
-  const recoveryText = recovery
-    ? ` recovering $${recovery.toLocaleString()}/week`
-    : "";
-
-  return `A similar issue previously ${
-    bestMatch.outcome?.status?.toLowerCase() ?? "improved"
-  } after: ${bestMatch.previousRecommendation}${recoveryText}.`;
 }

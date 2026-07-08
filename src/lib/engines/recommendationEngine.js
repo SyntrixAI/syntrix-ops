@@ -1,3 +1,5 @@
+import { generateRootCauses } from "./rootCauseEngine";
+
 export function generateRecommendations(priorities = []) {
   return priorities.reduce((recommendationsByPriority, priority) => {
     recommendationsByPriority[priority.id] = {
@@ -10,6 +12,7 @@ export function generateRecommendations(priorities = []) {
       title: getRecommendationTitle(priority),
       action: getRecommendedAction(priority),
       reasoning: getRecommendationReasoning(priority),
+      rootCauses: generateRootCauses(priority),
 
       expectedImpact: {
         weeklyRecovery: priority.estimatedImpact ?? 0,

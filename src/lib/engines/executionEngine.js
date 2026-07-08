@@ -23,6 +23,7 @@ export function generateExecutionItems(priorities, recommendations = {}) {
       confidence: priority.confidence ?? getDefaultConfidence(priority),
 
       whyNow: recommendation?.reasoning ?? getWhyNow(priority),
+      rootCauses: recommendation?.rootCauses ?? [],
 
       effort: recommendation?.effort ?? priority.effort,
       estimatedTime: recommendation?.estimatedTime ?? priority.estimatedTime,

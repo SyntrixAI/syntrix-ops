@@ -24,6 +24,7 @@ export function generateExecutionItems(priorities, recommendations = {}) {
 
       whyNow: recommendation?.reasoning ?? getWhyNow(priority),
       rootCauses: recommendation?.rootCauses ?? [],
+      trends: recommendation?.trends ?? [],
 
       effort: recommendation?.effort ?? priority.effort,
       estimatedTime: recommendation?.estimatedTime ?? priority.estimatedTime,

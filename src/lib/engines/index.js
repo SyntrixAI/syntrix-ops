@@ -26,3 +26,4 @@ export { getScopedPriorities } from "./priorityScopeEngine";
 export { getScopedExecutionItems } from "./executionScopeEngine";
 export { getScopedLocationIds } from "./locationScopeEngine";
 export { generateRootCauses } from "./rootCauseEngine";
+export { generateTrends } from "./trendEngine";

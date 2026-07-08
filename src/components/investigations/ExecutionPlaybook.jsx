@@ -14,6 +14,7 @@ export default function ExecutionPlaybook({ investigation }) {
     effort,
     estimatedTime,
     whyNow,
+    rootCauses = [],
     dependencies = [],
     risk,
     successCriteria = [],
@@ -50,6 +51,42 @@ export default function ExecutionPlaybook({ investigation }) {
             <p className="mt-2 text-sm leading-6 text-slate-300">
               {whyNow}
             </p>
+          </div>
+        )}
+
+        {rootCauses.length > 0 && (
+          <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Likely Root Causes
+            </p>
+
+            <div className="mt-4 space-y-4">
+              {rootCauses.map((cause) => (
+                <div key={cause.id}>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="font-semibold text-white">{cause.title}</p>
+
+                    <span className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
+                      {cause.confidence} confidence
+                    </span>
+                  </div>
+
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    {cause.description}
+                  </p>
+
+                  {cause.evidence?.length > 0 && (
+                    <ul className="mt-3 space-y-1">
+                      {cause.evidence.map((item) => (
+                        <li key={item} className="text-sm text-slate-500">
+                          • {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

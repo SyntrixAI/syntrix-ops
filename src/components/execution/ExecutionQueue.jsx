@@ -46,7 +46,27 @@ export default function ExecutionQueue({ executions }) {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 lg:grid-cols-4">
+            {item.rootCauses?.length > 0 && (
+              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                <h4 className="font-semibold text-white">Root Causes</h4>
+
+                <div className="mt-3 space-y-3">
+                  {item.rootCauses.map((cause) => (
+                    <div key={cause.id}>
+                      <p className="text-sm font-semibold text-slate-300">
+                        {cause.title}
+                      </p>
+
+                      <p className="mt-1 text-xs leading-5 text-slate-500">
+                        {cause.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             {item.dependencies?.length > 0 && (
               <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
                 <h4 className="font-semibold text-white">

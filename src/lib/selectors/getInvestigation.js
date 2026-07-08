@@ -4,6 +4,7 @@ import { executionItems } from "../../data/executionItems";
 import { signals } from "../../data/signals";
 import { activityFeed } from "../../data/activityFeed";
 import { contextInsights } from "../../data/contextInsights";
+import { buildRecommendationContext } from "../intelligence";
 
 export function getInvestigation(id) {
   const priority = priorities.find(
@@ -11,6 +12,8 @@ export function getInvestigation(id) {
   );
 
   if (!priority) return null;
+
+  const intelligence = buildRecommendationContext(priority);
 
   const assessment = assessments[priority.locationId];
 
@@ -28,5 +31,6 @@ export function getInvestigation(id) {
     relatedSignal,
     activity: activityFeed[priority.id] || [],
     context: contextInsights[priority.id] || null,
+    intelligence,
   };
 }

@@ -1,4 +1,5 @@
 import AppLayout from "../../components/layout/AppLayout";
+import WorkspacePage from "../../components/layout/WorkspacePage";
 
 import WorkspaceHeader from "../../components/business/WorkspaceHeader";
 import WorkspaceSection from "../../components/business/WorkspaceSection";
@@ -6,38 +7,18 @@ import KeyInsights from "../../components/business/KeyInsights";
 
 import OperationsSummary from "../../components/operations/OperationsSummary";
 import OperationsQueue from "../../components/operations/InvestigationQueue";
-import LiveSignalTimeline from "../../components/operations/LiveSignalTimeline";
 
-import { priorities } from "../../data/priorities";
-import { liveTimeline } from "../../data/liveTimeline";
+import { getOperationsWorkspace, getUserContext } from "../../lib/services";
 
 export default function OperationsPage() {
-  const activeInvestigations = priorities.length;
+  const user = getUserContext();
+  const workspace = getOperationsWorkspace(user);
 
-  const criticalInvestigations = priorities.filter(
-    (priority) => priority.severity === "critical",
-  ).length;
-
-  const monitoring = priorities.filter(
-    (priority) => priority.status === "monitoring",
-  ).length;
-
-  const topPriority = priorities[0];
-
-  const executiveInsights = priorities
-    .flatMap((priority) =>
-      (priority.insights ?? []).map((insight) => ({
-        ...insight,
-        id: `${priority.id}-${insight.id}`,
-        title: `${priority.location}: ${insight.title}`,
-        description: insight.description,
-      })),
-    )
-    .slice(0, 3);
+  const { overview, metrics, operations } = workspace;
 
   return (
     <AppLayout>
-      <section className="mx-auto max-w-7xl space-y-8">
+      <WorkspacePage>
         <WorkspaceHeader
           eyebrow="Operations Workspace"
           title="Live Operations"
@@ -45,14 +26,12 @@ export default function OperationsPage() {
           updatedAt="Updated live"
         />
 
-        {topPriority && (
-          <KeyInsights insights={executiveInsights} />
-        )}
+        <KeyInsights insights={overview.insights} />
 
         <OperationsSummary
-          activeInvestigations={activeInvestigations}
-          criticalInvestigations={criticalInvestigations}
-          monitoring={monitoring}
+          activeInvestigations={metrics.activePriorities}
+          criticalInvestigations={metrics.criticalPriorities}
+          monitoring={metrics.monitoring}
           lastUpdated="Live"
         />
 
@@ -61,17 +40,9 @@ export default function OperationsPage() {
           title="Priority Queue"
           description="Ranked investigations based on severity, business impact, confidence, effort, and operational trend."
         >
-          <OperationsQueue operations={priorities} />
+          <OperationsQueue operations={operations.priorities} />
         </WorkspaceSection>
-
-        <WorkspaceSection
-          label="Signals"
-          title="Live Operational Activity"
-          description="Recent operational signals Syntrix is observing across the business."
-        >
-          <LiveSignalTimeline timeline={liveTimeline} />
-        </WorkspaceSection>
-      </section>
+      </WorkspacePage>
     </AppLayout>
   );
 }

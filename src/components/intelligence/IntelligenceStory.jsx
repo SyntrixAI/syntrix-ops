@@ -5,15 +5,29 @@ import Badge from "../ui/Badge";
 export default function IntelligenceStory({ item, featured = false }) {
   if (!item) return null;
 
-  const { priority, recommendation, rootCauses = [], trends = [] } = item;
+  const {
+    priority,
+    recommendation,
+    rootCauses = [],
+    trends = [],
+    executiveDecision,
+  } = item;
 
   return (
     <Card className={featured ? "border-cyan-500/30 bg-cyan-950/10" : ""}>
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="text-sm font-semibold text-cyan-400">
-            {featured ? "Top Story" : priority.location}
-          </p>
+          <div className="flex items-center gap-2">
+            {featured && (
+              <Badge tone="info">
+                Top Story
+              </Badge>
+            )}
+
+            <p className="text-sm font-semibold text-cyan-400">
+              {priority.location}
+            </p>
+          </div>
 
           <h2 className="mt-3 text-3xl font-bold text-white">
             {priority.title}
@@ -24,12 +38,34 @@ export default function IntelligenceStory({ item, featured = false }) {
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
-            <Badge tone="info">{priority.priorityScore} Priority Score</Badge>
+            <Badge tone={getUrgencyTone(executiveDecision?.urgency)}>
+              {executiveDecision?.urgency ?? "Normal"} Urgency
+            </Badge>
+
+            <Badge tone="info">
+              Decision Score {executiveDecision?.score ?? priority.priorityScore}
+            </Badge>
 
             <Badge tone="success">
               +${priority.estimatedImpact.toLocaleString()}/week
             </Badge>
           </div>
+
+          {executiveDecision?.rationale?.length > 0 && (
+            <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Why This Matters
+              </p>
+
+              <ul className="mt-3 space-y-2">
+                {executiveDecision.rationale.map((reason) => (
+                  <li key={reason} className="text-sm text-slate-300">
+                    • {reason}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <Link
@@ -85,4 +121,12 @@ function MemoryPanel({ summary }) {
       </p>
     </div>
   );
+}
+
+function getUrgencyTone(urgency) {
+  if (urgency === "Immediate") return "danger";
+  if (urgency === "High") return "warning";
+  if (urgency === "Medium") return "info";
+
+  return "success";
 }

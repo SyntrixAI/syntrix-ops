@@ -11,6 +11,7 @@ export default function IntelligenceStory({ item, featured = false }) {
     rootCauses = [],
     trends = [],
     executiveDecision,
+    executiveImpact,
   } = item;
 
   return (
@@ -64,6 +65,28 @@ export default function IntelligenceStory({ item, featured = false }) {
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {executiveImpact && (
+            <div className="mt-5 rounded-xl border border-amber-500/20 bg-amber-950/10 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-amber-400">
+                Executive Impact
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                {executiveImpact.consequence}
+              </p>
+
+              {executiveImpact.businessImpact.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {executiveImpact.businessImpact.map((impact) => (
+                    <Badge key={impact} tone="warning">
+                      {impact}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -5,8 +5,10 @@ import {
   getScopedExecutionItems,
 } from "../engines";
 
-import { priorities } from "../../data/priorities";
-import { executionItems } from "../../data/executionItems";
+import {
+  getPriorities,
+  getExecutionItems,
+} from "../repositories";
 
 export function getScopedWorkspaceData(user) {
   if (!user?.organizationId) {
@@ -16,15 +18,26 @@ export function getScopedWorkspaceData(user) {
   const organization = expandScope(user.scope);
   const locationIds = getScopedLocationIds(organization);
 
+  const organizationPriorities = getPriorities({
+    organizationId: user.organizationId,
+  });
+
+  const organizationExecutionItems = getExecutionItems({
+    organizationId: user.organizationId,
+  });
+
   return {
     organizationId: user.organizationId,
     organization,
     locationIds,
 
-    priorities: getScopedPriorities(priorities, locationIds),
+    priorities: getScopedPriorities(
+      organizationPriorities,
+      locationIds,
+    ),
 
     executionItems: getScopedExecutionItems(
-      executionItems,
+      organizationExecutionItems,
       locationIds,
     ),
   };

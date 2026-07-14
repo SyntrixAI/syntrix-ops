@@ -4,6 +4,7 @@ import {
   buildExecutiveBrief,
   buildOpportunityRanking,
   buildExecutiveDecision,
+  buildExecutiveImpact
 } from "../intelligence";
 
 export function getIntelligenceWorkspace(user) {
@@ -18,6 +19,7 @@ export function getIntelligenceWorkspace(user) {
   const decisionItems = rankedItems.map((item) => ({
     ...item,
     executiveDecision: buildExecutiveDecision(item),
+    executiveImpact: buildExecutiveImpact(item),
   }));
 
   const executiveBrief = buildExecutiveBrief({

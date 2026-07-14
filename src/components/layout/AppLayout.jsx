@@ -1,9 +1,12 @@
 import Sidebar from "./Sidebar";
-import { getNavigation, getUserContext } from "../../lib/services";
+import {
+  getNavigation,
+  getRequestContext,
+} from "../../lib/services";
 
 export default function AppLayout({ children }) {
-  const user = getUserContext();
-  const navigation = getNavigation(user);
+  const requestContext = getRequestContext();
+  const navigation = getNavigation(requestContext.user);
 
   return (
     <div className="flex min-h-screen bg-slate-950 text-white">

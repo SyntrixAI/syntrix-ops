@@ -1,5 +1,6 @@
 export const company = {
   id: "syntrix-demo",
+  organizationId: "org-syntrix-demo",
   name: "Syntrix Demo Group",
   industry: "Restaurant Group",
   headquarters: "Dallas, TX",

@@ -1,4 +1,6 @@
-import { assessments } from "../../data/assessments";
+import {
+  getAssessmentByLocation,
+} from "../repositories/assessmentRepository";
 import {
   getSignalById,
 } from "../repositories/signalRepository";
@@ -47,8 +49,10 @@ export function getInvestigationWorkspace(
       ? relatedSignal
       : null;
 
-  const assessment =
-    assessments[priority.locationId] ?? null;
+  const assessment = getAssessmentByLocation({
+    organizationId: user.organizationId,
+    locationId: priority.locationId,
+  });
 
   const activity =
     activityFeed[priority.id] ?? [];

@@ -2,7 +2,9 @@ import { getLocationById } from "../repositories";
 import {
   getSignalsByLocation,
 } from "../repositories/signalRepository";
-import { assessments } from "../../data/assessments";
+import {
+  getAssessmentByLocation,
+} from "../repositories/assessmentRepository";
 import { liveTimeline } from "../../data/liveTimeline";
 import { locationHealth } from "../../data/locationHealth";
 import { operationalMemory } from "../../data/operationalMemory";
@@ -23,14 +25,6 @@ export function getLocationWorkspace(user,locationId) {
 
   if (!location) {
     return null;
-  }
-
-  if (!location) return null;
-
-  if (!user?.organizationId) {
-    throw new Error(
-      "Location workspace requires an organization user.",
-    );
   }
 
   const accessible = expandScope({
@@ -63,12 +57,17 @@ export function getLocationWorkspace(user,locationId) {
     (event) => event.locationId === location.id
   );
 
+  const assessment = getAssessmentByLocation({
+    organizationId: user.organizationId,
+    locationId: location.id,
+  });
+
   return {
   location,
 
   overview: {
     health: locationHealth[location.id],
-    assessment: assessments[location.id],
+    assessment,
     memory: operationalMemory[location.id],
   },
 

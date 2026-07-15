@@ -30,3 +30,8 @@ export {
   getSignalsByLocation,
   getSignalsByLocationIds,
 } from "./signalRepository";
+
+export {
+  getAssessmentByLocation,
+  getAssessmentsByLocationIds,
+} from "./assessmentRepository";

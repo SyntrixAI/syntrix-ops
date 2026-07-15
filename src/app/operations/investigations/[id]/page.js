@@ -11,14 +11,23 @@ import DecisionBanner from "../../../../components/business/DecisionBanner";
 import PriorityScore from "../../../../components/business/PriorityScore";
 import KeyInsights from "../../../../components/business/KeyInsights";
 import WorkspaceBreadcrumbs from "../../../../components/business/WorkspaceBreadcrumbs";
-import { getWorkspaceContext } from "../../../../lib/services";
+import {
+  getRequestContext,
+  getWorkspaceContext,
+} from "../../../../lib/services";
 import { getInvestigation } from "../../../../lib/selectors";
 import InvestigationIntelligence from "../../../../components/investigations/InvestigationIntelligence";
 
 export default async function InvestigationPage({ params }) {
   const { id } = await params;
+  const requestContext = getRequestContext();
   const investigation = getInvestigation(id);
-  const context = getWorkspaceContext({ type: "investigation", id, });
+
+  const context = getWorkspaceContext({
+    organizationId: requestContext.organizationId,
+    type: "investigation",
+    id,
+  });
 
   if (!investigation) {
     return (

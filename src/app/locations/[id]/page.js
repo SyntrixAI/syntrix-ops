@@ -1,6 +1,10 @@
 import AppLayout from "../../../components/layout/AppLayout";
 import WorkspacePage from "../../../components/layout/WorkspacePage";
-import { getLocationWorkspace, getUserContext, getWorkspaceContext } from "../../../lib/services";
+import {
+  getLocationWorkspace,
+  getRequestContext,
+  getWorkspaceContext,
+} from "../../../lib/services";
 import WorkspaceBreadcrumbs from "../../../components/business/WorkspaceBreadcrumbs";
 import LocationOverview from "../../../components/locations/LocationOverview";
 import LocationOperations from "../../../components/locations/LocationOperations";
@@ -11,9 +15,18 @@ import DecisionBanner from "../../../components/business/DecisionBanner";
 
 export default async function LocationPage({ params }) {
   const { id } = await params;
-  const user = getUserContext();
-  const workspace = getLocationWorkspace(user, id);
-  const context = getWorkspaceContext({ type: "location", id, });
+  const requestContext = getRequestContext();
+
+  const workspace = getLocationWorkspace(
+    requestContext.user,
+    id,
+  );
+
+  const context = getWorkspaceContext({
+    organizationId: requestContext.organizationId,
+    type: "location",
+    id,
+  });
 
   if (!workspace) {
     return (

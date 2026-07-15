@@ -2,7 +2,11 @@ import Link from "next/link";
 import AppLayout from "../../../components/layout/AppLayout";
 import WorkspacePage from "../../../components/layout/WorkspacePage";
 import WorkspaceBreadcrumbs from "../../../components/business/WorkspaceBreadcrumbs";
-import { getDistrictWorkspace, getUserContext, getWorkspaceContext } from "../../../lib/services";
+import {
+  getDistrictWorkspace,
+  getRequestContext,
+  getWorkspaceContext,
+} from "../../../lib/services";
 import WorkspaceHeader from "../../../components/business/WorkspaceHeader";
 import HealthOverview from "../../../components/business/HealthOverview";
 import KeyInsights from "../../../components/business/KeyInsights";
@@ -16,9 +20,18 @@ import Card from "../../../components/ui/Card";
 
 export default async function DistrictPage({ params }) {
   const { id } = await params;
-  const user = getUserContext();
-  const workspace = getDistrictWorkspace(user, id);
-  const context = getWorkspaceContext({ type: "district", id, });
+  const requestContext = getRequestContext();
+
+  const workspace = getDistrictWorkspace(
+    requestContext.user,
+    id,
+  );
+
+  const context = getWorkspaceContext({
+    organizationId: requestContext.organizationId,
+    type: "district",
+    id,
+  });
 
   if (!workspace) {
     return (

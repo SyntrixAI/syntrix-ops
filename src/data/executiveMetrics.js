@@ -2,7 +2,7 @@ import { locations } from "./locations";
 import { locationHealth } from "./locationHealth";
 import { priorities } from "./priorities";
 import { executionItems } from "./executionItems";
-import { generateExecutiveMetrics } from "../lib/engines";
+import { generateExecutiveMetrics } from "../lib/engines/metricsEngine";
 
 export const executiveMetrics = generateExecutiveMetrics({
   locations,

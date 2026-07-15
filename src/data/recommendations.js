@@ -1,4 +1,5 @@
 import { priorities } from "./priorities";
-import { generateRecommendations } from "../lib/engines";
+import { generateRecommendations } from "../lib/engines/recommendationEngine";
 
-export const recommendations = generateRecommendations(priorities);
+export const recommendations =
+  generateRecommendations(priorities);

@@ -2,7 +2,7 @@ import { signals } from "./signals";
 import { assessments } from "./assessments";
 import { priorities } from "./priorities";
 import { executionItems } from "./executionItems";
-import { generateActivityFeed } from "../lib/engines";
+import { generateActivityFeed } from "../lib/engines/activityEngine";
 
 export const activityFeed = generateActivityFeed({
   signals,

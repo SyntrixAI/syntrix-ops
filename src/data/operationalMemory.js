@@ -3,7 +3,7 @@ import { locationHealth } from "./locationHealth";
 import { signals } from "./signals";
 import { priorities } from "./priorities";
 import { memorySnapshots } from "./memorySnapshots";
-import { generateOperationalMemory } from "../lib/engines";
+import { generateOperationalMemory } from "../lib/engines/memoryEngine";
 
 export const operationalMemory = generateOperationalMemory({
   locations,

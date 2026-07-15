@@ -1,12 +1,21 @@
 import {
   getCompany,
+} from "../repositories/companyRepository";
+
+import {
   getRegionById,
   getRegionsByCompany,
+} from "../repositories/regionRepository";
+
+import {
   getDistrictById,
   getDistrictsByRegion,
+} from "../repositories/districtRepository";
+
+import {
   getLocationById,
   getLocationsByDistrict,
-} from "../repositories";
+} from "../repositories/locationRepository";
 
 const ENTITY_TYPES = {
   COMPANY: "company",

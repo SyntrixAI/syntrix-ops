@@ -1,6 +1,7 @@
 export const rawEvents = [
   {
     id: 1,
+    organizationId: "org-syntrix-demo",
     severity: "critical",
     category: "Labor",
     source: "Labor Forecast",
@@ -16,6 +17,7 @@ export const rawEvents = [
   },
   {
     id: 2,
+    organizationId: "org-syntrix-demo",
     severity: "warning",
     category: "Inventory",
     source: "Inventory Variance",
@@ -31,6 +33,7 @@ export const rawEvents = [
   },
   {
     id: 3,
+    organizationId: "org-syntrix-demo",
     severity: "info",
     category: "Sales",
     source: "Sales Forecast",

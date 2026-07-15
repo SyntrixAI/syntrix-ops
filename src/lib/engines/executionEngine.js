@@ -4,6 +4,7 @@ export function generateExecutionItems(priorities, recommendations = {}) {
 
     return {
       id: `exec-${priority.id}`,
+      organizationId: priority.organizationId,
       priorityId: priority.id,
 
       title: recommendation?.title ?? priority.primaryAction,

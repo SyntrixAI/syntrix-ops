@@ -1,59 +1,100 @@
-import { getDistrict } from "../selectors";
 import { locationHealth } from "../../data/locationHealth";
-import { generateExecutiveMetrics } from "../engines";
-import { expandScope } from "../engines";
+import {
+  generateExecutiveMetrics,
+  getAncestors,
+  getDescendantLocations,
+  resolveHierarchyEntity,
+} from "../engines";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
-export function getDistrictWorkspace(user, id) {
-  const districtEntity = getDistrict(id);
+const DISTRICT_WORKSPACE_SCOPE_LEVELS = new Set([
+  "company",
+  "region",
+  "district",
+]);
 
-  if (!districtEntity) return null;
+export function getDistrictWorkspace(user, districtId) {
+  requireOrganizationUser(user);
 
-  if (!user?.organizationId) {
-    throw new Error(
-      "District workspace requires an organization user.",
-    );
+  if (!canOpenDistrictWorkspace(user)) {
+    return null;
   }
 
-  const accessible = expandScope({
-    organizationId: user?.organizationId,
-    scope: user?.scope,
+  const district = resolveHierarchyEntity({
+    organizationId: user.organizationId,
+    type: "district",
+    id: districtId,
   });
 
-  const canAccessDistrict = accessible.districts.some(
-    (accessibleDistrict) => accessibleDistrict.id === districtEntity.district.id,
-  );
-
-  if (!canAccessDistrict) return null;
-
-  const { district, region, company, locations } = districtEntity;
+  if (!district) {
+    return null;
+  }
 
   const scoped = getScopedWorkspaceData(user);
 
-  const locationIds = locations.map((location) => location.id);
+  const canAccessDistrict =
+    scoped.organization.districts.some(
+      (accessibleDistrict) =>
+        accessibleDistrict.id === district.id,
+    );
 
-  const districtPriorities = scoped.priorities.filter((priority) =>
-    locationIds.includes(priority.locationId),
-  );
-
-  const districtExecutionItems = scoped.executionItems.filter((item) =>
-    locationIds.includes(item.locationId),
-  );
-
-  const districtHealth = locations.reduce((healthByLocation, location) => {
-  if (locationHealth[location.id]) {
-    healthByLocation[location.id] = locationHealth[location.id];
+  if (!canAccessDistrict) {
+    return null;
   }
 
-  return healthByLocation;
-    }, {});
-    
-    const metrics = generateExecutiveMetrics({
+  const ancestors = getAncestors({
+    organizationId: user.organizationId,
+    entity: district,
+  });
+
+  const region =
+    ancestors.find(
+      (entity) => entity.type === "region",
+    ) ?? null;
+
+  const company =
+    ancestors.find(
+      (entity) => entity.type === "company",
+    ) ?? null;
+
+  const locations = getDescendantLocations({
+    organizationId: user.organizationId,
+    entity: district,
+  });
+
+  const locationIds = new Set(
+    locations.map((location) => location.id),
+  );
+
+  const districtPriorities = scoped.priorities.filter(
+    (priority) =>
+      locationIds.has(priority.locationId),
+  );
+
+  const districtExecutionItems =
+    scoped.executionItems.filter(
+      (item) => locationIds.has(item.locationId),
+    );
+
+  const districtHealth = locations.reduce(
+    (healthByLocation, location) => {
+      const health = locationHealth[location.id];
+
+      if (health) {
+        healthByLocation[location.id] = health;
+      }
+
+      return healthByLocation;
+    },
+    {},
+  );
+
+  const metrics = generateExecutiveMetrics({
     locations,
     locationHealth: districtHealth,
     priorities: districtPriorities,
     executionItems: districtExecutionItems,
-        });
+  });
 
   const executiveInsights = districtPriorities
     .flatMap((priority) =>
@@ -66,14 +107,19 @@ export function getDistrictWorkspace(user, id) {
     .slice(0, 5);
 
   const healthScores = locations
-    .map((location) => locationHealth[location.id])
+    .map(
+      (location) =>
+        locationHealth[location.id],
+    )
     .filter(Boolean);
 
   const averageHealth =
     healthScores.length > 0
       ? Math.round(
-          healthScores.reduce((sum, health) => sum + health.score, 0) /
-            healthScores.length,
+          healthScores.reduce(
+            (sum, health) => sum + health.score,
+            0,
+          ) / healthScores.length,
         )
       : null;
 
@@ -86,8 +132,13 @@ export function getDistrictWorkspace(user, id) {
     overview: {
       health: {
         score: averageHealth,
-        status: getDistrictHealthStatus(averageHealth),
-        summary: getDistrictHealthSummary(district.name, averageHealth),
+        status: getDistrictHealthStatus(
+          averageHealth,
+        ),
+        summary: getDistrictHealthSummary(
+          district.name,
+          averageHealth,
+        ),
       },
       insights: executiveInsights,
     },
@@ -96,9 +147,11 @@ export function getDistrictWorkspace(user, id) {
 
     operations: {
       priorities: districtPriorities,
-      criticalPriorities: districtPriorities.filter(
-        (priority) => priority.priorityScore >= 90,
-      ),
+      criticalPriorities:
+        districtPriorities.filter(
+          (priority) =>
+            priority.priorityScore >= 90,
+        ),
     },
 
     execution: {
@@ -108,9 +161,24 @@ export function getDistrictWorkspace(user, id) {
     counts: {
       locations: locations.length,
       priorities: districtPriorities.length,
-      executionItems: districtExecutionItems.length,
+      executionItems:
+        districtExecutionItems.length,
     },
   };
+}
+
+function requireOrganizationUser(user) {
+  if (!user?.organizationId) {
+    throw new Error(
+      "District workspace requires an organization user.",
+    );
+  }
+}
+
+function canOpenDistrictWorkspace(user) {
+  return DISTRICT_WORKSPACE_SCOPE_LEVELS.has(
+    user.scope?.level,
+  );
 }
 
 function getDistrictHealthStatus(score) {
@@ -121,7 +189,10 @@ function getDistrictHealthStatus(score) {
   return "Critical";
 }
 
-function getDistrictHealthSummary(districtName, score) {
+function getDistrictHealthSummary(
+  districtName,
+  score,
+) {
   if (score === null) {
     return `${districtName} does not have enough operational data yet.`;
   }

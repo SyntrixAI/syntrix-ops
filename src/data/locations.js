@@ -1,6 +1,7 @@
 export const locations = [
   {
     id: "dallas-north",
+    organizationId: "org-syntrix-demo",
     name: "Dallas North",
     city: "Dallas",
     region: "North Texas",
@@ -18,6 +19,7 @@ export const locations = [
   },
   {
     id: "plano",
+    organizationId: "org-syntrix-demo",
     name: "Plano",
     city: "Plano",
     region: "North Texas",
@@ -35,6 +37,7 @@ export const locations = [
   },
   {
     id: "houston",
+    organizationId: "org-syntrix-demo",
     name: "Houston",
     city: "Houston",
     region: "South Texas",
@@ -52,6 +55,7 @@ export const locations = [
   },
   {
     id: "austin-south",
+    organizationId: "org-syntrix-demo",
     name: "Austin South",
     city: "Austin",
     region: "Central Texas",

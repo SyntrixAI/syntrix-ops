@@ -6,7 +6,9 @@ import {
   getAssessmentByLocation,
 } from "../repositories/assessmentRepository";
 import { liveTimeline } from "../../data/liveTimeline";
-import { locationHealth } from "../../data/locationHealth";
+import {
+  getLocationHealth,
+} from "./getLocationHealth";
 import { operationalMemory } from "../../data/operationalMemory";
 import { expandScope } from "../engines";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
@@ -62,13 +64,21 @@ export function getLocationWorkspace(user,locationId) {
     locationId: location.id,
   });
 
+  const health = getLocationHealth({
+    organizationId: user.organizationId,
+    locationId: location.id,
+  });
+
+  const memory =
+    operationalMemory[location.id] ?? null;
+
   return {
   location,
 
   overview: {
-    health: locationHealth[location.id],
+    health,
     assessment,
-    memory: operationalMemory[location.id],
+    memory,
   },
 
   operations: {

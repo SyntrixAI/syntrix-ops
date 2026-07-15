@@ -1,4 +1,6 @@
-import { locationHealth } from "../../data/locationHealth";
+import {
+  getLocationHealthByIds,
+} from "./getLocationHealth";
 import { generateExecutiveMetrics } from "../engines";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
@@ -8,13 +10,13 @@ export function getDailyBrief(user) {
   const scopedPriorities = scoped.priorities;
   const scopedExecutionItems = scoped.executionItems;
 
-  const scopedHealth = accessible.locations.reduce((healthByLocation, location) => {
-    if (locationHealth[location.id]) {
-      healthByLocation[location.id] = locationHealth[location.id];
-    }
-
-    return healthByLocation;
-  }, {});
+  const scopedHealth = getLocationHealthByIds({
+    organizationId: user.organizationId,
+    locationIds:
+      scoped.organization.locations.map(
+        (location) => location.id,
+      ),
+  });
 
   const metrics = generateExecutiveMetrics({
     locations: accessible.locations,

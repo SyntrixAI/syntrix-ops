@@ -1,4 +1,6 @@
-import { locationHealth } from "../../data/locationHealth";
+import {
+  getLocationHealthByIds,
+} from "./getLocationHealth";
 import {
   generateExecutiveMetrics,
   getAncestors,
@@ -66,6 +68,12 @@ export function getDistrictWorkspace(user, districtId) {
     locations.map((location) => location.id),
   );
 
+  const districtHealth =
+  getLocationHealthByIds({
+    organizationId: user.organizationId,
+    locationIds: [...locationIds],
+  });
+
   const districtPriorities = scoped.priorities.filter(
     (priority) =>
       locationIds.has(priority.locationId),
@@ -75,19 +83,6 @@ export function getDistrictWorkspace(user, districtId) {
     scoped.executionItems.filter(
       (item) => locationIds.has(item.locationId),
     );
-
-  const districtHealth = locations.reduce(
-    (healthByLocation, location) => {
-      const health = locationHealth[location.id];
-
-      if (health) {
-        healthByLocation[location.id] = health;
-      }
-
-      return healthByLocation;
-    },
-    {},
-  );
 
   const metrics = generateExecutiveMetrics({
     locations,
@@ -106,12 +101,9 @@ export function getDistrictWorkspace(user, districtId) {
     )
     .slice(0, 5);
 
-  const healthScores = locations
-    .map(
-      (location) =>
-        locationHealth[location.id],
-    )
-    .filter(Boolean);
+  const healthScores = Object.values(
+    districtHealth,
+  );
 
   const averageHealth =
     healthScores.length > 0

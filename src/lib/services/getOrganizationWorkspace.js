@@ -1,4 +1,6 @@
-import { locationHealth } from "../../data/locationHealth";
+import {
+  getLocationHealthByIds,
+} from "./getLocationHealth";
 import {
   generateExecutiveMetrics,
   generateEntityMetrics,
@@ -16,13 +18,12 @@ export function getOrganizationWorkspace(user) {
   const scopedPriorities = scoped.priorities;
   const scopedExecutionItems = scoped.executionItems;
 
-  const scopedHealth = accessible.locations.reduce((healthByLocation, location) => {
-    if (locationHealth[location.id]) {
-      healthByLocation[location.id] = locationHealth[location.id];
-    }
-
-    return healthByLocation;
-  }, {});
+  const scopedHealth = getLocationHealthByIds({
+    organizationId: user.organizationId,
+    locationIds: accessible.locations.map(
+      (location) => location.id,
+    ),
+  });
 
   const metrics = generateExecutiveMetrics({
     locations: accessible.locations,
@@ -185,7 +186,7 @@ function getOrganizationEntities({
 
 function getEntityHref(entity) {
   if (entity.type === "region") {
-    return `/organization/regions/${entity.id}`;
+    return null;
   }
 
   if (entity.type === "district") {

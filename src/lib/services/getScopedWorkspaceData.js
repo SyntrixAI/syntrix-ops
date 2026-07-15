@@ -15,7 +15,11 @@ export function getScopedWorkspaceData(user) {
     throw new Error("Scoped workspace data requires an organization user.");
   }
 
-  const organization = expandScope(user.scope);
+  const organization = expandScope({
+    organizationId: user.organizationId,
+    scope: user.scope,
+  });
+  
   const locationIds = getScopedLocationIds(organization);
 
   const organizationPriorities = getPriorities({

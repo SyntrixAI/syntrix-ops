@@ -1,94 +1,104 @@
-import { company } from "../../data/company";
-import { regions } from "../../data/regions";
-import { districts } from "../../data/districts";
-import { locations } from "../../data/locations";
+import {
+  resolveHierarchyEntity,
+  getAncestors,
+  getChildren,
+  getDescendantLocations,
+} from "./hierarchyEngine";
 
-export function expandScope(scope) {
-  if (!scope) {
+export function expandScope({
+  organizationId,
+  scope,
+} = {}) {
+  requireOrganizationId(organizationId);
+
+  if (!scope?.level || !scope?.id) {
     return emptyScope();
   }
 
-  if (scope.level === "company") {
-    return expandCompanyScope(scope.id);
+  const entity = resolveHierarchyEntity({
+    organizationId,
+    type: scope.level,
+    id: scope.id,
+  });
+
+  if (!entity) {
+    return emptyScope();
   }
 
-  if (scope.level === "region") {
-    return expandRegionScope(scope.id);
-  }
+  const ancestors = getAncestors({
+    organizationId,
+    entity,
+  });
 
-  if (scope.level === "district") {
-    return expandDistrictScope(scope.id);
-  }
+  const locations = getDescendantLocations({
+    organizationId,
+    entity,
+  });
 
-  if (scope.level === "location") {
-    return expandLocationScope(scope.id);
-  }
-
-  return emptyScope();
-}
-
-function expandCompanyScope(companyId) {
-  if (company.id !== companyId) return emptyScope();
-
-  return {
-    company,
-    regions,
-    districts,
+  return buildExpandedScope({
+    organizationId,
+    entity,
+    ancestors,
     locations,
-  };
+  });
 }
 
-function expandRegionScope(regionId) {
-  const region = regions.find((region) => region.id === regionId);
+function buildExpandedScope({
+  organizationId,
+  entity,
+  ancestors,
+  locations,
+}) {
+  const hierarchy = [...ancestors, entity];
 
-  if (!region) return emptyScope();
+  const descendants = getDescendants({
+    organizationId,
+    entity,
+  });
 
-  const scopedDistricts = districts.filter(
-    (district) => district.regionId === region.id,
-  );
-
-  const districtIds = scopedDistricts.map((district) => district.id);
-
-  const scopedLocations = locations.filter((location) =>
-    districtIds.includes(location.districtId),
-  );
-
-  return {
-    company,
-    regions: [region],
-    districts: scopedDistricts,
-    locations: scopedLocations,
-  };
-}
-
-function expandDistrictScope(districtId) {
-  const district = districts.find((district) => district.id === districtId);
-
-  if (!district) return emptyScope();
-
-  const region = regions.find((region) => region.id === district.regionId);
+  const accessibleEntities = [
+    ...hierarchy,
+    ...descendants,
+  ];
 
   return {
-    company,
-    regions: region ? [region] : [],
-    districts: [district],
-    locations: locations.filter(
-      (location) => location.districtId === district.id,
+    company:
+      accessibleEntities.find(
+        (item) => item.type === "company",
+      ) ?? null,
+
+    regions: uniqueById(
+      accessibleEntities.filter(
+        (item) => item.type === "region",
+      ),
     ),
+
+    districts: uniqueById(
+      accessibleEntities.filter(
+        (item) => item.type === "district",
+      ),
+    ),
+
+    locations: uniqueById(locations),
   };
 }
 
-function expandLocationScope(locationId) {
-  const location = locations.find((location) => location.id === locationId);
+function getDescendants({
+  organizationId,
+  entity,
+}) {
+  const children = getChildren({
+    organizationId,
+    entity,
+  });
 
-  if (!location) return emptyScope();
-
-  return {
-    company,
-    regions: [],
-    districts: [],
-    locations: [location],
-  };
+  return children.flatMap((child) => [
+    child,
+    ...getDescendants({
+      organizationId,
+      entity: child,
+    }),
+  ]);
 }
 
 function emptyScope() {
@@ -98,4 +108,23 @@ function emptyScope() {
     districts: [],
     locations: [],
   };
+}
+
+function uniqueById(items) {
+  return Array.from(
+    new Map(
+      items.map((item) => [
+        `${item.type ?? "entity"}:${item.id}`,
+        item,
+      ]),
+    ).values(),
+  );
+}
+
+function requireOrganizationId(organizationId) {
+  if (!organizationId) {
+    throw new Error(
+      "Scope engine requires an organization ID.",
+    );
+  }
 }

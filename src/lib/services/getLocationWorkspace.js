@@ -14,7 +14,16 @@ export function getLocationWorkspace(user,locationId) {
 
   if (!location) return null;
 
-  const accessible = expandScope(user?.scope);
+  if (!user?.organizationId) {
+    throw new Error(
+      "Location workspace requires an organization user.",
+    );
+  }
+
+  const accessible = expandScope({
+    organizationId: user.organizationId,
+    scope: user.scope,
+  });
 
   const canAccessLocation = accessible.locations.some(
     (accessibleLocation) => accessibleLocation.id === location.id,

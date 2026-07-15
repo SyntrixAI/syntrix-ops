@@ -9,7 +9,16 @@ export function getDistrictWorkspace(user, id) {
 
   if (!districtEntity) return null;
 
-  const accessible = expandScope(user?.scope);
+  if (!user?.organizationId) {
+    throw new Error(
+      "District workspace requires an organization user.",
+    );
+  }
+
+  const accessible = expandScope({
+    organizationId: user?.organizationId,
+    scope: user?.scope,
+  });
 
   const canAccessDistrict = accessible.districts.some(
     (accessibleDistrict) => accessibleDistrict.id === districtEntity.district.id,

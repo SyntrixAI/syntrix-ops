@@ -3,6 +3,7 @@ import {
   generateExecutiveMetrics,
   generateEntityMetrics,
   generateNarrative,
+  resolveHierarchyEntity,
   getChildren,
   getDescendantLocations,
   getScopedPriorities,
@@ -41,8 +42,8 @@ export function getOrganizationWorkspace(user) {
     .slice(0, 5);
 
   const entities = getOrganizationEntities({
+    organizationId: user.organizationId,
     user,
-    organization: accessible,
     metrics,
     priorities: scopedPriorities,
   });
@@ -117,23 +118,46 @@ function getScopeLabel(user) {
 }
 
 function getOrganizationEntities({
+  organizationId,
   user,
-  organization,
   metrics,
   priorities,
 }) {
-  const currentEntity = getCurrentEntity(user, organization);
+  const currentEntity = resolveHierarchyEntity({
+    organizationId,
+    type: user.scope.level,
+    id: user.scope.id,
+  });
 
-  const children = getChildren(currentEntity);
+  if (!currentEntity) {
+    return [];
+  }
 
-  const entities = children.length > 0 ? children : [currentEntity];
+  const children = getChildren({
+    organizationId,
+    entity: currentEntity,
+  });
 
-  return entities.filter(Boolean).map((entity) => {
-    const descendantLocations = getDescendantLocations(entity);
+  const entities =
+    children.length > 0
+      ? children
+      : [currentEntity];
 
-    const locationIds = descendantLocations.map(location => location.id);
+  return entities.map((entity) => {
+    const descendantLocations =
+      getDescendantLocations({
+        organizationId,
+        entity,
+      });
 
-    const entityPriorities = getScopedPriorities(priorities, locationIds);
+    const locationIds = descendantLocations.map(
+      (location) => location.id,
+    );
+
+    const entityPriorities = getScopedPriorities(
+      priorities,
+      locationIds,
+    );
 
     const entityMetrics = generateEntityMetrics({
       metrics,
@@ -157,38 +181,6 @@ function getOrganizationEntities({
       ...narrative,
     };
   });
-}
-
-function getCurrentEntity(user, organization) {
-  if (user.scope.level === "company") {
-    return {
-      ...organization.company,
-      type: "company",
-    };
-  }
-
-  if (user.scope.level === "region") {
-    return {
-      ...organization.regions[0],
-      type: "region",
-    };
-  }
-
-  if (user.scope.level === "district") {
-    return {
-      ...organization.districts[0],
-      type: "district",
-    };
-  }
-
-  if (user.scope.level === "location") {
-    return {
-      ...organization.locations[0],
-      type: "location",
-    };
-  }
-
-  return null;
 }
 
 function getEntityHref(entity) {

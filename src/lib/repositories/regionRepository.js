@@ -48,6 +48,6 @@ export function getRegionsByCompany({
   }
 
   return getOrganizationRegions(organizationId).filter(
-    (region) => region.companyId === companyId,
+    (region) => region.parentId === companyId,
   );
 }

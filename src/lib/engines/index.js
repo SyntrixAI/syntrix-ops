@@ -16,6 +16,7 @@ export { expandScope } from "./scopeEngine";
 export { generateNarrative } from "./narrativeEngine";
 export { generateEntityMetrics } from "./entityMetricsEngine";
 export {
+  resolveHierarchyEntity,
   getChildren,
   getParent,
   getAncestors,

@@ -1,6 +1,7 @@
 export function generateSignals(rawEvents) {
   return rawEvents.map((event) => ({
     id: event.id,
+    organizationId: event.organizationId,
 
     severity: event.severity ?? "info",
     category: event.category,

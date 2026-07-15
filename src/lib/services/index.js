@@ -12,3 +12,4 @@ export { getExecutionWorkspace } from "./getExecutionWorkspace";
 export { getOperationalMemory } from "./getOperationalMemory";
 export { getIntelligenceWorkspace } from "./getIntelligenceWorkspace";
 export { getRequestContext } from "./getRequestContext";
+export { getInvestigationWorkspace, } from "./getInvestigationWorkspace";

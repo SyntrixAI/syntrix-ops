@@ -23,3 +23,10 @@ export {
   getLocationById,
   getLocationsByDistrict,
 } from "./locationRepository";
+
+export {
+  getSignals,
+  getSignalById,
+  getSignalsByLocation,
+  getSignalsByLocationIds,
+} from "./signalRepository";

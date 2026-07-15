@@ -1,5 +1,7 @@
 import { assessments } from "../../data/assessments";
-import { signals } from "../../data/signals";
+import {
+  getSignalById,
+} from "../repositories/signalRepository";
 import { activityFeed } from "../../data/activityFeed";
 import { contextInsights } from "../../data/contextInsights";
 import { buildRecommendationContext } from "../intelligence/buildRecommendationContext";
@@ -34,15 +36,16 @@ export function getInvestigationWorkspace(
         String(priority.id),
     ) ?? null;
 
-  const relatedSignal =
-    signals.find(
-      (signal) =>
-        signal.organizationId ===
-          user.organizationId &&
-        String(signal.id) ===
-          String(priority.id) &&
-        signal.locationId === priority.locationId,
-    ) ?? null;
+  const relatedSignal = getSignalById({
+    organizationId: user.organizationId,
+    signalId: priority.id,
+  });
+
+  const scopedRelatedSignal =
+    relatedSignal?.locationId ===
+    priority.locationId
+      ? relatedSignal
+      : null;
 
   const assessment =
     assessments[priority.locationId] ?? null;
@@ -61,10 +64,10 @@ export function getInvestigationWorkspace(
     priority,
     assessment,
     executionItem,
-    relatedSignal,
     activity,
     context,
     intelligence,
+    relatedSignal: scopedRelatedSignal,
   };
 }
 

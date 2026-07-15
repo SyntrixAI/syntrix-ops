@@ -1,7 +1,8 @@
 export const regions = [
   {
     id: "texas",
-    companyId: "syntrix-demo",
+    organizationId: "org-syntrix-demo",
+    parentId: "syntrix-demo",
     name: "Texas Region",
   },
 ];

@@ -1,31 +1,25 @@
-import { company } from "../../data/company";
-import { regions } from "../../data/regions";
-import { districts } from "../../data/districts";
+import {
+  getAncestors,
+  resolveHierarchyEntity,
+} from "../engines/hierarchyEngine";
+
 import {
   getLocationById,
+} from "../repositories/locationRepository";
+
+import {
   getPriorities,
-} from "../repositories";
+} from "../repositories/priorityRepository";
 
 export function getWorkspaceContext({
   organizationId,
   type,
   id,
-}) {
-  if (!organizationId) {
-    throw new Error(
-      "Workspace context requires an organization ID.",
-    );
-  }
+} = {}) {
+  requireOrganizationId(organizationId);
 
-  if (type === "district") {
-    return getDistrictContext(id);
-  }
-
-  if (type === "location") {
-    return getLocationContext({
-      organizationId,
-      locationId: id,
-    });
+  if (!type || !id) {
+    return null;
   }
 
   if (type === "investigation") {
@@ -35,102 +29,136 @@ export function getWorkspaceContext({
     });
   }
 
-  return {
-    items: [{ label: company.name, href: "/" }],
-  };
-}
-
-function getDistrictContext(id) {
-  const district = districts.find(
-    (district) => district.id === id,
-  );
-
-  if (!district) return null;
-
-  const region = regions.find(
-    (region) => region.id === district.regionId,
-  );
-
-  return {
-    items: [
-      { label: company.name, href: "/" },
-      region && { label: region.name },
-      {
-        label: district.name,
-        href: `/districts/${district.id}`,
-      },
-    ].filter(Boolean),
-  };
-}
-
-function getLocationContext({
-  organizationId,
-  locationId,
-}) {
-  const location = getLocationById({
+  return getHierarchyContext({
     organizationId,
-    locationId,
+    type,
+    id,
+  });
+}
+
+function getHierarchyContext({
+  organizationId,
+  type,
+  id,
+}) {
+  const entity = resolveHierarchyEntity({
+    organizationId,
+    type,
+    id,
   });
 
-  if (!location) return null;
+  if (!entity) {
+    return null;
+  }
 
-  return buildLocationContext(location);
+  const ancestors = getAncestors({
+    organizationId,
+    entity,
+  });
+
+  return {
+    items: buildBreadcrumbItems([
+      ...ancestors,
+      entity,
+    ]),
+  };
 }
 
 function getInvestigationContext({
   organizationId,
   investigationId,
 }) {
-  const priority = getPriorities({ organizationId }).find(
+  const priority = getPriorities({
+    organizationId,
+  }).find(
     (priority) =>
-      String(priority.id) === String(investigationId),
+      String(priority.id) ===
+      String(investigationId),
   );
 
-  if (!priority) return null;
+  if (!priority) {
+    return null;
+  }
 
   const location = getLocationById({
     organizationId,
     locationId: priority.locationId,
   });
 
-  if (!location) return null;
+  if (!location) {
+    return null;
+  }
 
-  const locationContext = buildLocationContext(location);
+  const ancestors = getAncestors({
+    organizationId,
+    entity: {
+      ...location,
+      type: "location",
+    },
+  });
 
   return {
     items: [
-      ...locationContext.items,
+      ...buildBreadcrumbItems([
+        ...ancestors,
+        {
+          ...location,
+          type: "location",
+        },
+      ]),
       {
         label: priority.title,
-        href: `/operations/investigations/${priority.id}`,
+        href:
+          `/operations/investigations/${priority.id}`,
       },
     ],
   };
 }
 
-function buildLocationContext(location) {
-  const district = districts.find(
-    (district) => district.id === location.districtId,
-  );
+function buildBreadcrumbItems(entities) {
+  return entities
+    .map((entity) => {
+      const href = getEntityHref(entity);
 
-  const region = district
-    ? regions.find(
-        (region) => region.id === district.regionId,
-      )
-    : null;
+      if (!href) {
+        return {
+          label: entity.name,
+        };
+      }
 
-  return {
-    items: [
-      { label: company.name, href: "/" },
-      region && { label: region.name },
-      district && {
-        label: district.name,
-        href: `/districts/${district.id}`,
-      },
-      {
-        label: location.name,
-        href: `/locations/${location.id}`,
-      },
-    ].filter(Boolean),
-  };
+      return {
+        label: entity.name,
+        href,
+      };
+    })
+    .filter((item) => item.label);
+}
+
+function getEntityHref(entity) {
+  if (entity.type === "company") {
+    return "/organization";
+  }
+
+  if (entity.type === "district") {
+    return `/districts/${entity.id}`;
+  }
+
+  if (entity.type === "location") {
+    return `/locations/${entity.id}`;
+  }
+
+  // Region workspace does not exist yet.
+  if (entity.type === "region") {
+    return null;
+  }
+
+  return null;
+}
+
+function requireOrganizationId(organizationId) {
+  if (!organizationId) {
+    throw new Error(
+      "Workspace context requires an organization ID.",
+    );
+  }
 }

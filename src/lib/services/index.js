@@ -9,10 +9,13 @@ export { getNavigation } from "./navigationService";
 export { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 export { getOperationsWorkspace } from "./getOperationsWorkspace";
 export { getExecutionWorkspace } from "./getExecutionWorkspace";
-export { getOperationalMemory } from "./getOperationalMemory";
+export {
+  getOperationalMemory,
+  getOperationalMemoryByLocationIds,
+} from "./getOperationalMemory";
 export { getIntelligenceWorkspace } from "./getIntelligenceWorkspace";
 export { getRequestContext } from "./getRequestContext";
-export { getInvestigationWorkspace, } from "./getInvestigationWorkspace";
+export { getInvestigationWorkspace } from "./getInvestigationWorkspace";
 export {
   getLocationHealth,
   getLocationHealthByIds,

@@ -8,6 +8,9 @@ import { activityFeed } from "../../data/activityFeed";
 import { contextInsights } from "../../data/contextInsights";
 import { buildRecommendationContext } from "../intelligence/buildRecommendationContext";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
+import {
+  getOperationalMemory,
+} from "./getOperationalMemory";
 
 export function getInvestigationWorkspace(
   user,
@@ -54,6 +57,11 @@ export function getInvestigationWorkspace(
     locationId: priority.locationId,
   });
 
+  const memory = getOperationalMemory({
+    organizationId: user.organizationId,
+    locationId: priority.locationId,
+  });
+
   const activity =
     activityFeed[priority.id] ?? [];
 
@@ -61,7 +69,9 @@ export function getInvestigationWorkspace(
     contextInsights[priority.id] ?? null;
 
   const intelligence =
-    buildRecommendationContext(priority);
+  buildRecommendationContext(priority, {
+    memory,
+  });
 
   return {
     id: priority.id,

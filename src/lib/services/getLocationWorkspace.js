@@ -9,7 +9,9 @@ import { liveTimeline } from "../../data/liveTimeline";
 import {
   getLocationHealth,
 } from "./getLocationHealth";
-import { operationalMemory } from "../../data/operationalMemory";
+import {
+  getOperationalMemory,
+} from "./getOperationalMemory";
 import { expandScope } from "../engines";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
@@ -69,8 +71,10 @@ export function getLocationWorkspace(user,locationId) {
     locationId: location.id,
   });
 
-  const memory =
-    operationalMemory[location.id] ?? null;
+  const memory = getOperationalMemory({
+    organizationId: user.organizationId,
+    locationId: location.id,
+  });
 
   return {
   location,

@@ -5,7 +5,9 @@ import {
 import {
   getAssessmentByLocation,
 } from "../repositories/assessmentRepository";
-import { liveTimeline } from "../../data/liveTimeline";
+import {
+  getLocationTimeline,
+} from "./getLocationTimeline";
 import {
   getLocationHealth,
 } from "./getLocationHealth";
@@ -57,9 +59,10 @@ export function getLocationWorkspace(user,locationId) {
     (item) => item.locationId === location.id,
   );
 
-  const locationTimeline = liveTimeline.filter(
-    (event) => event.locationId === location.id
-  );
+  const timeline = getLocationTimeline({
+    organizationId: user.organizationId,
+    locationId: location.id,
+  });
 
   const assessment = getAssessmentByLocation({
     organizationId: user.organizationId,
@@ -95,7 +98,7 @@ export function getLocationWorkspace(user,locationId) {
   },
 
   activity: {
-    timeline: locationTimeline,
+    timeline,
   },
 
   counts: {

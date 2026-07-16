@@ -20,3 +20,7 @@ export {
   getLocationHealth,
   getLocationHealthByIds,
 } from "./getLocationHealth";
+export {
+  getLocationTimeline,
+  getLocationTimelinesByIds,
+} from "./getLocationTimeline";

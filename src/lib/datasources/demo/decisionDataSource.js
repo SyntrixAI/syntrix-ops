@@ -1,29 +1,32 @@
-import { signals } from "../../../data/signals";
-import { priorities } from "../../../data/priorities";
-import { assessments } from "../../../data/assessments";
+import { rawEvents } from "../../../data/rawEvents";
 import {
-  recommendations,
-} from "../../../data/recommendations";
+  memorySnapshots,
+} from "../../../data/memorySnapshots";
 import {
-  executionItems,
-} from "../../../data/executionItems";
+  buildDecisionPipeline,
+} from "../../pipelines";
+
+const decisionPipeline = buildDecisionPipeline({
+  rawEvents,
+  memorySnapshots,
+});
 
 export function getSignalRecords() {
-  return signals;
+  return decisionPipeline.signals;
 }
 
 export function getPriorityRecords() {
-  return priorities;
+  return decisionPipeline.priorities;
 }
 
 export function getAssessmentRecords() {
-  return assessments;
+  return decisionPipeline.assessments;
 }
 
 export function getRecommendationRecords() {
-  return recommendations;
+  return decisionPipeline.recommendations;
 }
 
 export function getExecutionItemRecords() {
-  return executionItems;
+  return decisionPipeline.executionItems;
 }

@@ -1,7 +1,12 @@
-import { liveTimeline } from "../../data/liveTimeline";
 import {
   getLocationById,
 } from "../repositories/locationRepository";
+import {
+  getSignalsByLocation,
+} from "../repositories/signalRepository";
+import {
+  generateLiveTimeline,
+} from "../engines/timelineEngine";
 
 export function getLocationTimeline({
   organizationId,
@@ -24,10 +29,12 @@ export function getLocationTimeline({
     return [];
   }
 
-  return liveTimeline.filter(
-    (event) =>
-      event.locationId === location.id,
-  );
+  const signals = getSignalsByLocation({
+    organizationId,
+    locationId,
+  });
+
+  return generateLiveTimeline(signals);
 }
 
 export function getLocationTimelinesByIds({

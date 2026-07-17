@@ -1,7 +1,21 @@
-import { locationHealth } from "../../data/locationHealth";
 import {
   getLocationById,
 } from "../repositories/locationRepository";
+import {
+  getSignalsByLocation,
+} from "../repositories/signalRepository";
+import {
+  getPriorities,
+} from "../repositories/priorityRepository";
+import {
+  getAssessmentByLocation,
+} from "../repositories/assessmentRepository";
+import {
+  getExecutionItems,
+} from "../repositories/executionRepository";
+import {
+  generateLocationHealth,
+} from "../engines/healthEngine";
 
 export function getLocationHealth({
   organizationId,
@@ -24,7 +38,46 @@ export function getLocationHealth({
     return null;
   }
 
-  return locationHealth[location.id] ?? null;
+  const signals = getSignalsByLocation({
+    organizationId,
+    locationId,
+  });
+
+  const priorities = getPriorities({
+    organizationId,
+  }).filter(
+    (priority) =>
+      priority.locationId === locationId,
+  );
+
+  const assessment = getAssessmentByLocation({
+    organizationId,
+    locationId,
+  });
+
+  const assessments = assessment
+    ? {
+        [locationId]: assessment,
+      }
+    : {};
+
+  const executionItems = getExecutionItems({
+    organizationId,
+  }).filter(
+    (item) =>
+      item.locationId === locationId,
+  );
+
+  const healthByLocation =
+    generateLocationHealth({
+      locations: [location],
+      signals,
+      assessments,
+      priorities,
+      executionItems,
+    });
+
+  return healthByLocation[location.id] ?? null;
 }
 
 export function getLocationHealthByIds({

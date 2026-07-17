@@ -5,7 +5,6 @@ import OpportunityPipeline from "../../components/execution/OpportunityPipeline"
 import ExecutionQueue from "../../components/execution/ExecutionQueue";
 
 import { getExecutionWorkspace, getUserContext } from "../../lib/services";
-import { opportunityPipeline } from "../../data/executions";
 
 export default function ExecutionPage() {
   const user = getUserContext();
@@ -25,7 +24,7 @@ export default function ExecutionPage() {
         title="Opportunity Pipeline"
         description="Track operational opportunities as they move from recommendation to execution."
       >
-        <OpportunityPipeline stages={opportunityPipeline} />
+        <OpportunityPipeline stages={execution.pipeline} />
       </WorkspaceSection>
 
       <WorkspaceSection

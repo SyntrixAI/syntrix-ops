@@ -1,8 +1,26 @@
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
+const PIPELINE_STAGES = [
+  {
+    label: "Recommended",
+    statuses: ["Recommended"],
+  },
+  {
+    label: "Approved",
+    statuses: ["Approved"],
+  },
+  {
+    label: "In Progress",
+    statuses: ["In Progress"],
+  },
+  {
+    label: "Verified",
+    statuses: ["Verified", "Completed"],
+  },
+];
+
 export function getExecutionWorkspace(user) {
   const scoped = getScopedWorkspaceData(user);
-
   const executionItems = scoped.executionItems;
 
   const readyItems = executionItems.filter(
@@ -14,17 +32,30 @@ export function getExecutionWorkspace(user) {
   );
 
   const completedItems = executionItems.filter(
-    (item) => item.status === "Completed",
+    (item) =>
+      item.status === "Completed" ||
+      item.status === "Verified",
   );
 
   const blockedItems = executionItems.filter(
     (item) => item.status === "Blocked",
   );
 
-  const estimatedRecovery = executionItems.reduce(
-    (sum, item) => sum + (item.businessImpact?.weeklyRecovery ?? 0),
-    0,
+  const estimatedRecovery = getWeeklyRecovery(
+    executionItems,
   );
+
+  const pipeline = PIPELINE_STAGES.map((stage) => {
+    const stageItems = executionItems.filter((item) =>
+      stage.statuses.includes(item.status),
+    );
+
+    return {
+      label: stage.label,
+      weeklyValue: getWeeklyRecovery(stageItems),
+      count: stageItems.length,
+    };
+  });
 
   return {
     user,
@@ -45,6 +76,16 @@ export function getExecutionWorkspace(user) {
       inProgressItems,
       blockedItems,
       completedItems,
+      pipeline,
     },
   };
+}
+
+function getWeeklyRecovery(items) {
+  return items.reduce(
+    (sum, item) =>
+      sum +
+      (item.businessImpact?.weeklyRecovery ?? 0),
+    0,
+  );
 }

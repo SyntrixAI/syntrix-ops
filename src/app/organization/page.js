@@ -14,6 +14,20 @@ export default function OrganizationPage() {
   const user = getUserContext();
   const workspace = getOrganizationWorkspace(user);
 
+  if (!workspace) {
+  return (
+    <ExecutiveWorkspace
+      eyebrow="Organization Workspace"
+      title="Workspace unavailable"
+      decision="This workspace is only available to company-level leadership."
+    >
+      <p className="text-slate-400">
+        Your current role does not have access to the organization workspace.
+      </p>
+    </ExecutiveWorkspace>
+  );
+}
+
   const {
     overview,
     metrics,

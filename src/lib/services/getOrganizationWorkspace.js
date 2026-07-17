@@ -12,7 +12,16 @@ import {
 } from "../engines";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
+const ORGANIZATION_WORKSPACE_SCOPE_LEVELS =
+  new Set(["company"]);
+
 export function getOrganizationWorkspace(user) {
+  requireOrganizationUser(user);
+
+  if (!canOpenOrganizationWorkspace(user)) {
+    return null;
+  }
+
   const scoped = getScopedWorkspaceData(user);
   const accessible = scoped.organization;
   const scopedPriorities = scoped.priorities;
@@ -209,4 +218,18 @@ function getEntitySubtitle(entity) {
   }
 
   return "Organization";
+}
+
+function requireOrganizationUser(user) {
+  if (!user?.organizationId) {
+    throw new Error(
+      "Organization workspace requires an organization user.",
+    );
+  }
+}
+
+function canOpenOrganizationWorkspace(user) {
+  return ORGANIZATION_WORKSPACE_SCOPE_LEVELS.has(
+    user.scope?.level,
+  );
 }

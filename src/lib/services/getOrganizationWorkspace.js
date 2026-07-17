@@ -15,20 +15,20 @@ import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 const ORGANIZATION_WORKSPACE_SCOPE_LEVELS =
   new Set(["company"]);
 
-export function getOrganizationWorkspace(user) {
-  requireOrganizationUser(user);
+export function getOrganizationWorkspace(requestContext) {
+  requireActiveMembership(requestContext);
 
-  if (!canOpenOrganizationWorkspace(user)) {
+  if (!canOpenOrganizationWorkspace(requestContext)) {
     return null;
   }
 
-  const scoped = getScopedWorkspaceData(user);
+  const scoped = getScopedWorkspaceData(requestContext);
   const accessible = scoped.organization;
   const scopedPriorities = scoped.priorities;
   const scopedExecutionItems = scoped.executionItems;
 
   const scopedHealth = getLocationHealthByIds({
-    organizationId: user.organizationId,
+    organizationId: scoped.organizationId,
     locationIds: accessible.locations.map(
       (location) => location.id,
     ),
@@ -52,21 +52,25 @@ export function getOrganizationWorkspace(user) {
     .slice(0, 5);
 
   const entities = getOrganizationEntities({
-    organizationId: user.organizationId,
-    user,
+    organizationId: scoped.organizationId,
+    scope: scoped.scope,
     metrics,
     priorities: scopedPriorities,
   });
 
   return {
-    user,
+    user: requestContext.user,
+    membership: requestContext.membership,
     scope: accessible,
 
     overview: {
       health: {
         score: metrics.operationalHealth,
         status: metrics.healthStatus,
-        summary: getOrganizationHealthSummary(user, metrics),
+        summary: getOrganizationHealthSummary(
+          scoped.scope,
+          metrics,
+        ),
       },
       insights,
     },
@@ -94,8 +98,8 @@ export function getOrganizationWorkspace(user) {
   };
 }
 
-function getOrganizationHealthSummary(user, metrics) {
-  const label = getScopeLabel(user);
+function getOrganizationHealthSummary(scope, metrics) {
+  const label = getScopeLabel(scope);
 
   if (metrics.operationalHealth === null) {
     return `${label} does not have enough operational data yet.`;
@@ -116,27 +120,27 @@ function getOrganizationHealthSummary(user, metrics) {
   return `${label} requires immediate operational attention.`;
 }
 
-function getScopeLabel(user) {
-  if (!user?.scope) return "This organization";
+function getScopeLabel(scope) {
+  if (!scope) return "This organization";
 
-  if (user.scope.level === "company") return "The organization";
-  if (user.scope.level === "region") return "This region";
-  if (user.scope.level === "district") return "This district";
-  if (user.scope.level === "location") return "This location";
+  if (scope.level === "company") return "The organization";
+  if (scope.level === "region") return "This region";
+  if (scope.level === "district") return "This district";
+  if (scope.level === "location") return "This location";
 
   return "This organization";
 }
 
 function getOrganizationEntities({
   organizationId,
-  user,
+  scope,
   metrics,
   priorities,
 }) {
   const currentEntity = resolveHierarchyEntity({
     organizationId,
-    type: user.scope.level,
-    id: user.scope.id,
+    type: scope.level,
+    id: scope.id,
   });
 
   if (!currentEntity) {
@@ -220,16 +224,20 @@ function getEntitySubtitle(entity) {
   return "Organization";
 }
 
-function requireOrganizationUser(user) {
-  if (!user?.organizationId) {
+function requireActiveMembership(requestContext) {
+  if (
+    !requestContext?.authenticated ||
+    !requestContext.membership ||
+    requestContext.membership.status !== "active"
+  ) {
     throw new Error(
-      "Organization workspace requires an organization user.",
+      "Organization workspace requires an active organization membership.",
     );
   }
 }
 
-function canOpenOrganizationWorkspace(user) {
+function canOpenOrganizationWorkspace(requestContext) {
   return ORGANIZATION_WORKSPACE_SCOPE_LEVELS.has(
-    user.scope?.level,
+    requestContext.membership?.scopeLevel,
   );
 }

@@ -8,11 +8,11 @@ import WorkspaceSection from "../components/business/WorkspaceSection";
 import OperationsQueue from "../components/operations/InvestigationQueue";
 import ExecutionQueue from "../components/execution/ExecutionQueue";
 
-import { getDailyBrief, getUserContext } from "../lib/services";
+import { getDailyBrief, getRequestContext, } from "../lib/services";
 
 export default function Home() {
-  const user = getUserContext();
-  const brief = getDailyBrief(user);
+  const requestContext = getRequestContext();
+  const brief = getDailyBrief(requestContext);
 
   const {
     health,
@@ -29,7 +29,7 @@ export default function Home() {
       <WorkspacePage>
         <WorkspaceHeader
           eyebrow="Daily Brief"
-          title={`Good Morning, ${user.name}`}
+          title={`Good Morning, ${requestContext.user.name}`}
           decision="Here is what deserves your attention today."
           updatedAt="Updated live"
         />

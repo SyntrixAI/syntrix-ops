@@ -4,11 +4,11 @@ import WorkspaceSection from "../../components/business/WorkspaceSection";
 import OpportunityPipeline from "../../components/execution/OpportunityPipeline";
 import ExecutionQueue from "../../components/execution/ExecutionQueue";
 
-import { getExecutionWorkspace, getUserContext } from "../../lib/services";
+import { getExecutionWorkspace, getRequestContext, } from "../../lib/services";
 
 export default function ExecutionPage() {
-  const user = getUserContext();
-  const workspace = getExecutionWorkspace(user);
+  const requestContext = getRequestContext();
+  const workspace = getExecutionWorkspace(requestContext);
 
   const { execution } = workspace;
 

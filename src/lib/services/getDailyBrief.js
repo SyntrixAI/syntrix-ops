@@ -4,18 +4,17 @@ import {
 import { generateExecutiveMetrics } from "../engines";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
-export function getDailyBrief(user) {
-  const scoped = getScopedWorkspaceData(user);
+export function getDailyBrief(requestContext) {
+  const scoped = getScopedWorkspaceData(requestContext);
   const accessible = scoped.organization;
   const scopedPriorities = scoped.priorities;
   const scopedExecutionItems = scoped.executionItems;
 
   const scopedHealth = getLocationHealthByIds({
-    organizationId: user.organizationId,
-    locationIds:
-      scoped.organization.locations.map(
-        (location) => location.id,
-      ),
+    organizationId: scoped.organizationId,
+    locationIds: accessible.locations.map(
+      (location) => location.id,
+    ),
   });
 
   const metrics = generateExecutiveMetrics({
@@ -42,14 +41,17 @@ export function getDailyBrief(user) {
   );
 
   return {
-    user,
-
+    user: requestContext.user,
+    membership: requestContext.membership,
     scope: accessible,
 
     health: {
       score: metrics.operationalHealth,
       status: metrics.healthStatus,
-      summary: getBriefHealthSummary(user, metrics),
+      summary: getBriefHealthSummary(
+        scoped.scope,
+        metrics,
+      ),
     },
 
     metrics,
@@ -64,8 +66,8 @@ export function getDailyBrief(user) {
   };
 }
 
-function getBriefHealthSummary(user, metrics) {
-  const scopeLabel = getScopeLabel(user);
+function getBriefHealthSummary(scope, metrics) {
+  const scopeLabel = getScopeLabel(scope);
 
   if (metrics.operationalHealth === null) {
     return `${scopeLabel} does not have enough operational data yet.`;
@@ -86,13 +88,13 @@ function getBriefHealthSummary(user, metrics) {
   return `${scopeLabel} requires immediate operational attention.`;
 }
 
-function getScopeLabel(user) {
-  if (!user?.scope) return "This workspace";
+function getScopeLabel(scope) {
+  if (!scope) return "This workspace";
 
-  if (user.scope.level === "company") return "The company";
-  if (user.scope.level === "region") return "This region";
-  if (user.scope.level === "district") return "This district";
-  if (user.scope.level === "location") return "This location";
+  if (scope.level === "company") return "The company";
+  if (scope.level === "region") return "This region";
+  if (scope.level === "district") return "This district";
+  if (scope.level === "location") return "This location";
 
   return "This workspace";
 }

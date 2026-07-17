@@ -10,29 +10,35 @@ import {
   getExecutionItems,
 } from "../repositories";
 
-export function getScopedWorkspaceData(user) {
-  if (!user?.organizationId) {
-    throw new Error("Scoped workspace data requires an organization user.");
-  }
+export function getScopedWorkspaceData(requestContext) {
+  requireActiveMembership(requestContext);
+
+  const { membership } = requestContext;
+
+  const scope = {
+    level: membership.scopeLevel,
+    id: membership.scopeEntityId,
+  };
 
   const organization = expandScope({
-    organizationId: user.organizationId,
-    scope: user.scope,
+    organizationId: membership.organizationId,
+    scope,
   });
-  
+
   const locationIds = getScopedLocationIds(organization);
 
   const organizationPriorities = getPriorities({
-    organizationId: user.organizationId,
+    organizationId: membership.organizationId,
   });
 
   const organizationExecutionItems = getExecutionItems({
-    organizationId: user.organizationId,
+    organizationId: membership.organizationId,
   });
 
   return {
-    organizationId: user.organizationId,
+    organizationId: membership.organizationId,
     organization,
+    scope,
     locationIds,
 
     priorities: getScopedPriorities(
@@ -45,4 +51,16 @@ export function getScopedWorkspaceData(user) {
       locationIds,
     ),
   };
+}
+
+function requireActiveMembership(requestContext) {
+  if (
+    !requestContext?.authenticated ||
+    !requestContext.membership ||
+    requestContext.membership.status !== "active"
+  ) {
+    throw new Error(
+      "Scoped workspace data requires an active organization membership.",
+    );
+  }
 }

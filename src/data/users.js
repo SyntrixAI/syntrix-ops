@@ -1,35 +1,23 @@
 export const users = [
   {
     id: "coo",
-    organizationId: "org-syntrix-demo",
-    name: "Executive User",
-    role: "COO",
-    scope: {
-      level: "company",
-      id: "syntrix-demo",
-    },
-    homeWorkspace: "/",
+    email: "executive@syntrix.demo",
+    firstName: "Executive",
+    lastName: "User",
+    status: "active",
   },
   {
     id: "district-north",
-    organizationId: "org-syntrix-demo",
-    name: "North Texas District Manager",
-    role: "District Manager",
-    scope: {
-      level: "district",
-      id: "north-texas",
-    },
-    homeWorkspace: "/districts/north-texas",
+    email: "district.north@syntrix.demo",
+    firstName: "North Texas",
+    lastName: "District Manager",
+    status: "active",
   },
   {
     id: "gm-plano",
-    organizationId: "org-syntrix-demo",
-    name: "Plano General Manager",
-    role: "General Manager",
-    scope: {
-      level: "location",
-      id: "plano",
-    },
-    homeWorkspace: "/locations/plano",
+    email: "gm.plano@syntrix.demo",
+    firstName: "Plano",
+    lastName: "General Manager",
+    status: "active",
   },
 ];

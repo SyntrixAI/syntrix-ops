@@ -15,15 +15,21 @@ const DISTRICT_WORKSPACE_SCOPE_LEVELS = new Set([
   "district",
 ]);
 
-export function getDistrictWorkspace(user, districtId) {
-  requireOrganizationUser(user);
+export function getDistrictWorkspace(
+  requestContext,
+  districtId,
+) {
+  requireActiveMembership(requestContext);
 
-  if (!canOpenDistrictWorkspace(user)) {
+  if (!canOpenDistrictWorkspace(requestContext)) {
     return null;
   }
 
+  const scoped =
+    getScopedWorkspaceData(requestContext);
+
   const district = resolveHierarchyEntity({
-    organizationId: user.organizationId,
+    organizationId: scoped.organizationId,
     type: "district",
     id: districtId,
   });
@@ -31,8 +37,6 @@ export function getDistrictWorkspace(user, districtId) {
   if (!district) {
     return null;
   }
-
-  const scoped = getScopedWorkspaceData(user);
 
   const canAccessDistrict =
     scoped.organization.districts.some(
@@ -45,7 +49,7 @@ export function getDistrictWorkspace(user, districtId) {
   }
 
   const ancestors = getAncestors({
-    organizationId: user.organizationId,
+    organizationId: scoped.organizationId,
     entity: district,
   });
 
@@ -60,7 +64,7 @@ export function getDistrictWorkspace(user, districtId) {
     ) ?? null;
 
   const locations = getDescendantLocations({
-    organizationId: user.organizationId,
+    organizationId: scoped.organizationId,
     entity: district,
   });
 
@@ -69,19 +73,21 @@ export function getDistrictWorkspace(user, districtId) {
   );
 
   const districtHealth =
-  getLocationHealthByIds({
-    organizationId: user.organizationId,
-    locationIds: [...locationIds],
-  });
+    getLocationHealthByIds({
+      organizationId: scoped.organizationId,
+      locationIds: [...locationIds],
+    });
 
-  const districtPriorities = scoped.priorities.filter(
-    (priority) =>
-      locationIds.has(priority.locationId),
-  );
+  const districtPriorities =
+    scoped.priorities.filter(
+      (priority) =>
+        locationIds.has(priority.locationId),
+    );
 
   const districtExecutionItems =
     scoped.executionItems.filter(
-      (item) => locationIds.has(item.locationId),
+      (item) =>
+        locationIds.has(item.locationId),
     );
 
   const metrics = generateExecutiveMetrics({
@@ -93,11 +99,13 @@ export function getDistrictWorkspace(user, districtId) {
 
   const executiveInsights = districtPriorities
     .flatMap((priority) =>
-      (priority.insights ?? []).map((insight) => ({
-        ...insight,
-        id: `${priority.id}-${insight.id}`,
-        title: `${priority.location}: ${insight.title}`,
-      })),
+      (priority.insights ?? []).map(
+        (insight) => ({
+          ...insight,
+          id: `${priority.id}-${insight.id}`,
+          title: `${priority.location}: ${insight.title}`,
+        }),
+      ),
     )
     .slice(0, 5);
 
@@ -109,13 +117,17 @@ export function getDistrictWorkspace(user, districtId) {
     healthScores.length > 0
       ? Math.round(
           healthScores.reduce(
-            (sum, health) => sum + health.score,
+            (sum, health) =>
+              sum + health.score,
             0,
           ) / healthScores.length,
         )
       : null;
 
   return {
+    user: requestContext.user,
+    membership: requestContext.membership,
+
     district,
     region,
     company,
@@ -132,6 +144,7 @@ export function getDistrictWorkspace(user, districtId) {
           averageHealth,
         ),
       },
+
       insights: executiveInsights,
     },
 
@@ -139,6 +152,7 @@ export function getDistrictWorkspace(user, districtId) {
 
     operations: {
       priorities: districtPriorities,
+
       criticalPriorities:
         districtPriorities.filter(
           (priority) =>
@@ -159,17 +173,25 @@ export function getDistrictWorkspace(user, districtId) {
   };
 }
 
-function requireOrganizationUser(user) {
-  if (!user?.organizationId) {
+function requireActiveMembership(
+  requestContext,
+) {
+  if (
+    !requestContext?.authenticated ||
+    !requestContext.membership ||
+    requestContext.membership.status !== "active"
+  ) {
     throw new Error(
-      "District workspace requires an organization user.",
+      "District workspace requires an active organization membership.",
     );
   }
 }
 
-function canOpenDistrictWorkspace(user) {
+function canOpenDistrictWorkspace(
+  requestContext,
+) {
   return DISTRICT_WORKSPACE_SCOPE_LEVELS.has(
-    user.scope?.level,
+    requestContext.membership?.scopeLevel,
   );
 }
 
@@ -178,6 +200,7 @@ function getDistrictHealthStatus(score) {
   if (score >= 85) return "Healthy";
   if (score >= 70) return "Watch";
   if (score >= 50) return "At Risk";
+
   return "Critical";
 }
 

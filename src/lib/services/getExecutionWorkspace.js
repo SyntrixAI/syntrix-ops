@@ -19,8 +19,8 @@ const PIPELINE_STAGES = [
   },
 ];
 
-export function getExecutionWorkspace(user) {
-  const scoped = getScopedWorkspaceData(user);
+export function getExecutionWorkspace(requestContext) {
+  const scoped = getScopedWorkspaceData(requestContext);
   const executionItems = scoped.executionItems;
 
   const readyItems = executionItems.filter(
@@ -58,7 +58,8 @@ export function getExecutionWorkspace(user) {
   });
 
   return {
-    user,
+    user: requestContext.user,
+    membership: requestContext.membership,
     scope: scoped.organization,
 
     metrics: {

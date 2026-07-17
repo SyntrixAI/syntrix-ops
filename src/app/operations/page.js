@@ -5,11 +5,11 @@ import KeyInsights from "../../components/business/KeyInsights";
 import OperationsSummary from "../../components/operations/OperationsSummary";
 import OperationsQueue from "../../components/operations/InvestigationQueue";
 
-import { getOperationsWorkspace, getUserContext } from "../../lib/services";
+import { getOperationsWorkspace, getRequestContext } from "../../lib/services";
 
 export default function OperationsPage() {
-  const user = getUserContext();
-  const workspace = getOperationsWorkspace(user);
+  const requestContext = getRequestContext();
+  const workspace = getOperationsWorkspace(requestContext);
 
   const { overview, metrics, operations } = workspace;
 

@@ -8,11 +8,11 @@ import OperationsQueue from "../../components/operations/InvestigationQueue";
 import ExecutionQueue from "../../components/execution/ExecutionQueue";
 import HierarchyToolbar from "../../components/business/HierarchyToolbar";
 import HierarchyTable from "../../components/business/HierarchyTable";
-import { getOrganizationWorkspace, getUserContext } from "../../lib/services";
+import { getOrganizationWorkspace, getRequestContext, } from "../../lib/services";
 
 export default function OrganizationPage() {
-  const user = getUserContext();
-  const workspace = getOrganizationWorkspace(user);
+  const requestContext = getRequestContext();
+  const workspace = getOrganizationWorkspace(requestContext);
 
   if (!workspace) {
   return (
@@ -28,6 +28,8 @@ export default function OrganizationPage() {
   );
 }
 
+  const scopeLevel = requestContext.membership.scopeLevel;
+
   const {
     overview,
     metrics,
@@ -38,8 +40,8 @@ export default function OrganizationPage() {
 
   return (
     <ExecutiveWorkspace
-      eyebrow={getWorkspaceEyebrow(user)}
-      title={getWorkspaceTitle(user, organization)}
+      eyebrow={getWorkspaceEyebrow(scopeLevel)}
+      title={getWorkspaceTitle(scopeLevel, organization,)}
       decision="How is my organization performing, and where should I focus?"
     >
 
@@ -76,14 +78,14 @@ export default function OrganizationPage() {
       </WorkspaceSection>
 
       <WorkspaceSection
-        label={getComparisonLabel(user)}
-        title={getComparisonTitle(user)}
+        label={getComparisonLabel(scopeLevel)}
+        title={getComparisonTitle(scopeLevel)}
         description="Compare the operational units within your scope."
       >
         <div className="space-y-4">
           <HierarchyToolbar
-            label={getComparisonLabel(user)}
-                  count={getOrganizationCount(user, organization)}
+            label={getComparisonLabel(scopeLevel)}
+            count={getOrganizationCount(scopeLevel, organization,)}
           />
 
           <HierarchyTable rows={organization.entities} />
@@ -109,9 +111,15 @@ export default function OrganizationPage() {
   );
 }
 
-function getOrganizationCount(user, organization) {
-  if (user.scope.level === "company") return organization.regions.length;
-  if (user.scope.level === "region") return organization.districts.length;
+function getOrganizationCount(scopeLevel, organization,) {
+  if (scopeLevel === "company") {
+    return organization.regions.length;
+  }
+
+  if (scopeLevel === "region") {
+    return organization.districts.length;
+  }
+
   return organization.locations.length;
 }
 
@@ -124,49 +132,49 @@ function MetricCard({ label, value }) {
   );
 }
 
-function getWorkspaceEyebrow(user) {
-  if (user.scope.level === "company") return "Organization Workspace";
-  if (user.scope.level === "region") return "Region Workspace";
-  if (user.scope.level === "district") return "District Workspace";
-  if (user.scope.level === "location") return "Location Workspace";
+function getWorkspaceEyebrow(scopeLevel) {
+  if (scopeLevel === "company") return "Organization Workspace";
+  if (scopeLevel === "region") return "Region Workspace";
+  if (scopeLevel === "district") return "District Workspace";
+  if (scopeLevel === "location") return "Location Workspace";
 
   return "Organization Workspace";
 }
 
-function getWorkspaceTitle(user, organization) {
-  if (user.scope.level === "company") {
+function getWorkspaceTitle(scopeLevel, organization,) {
+  if (scopeLevel === "company") {
     return organization.company?.name ?? "Organization";
   }
 
-  if (user.scope.level === "region") {
+  if (scopeLevel === "region") {
     return organization.regions[0]?.name ?? "Region";
   }
 
-  if (user.scope.level === "district") {
+  if (scopeLevel === "district") {
     return organization.districts[0]?.name ?? "District";
   }
 
-  if (user.scope.level === "location") {
+  if (scopeLevel === "location") {
     return organization.locations[0]?.name ?? "Location";
   }
 
   return "Organization";
 }
 
-function getComparisonLabel(user) {
-  if (user.scope.level === "company") return "Regions";
-  if (user.scope.level === "region") return "Districts";
-  if (user.scope.level === "district") return "Locations";
-  if (user.scope.level === "location") return "Location";
+function getComparisonLabel(scopeLevel) {
+  if (scopeLevel === "company") return "Regions";
+  if (scopeLevel === "region") return "Districts";
+  if (scopeLevel === "district") return "Locations";
+  if (scopeLevel === "location") return "Location";
 
   return "Organization";
 }
 
-function getComparisonTitle(user) {
-  if (user.scope.level === "company") return "Regions in Organization";
-  if (user.scope.level === "region") return "Districts in Region";
-  if (user.scope.level === "district") return "Locations in District";
-  if (user.scope.level === "location") return "Assigned Location";
+function getComparisonTitle(scopeLevel) {
+  if (scopeLevel === "company") return "Regions in Organization";
+  if (scopeLevel === "region") return "Districts in Region";
+  if (scopeLevel === "district") return "Locations in District";
+  if (scopeLevel === "location") return "Assigned Location";
 
   return "Organization";
 }

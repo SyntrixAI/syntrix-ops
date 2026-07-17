@@ -7,8 +7,8 @@ import {
   buildExecutiveImpact
 } from "../intelligence";
 
-export function getIntelligenceWorkspace(user) {
-  const scoped = getScopedWorkspaceData(user);
+export function getIntelligenceWorkspace(requestContext) {
+  const scoped = getScopedWorkspaceData(requestContext);
 
   const intelligenceItems = scoped.priorities
     .map(buildRecommendationContext)
@@ -31,7 +31,8 @@ export function getIntelligenceWorkspace(user) {
   const topItem = decisionItems[0];
 
   return {
-    user,
+    user: requestContext.user,
+    membership: requestContext.membership,
     scope: scoped.organization,
 
     summary: {

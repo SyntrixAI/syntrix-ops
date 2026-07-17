@@ -24,7 +24,7 @@ export default async function InvestigationPage({ params }) {
 
   const investigation =
     getInvestigationWorkspace(
-      requestContext.user,
+      requestContext,
       id,
     );
 

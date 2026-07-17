@@ -3,11 +3,11 @@ import WorkspaceSection from "../../components/business/WorkspaceSection";
 import ExecutiveBrief from "../../components/intelligence/ExecutiveBrief";
 import IntelligenceStory from "../../components/intelligence/IntelligenceStory";
 import AskSyntrixPanel from "../../components/intelligence/AskSyntrixPanel";
-import { getIntelligenceWorkspace, getUserContext } from "../../lib/services";
+import { getIntelligenceWorkspace, getRequestContext, } from "../../lib/services";
 
 export default function IntelligencePage() {
-  const user = getUserContext();
-  const workspace = getIntelligenceWorkspace(user);
+  const requestContext = getRequestContext();
+  const workspace = getIntelligenceWorkspace(requestContext);
 
   const { summary, intelligence } = workspace;
 

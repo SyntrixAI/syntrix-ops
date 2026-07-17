@@ -4,6 +4,9 @@ import {
 import {
   getSignalById,
 } from "../repositories/signalRepository";
+import {
+  getRecommendationByPriorityId,
+} from "../repositories/recommendationRepository";
 import { activityFeed } from "../../data/activityFeed";
 import { contextInsights } from "../../data/contextInsights";
 import { buildRecommendationContext } from "../intelligence/buildRecommendationContext";
@@ -11,21 +14,19 @@ import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 import {
   getOperationalMemory,
 } from "./getOperationalMemory";
-import {
-  getRecommendationByPriorityId,
-} from "../repositories/recommendationRepository";
 
 export function getInvestigationWorkspace(
-  user,
+  requestContext,
   investigationId,
 ) {
-  requireOrganizationUser(user);
+  requireActiveMembership(requestContext);
 
   if (!investigationId) {
     return null;
   }
 
-  const scoped = getScopedWorkspaceData(user);
+  const scoped =
+    getScopedWorkspaceData(requestContext);
 
   const priority = scoped.priorities.find(
     (priority) =>
@@ -45,7 +46,7 @@ export function getInvestigationWorkspace(
     ) ?? null;
 
   const relatedSignal = getSignalById({
-    organizationId: user.organizationId,
+    organizationId: scoped.organizationId,
     signalId: priority.id,
   });
 
@@ -56,20 +57,20 @@ export function getInvestigationWorkspace(
       : null;
 
   const assessment = getAssessmentByLocation({
-    organizationId: user.organizationId,
+    organizationId: scoped.organizationId,
     locationId: priority.locationId,
   });
 
   const memory = getOperationalMemory({
-    organizationId: user.organizationId,
+    organizationId: scoped.organizationId,
     locationId: priority.locationId,
   });
 
   const recommendation =
-  getRecommendationByPriorityId({
-    organizationId: user.organizationId,
-    priorityId: priority.id,
-  });
+    getRecommendationByPriorityId({
+      organizationId: scoped.organizationId,
+      priorityId: priority.id,
+    });
 
   const activity =
     activityFeed[priority.id] ?? [];
@@ -81,10 +82,14 @@ export function getInvestigationWorkspace(
     buildRecommendationContext(priority, {
       recommendation,
       memory,
-  });
+    });
 
   return {
     id: priority.id,
+
+    user: requestContext.user,
+    membership: requestContext.membership,
+
     priority,
     assessment,
     executionItem,
@@ -95,10 +100,14 @@ export function getInvestigationWorkspace(
   };
 }
 
-function requireOrganizationUser(user) {
-  if (!user?.organizationId) {
+function requireActiveMembership(requestContext) {
+  if (
+    !requestContext?.authenticated ||
+    !requestContext.membership ||
+    requestContext.membership.status !== "active"
+  ) {
     throw new Error(
-      "Investigation workspace requires an organization user.",
+      "Investigation workspace requires an active organization membership.",
     );
   }
 }

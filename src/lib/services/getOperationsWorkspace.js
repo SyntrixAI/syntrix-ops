@@ -1,8 +1,8 @@
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 import { generateNarrative } from "../engines";
 
-export function getOperationsWorkspace(user) {
-  const scoped = getScopedWorkspaceData(user);
+export function getOperationsWorkspace(requestContext) {
+  const scoped = getScopedWorkspaceData(requestContext);
 
   const priorities = scoped.priorities;
 
@@ -48,7 +48,8 @@ export function getOperationsWorkspace(user) {
   });
 
   return {
-    user,
+    user: requestContext.user,
+    membership: requestContext.membership,
     scope: scoped.organization,
 
     overview: {

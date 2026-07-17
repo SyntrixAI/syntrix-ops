@@ -1,18 +1,18 @@
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
 
-export default function InvestigationTimeline({ investigation }) {
-  const { relatedSignal, assessment, priority, executionItem } = investigation;
+export default function InvestigationTimeline({ timeline, }) {
+  const { signal, assessment, priority, executionItem } = timeline;
 
-  const timeline = [
-    relatedSignal && {
+  const events = [
+    signal && {
       id: "signal",
       step: "01",
       label: "Signal Detected",
       status: "Complete",
-      time: relatedSignal.detectedAt,
-      title: relatedSignal.title,
-      description: relatedSignal.description,
+      time: signal.detectedAt,
+      title: signal.title,
+      description: signal.description,
     },
     assessment && {
       id: "assessment",
@@ -66,7 +66,7 @@ export default function InvestigationTimeline({ investigation }) {
       </p>
 
       <div className="mt-8 space-y-6">
-        {timeline.map((item) => (
+        {events.map((item) => (
           <div key={item.id} className="relative border-l border-slate-800 pl-6">
             <div className="absolute -left-3 top-0 flex h-6 w-6 items-center justify-center rounded-full border border-cyan-500 bg-slate-950 text-xs font-bold text-cyan-400">
               {item.step}

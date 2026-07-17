@@ -3,8 +3,8 @@ import ConfidenceIndicator from "../business/Confidence";
 import EvidenceList from "../business/Evidence";
 import { getConfidenceLevel } from "../../lib/confidence";
 
-export default function InvestigationEvidence({ investigation }) {
-  const { assessment } = investigation;
+export default function InvestigationEvidence({ evidence }) {
+  const { assessment } = evidence;
 
   if (!assessment) return null;
 

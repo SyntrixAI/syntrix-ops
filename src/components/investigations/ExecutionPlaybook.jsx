@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Card from "../ui/Card";
 
-export default function ExecutionPlaybook({ investigation }) {
-  const { priority, executionItem } = investigation;
+export default function ExecutionPlaybook({ execution }) {
+  const { priority, executionItem } = execution;
 
   if (!executionItem) return null;
 

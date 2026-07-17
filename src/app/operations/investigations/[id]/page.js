@@ -6,19 +6,22 @@ import ExecutionPlaybook from "../../../../components/investigations/ExecutionPl
 import InvestigationActivity from "../../../../components/investigations/InvestigationActivity";
 import SyntrixAssessment from "../../../../components/compositions/SyntrixAssessment";
 import InvestigationContext from "../../../../components/investigations/InvestigationReasoning";
+import InvestigationIntelligence from "../../../../components/investigations/InvestigationIntelligence";
 import WorkspaceHeader from "../../../../components/business/WorkspaceHeader";
 import DecisionBanner from "../../../../components/business/DecisionBanner";
 import PriorityScore from "../../../../components/business/PriorityScore";
 import KeyInsights from "../../../../components/business/KeyInsights";
 import WorkspaceBreadcrumbs from "../../../../components/business/WorkspaceBreadcrumbs";
+
 import {
   getInvestigationWorkspace,
   getRequestContext,
   getWorkspaceContext,
 } from "../../../../lib/services";
-import InvestigationIntelligence from "../../../../components/investigations/InvestigationIntelligence";
 
-export default async function InvestigationPage({ params }) {
+export default async function InvestigationPage({
+  params,
+}) {
   const { id } = await params;
   const requestContext = getRequestContext();
 
@@ -47,45 +50,118 @@ export default async function InvestigationPage({ params }) {
     id,
   });
 
+  const {
+    header,
+    assessmentSection,
+    evidenceSection,
+    timelineSection,
+    intelligenceSection,
+    executionSection,
+    activitySection,
+  } = investigation;
+
+  const { priority } = header;
+
+  const {
+    assessment,
+    context: investigationContext,
+  } = assessmentSection;
+
+  const { intelligence } =
+    intelligenceSection;
+
+  const {
+    recommendation,
+    executionItem,
+  } = executionSection;
+
+  const { activity } =
+    activitySection;
+
   return (
-  <AppLayout>
-    <WorkspacePage>
-      <WorkspaceBreadcrumbs items={context?.items} />
+    <AppLayout>
+      <WorkspacePage>
+        <WorkspaceBreadcrumbs
+          items={context?.items}
+        />
 
-      <WorkspaceHeader
-        eyebrow="Investigation"
-        title={investigation.priority.title}
-        decision="Why is this happening and what action should I take?"
-        updatedAt="Updated 5 minutes ago"
-      />
+        <WorkspaceHeader
+          eyebrow="Investigation"
+          title={priority.title}
+          decision="Why is this happening and what action should I take?"
+          updatedAt="Updated 5 minutes ago"
+        />
 
-      <DecisionBanner
-        decision={investigation.priority.primaryAction}
-        impact={`+$${investigation.priority.estimatedImpact.toLocaleString()}/wk`}
-        confidence={`${investigation.assessment?.confidence ?? 90}% confidence`}
-        rationale={investigation.priority.rationale}
-        actionLabel="Send to Execution"
-      />
+        <DecisionBanner
+          decision={
+            recommendation?.title ??
+            executionItem?.title ??
+            priority.primaryAction
+          }
+          impact={`+$${(
+            executionItem
+              ?.businessImpact
+              ?.weeklyRecovery ??
+            priority.estimatedImpact ??
+            0
+          ).toLocaleString()}/wk`}
+          confidence={`${
+            assessment?.confidence ??
+            priority.confidence ??
+            90
+          }% confidence`}
+          rationale={
+            priority.rationale
+          }
+          actionLabel="Send to Execution"
+        />
 
-      <PriorityScore priority={investigation.priority} />
+        <PriorityScore
+          priority={priority}
+        />
 
-      <KeyInsights insights={investigation.priority.insights} />
+        <KeyInsights
+          insights={
+            priority.insights ?? []
+          }
+        />
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <div className="space-y-8 lg:col-span-2">
-          <SyntrixAssessment assessment={investigation.assessment} />
-          <InvestigationContext context={investigation.context} />
-          <InvestigationIntelligence intelligence={investigation.intelligence} />
-          <InvestigationEvidence investigation={investigation} />
-          <InvestigationTimeline investigation={investigation} />
-          <InvestigationActivity activity={investigation.activity} />
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="space-y-8 lg:col-span-2">
+            <SyntrixAssessment
+              assessment={assessment}
+            />
+
+            <InvestigationContext
+              context={
+                investigationContext
+              }
+            />
+
+            <InvestigationIntelligence
+              intelligence={intelligence}
+            />
+
+            <InvestigationEvidence
+              evidence={evidenceSection}
+            />
+
+            <InvestigationTimeline
+              timeline={timelineSection}
+            />
+
+            <InvestigationActivity
+              activity={activity}
+            />
+          </div>
+
+          <div>
+            <ExecutionPlaybook
+              execution={executionSection}
+            />
+          </div>
         </div>
-
-        <div>
-          <ExecutionPlaybook investigation={investigation} />
-        </div>
-      </div>
-    </WorkspacePage>
-  </AppLayout>
-);
+      </WorkspacePage>
+    </AppLayout>
+  );
 }

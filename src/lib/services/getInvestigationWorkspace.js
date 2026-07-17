@@ -100,15 +100,53 @@ export function getInvestigationWorkspace(
     user: requestContext.user,
     membership: requestContext.membership,
 
+    header: {
+      priority,
+      signal: scopedRelatedSignal,
+    },
+
+    assessmentSection: {
+      assessment,
+      context,
+    },
+
+    evidenceSection: {
+      assessment,
+      signal: scopedRelatedSignal,
+    },
+
+    timelineSection: {
+      signal: scopedRelatedSignal,
+      assessment,
+      priority,
+      executionItem,
+    },
+
+    intelligenceSection: {
+      intelligence,
+    },
+
+    executionSection: {
+      recommendation,
+      executionItem,
+      priority,
+    },
+
+    activitySection: {
+      activity,
+    },
+
+    // Temporary compatibility fields.
     priority,
     assessment,
+    recommendation,
     executionItem,
     activity,
     context,
     intelligence,
     relatedSignal: scopedRelatedSignal,
   };
-}
+  }
 
 function requireActiveMembership(requestContext) {
   if (

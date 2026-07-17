@@ -1,4 +1,4 @@
-import SyntrixAssessment from "../compositions/SyntrixAssessment";
+import SyntrixAssessment from "../casefiles/SyntrixAssessment";
 import HealthOverview from "../business/HealthOverview";
 
 export default function LocationOverview({ overview }) {

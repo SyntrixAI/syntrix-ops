@@ -1,19 +1,27 @@
-import Card from "../../ui/Card";
-import Badge from "../../ui/Badge";
+import Card from "../ui/Card";
+import Badge from "../ui/Badge";
 
-import Recommendation from "../../business/Recommendation";
-import BusinessImpact from "../../business/BusinessImpact";
-import Confidence from "../../business/Confidence";
-import { getConfidenceLevel } from "../../../lib/confidence";
+import Recommendation from "../business/Recommendation";
+import BusinessImpact from "../business/BusinessImpact";
+import Confidence from "../business/Confidence";
+import { getConfidenceLevel } from "../../lib/confidence";
 
 export default function SyntrixAssessment({
   assessmentSection,
+  assessment: legacyAssessment,
 }) {
+  const resolvedSection =
+    assessmentSection ?? {
+      assessment: legacyAssessment,
+      context: null,
+      intelligence: null,
+    };
+
   const {
     assessment,
     context,
     intelligence,
-  } = assessmentSection ?? {};
+  } = resolvedSection;
 
   if (!assessment) return null;
 

@@ -5,8 +5,6 @@ import InvestigationTimeline from "../../../../components/investigations/Investi
 import ExecutionPlaybook from "../../../../components/investigations/ExecutionPlaybook";
 import InvestigationActivity from "../../../../components/investigations/InvestigationActivity";
 import SyntrixAssessment from "../../../../components/compositions/SyntrixAssessment";
-import InvestigationContext from "../../../../components/investigations/InvestigationReasoning";
-import InvestigationIntelligence from "../../../../components/investigations/InvestigationIntelligence";
 import WorkspaceHeader from "../../../../components/business/WorkspaceHeader";
 import DecisionBanner from "../../../../components/business/DecisionBanner";
 import PriorityScore from "../../../../components/business/PriorityScore";
@@ -55,20 +53,14 @@ export default async function InvestigationPage({
     assessmentSection,
     evidenceSection,
     timelineSection,
-    intelligenceSection,
     executionSection,
     activitySection,
   } = investigation;
 
   const { priority } = header;
 
-  const {
-    assessment,
-    context: investigationContext,
-  } = assessmentSection;
-
-  const { intelligence } =
-    intelligenceSection;
+  const { assessment } =
+    assessmentSection;
 
   const {
     recommendation,
@@ -129,17 +121,7 @@ export default async function InvestigationPage({
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
             <SyntrixAssessment
-              assessment={assessment}
-            />
-
-            <InvestigationContext
-              context={
-                investigationContext
-              }
-            />
-
-            <InvestigationIntelligence
-              intelligence={intelligence}
+              assessmentSection={assessmentSection}
             />
 
             <InvestigationEvidence

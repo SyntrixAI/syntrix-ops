@@ -108,6 +108,7 @@ export function getInvestigationWorkspace(
     assessmentSection: {
       assessment,
       context,
+      intelligence,
     },
 
     evidenceSection: {
@@ -122,10 +123,6 @@ export function getInvestigationWorkspace(
       executionItem,
     },
 
-    intelligenceSection: {
-      intelligence,
-    },
-
     executionSection: {
       recommendation,
       executionItem,
@@ -135,16 +132,6 @@ export function getInvestigationWorkspace(
     activitySection: {
       activity,
     },
-
-    // Temporary compatibility fields.
-    priority,
-    assessment,
-    recommendation,
-    executionItem,
-    activity,
-    context,
-    intelligence,
-    relatedSignal: scopedRelatedSignal,
   };
   }
 

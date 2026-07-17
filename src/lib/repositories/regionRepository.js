@@ -1,4 +1,6 @@
-import { regions } from "../../data/regions";
+import {
+  getRegionRecords,
+} from "../datasources";
 
 function requireOrganizationId(organizationId) {
   if (!organizationId) {
@@ -11,7 +13,7 @@ function requireOrganizationId(organizationId) {
 function getOrganizationRegions(organizationId) {
   requireOrganizationId(organizationId);
 
-  return regions.filter(
+  return getRegionRecords().filter(
     (region) => region.organizationId === organizationId,
   );
 }

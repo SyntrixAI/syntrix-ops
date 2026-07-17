@@ -1,4 +1,6 @@
-import { locations } from "../../data/locations";
+import {
+  getLocationRecords,
+} from "../datasources";
 
 function requireOrganizationId(organizationId) {
   if (!organizationId) {
@@ -11,13 +13,15 @@ function requireOrganizationId(organizationId) {
 function getOrganizationLocations(organizationId) {
   requireOrganizationId(organizationId);
 
-  return locations.filter(
+  return getLocationRecords().filter(
     (location) =>
       location.organizationId === organizationId,
   );
 }
 
-export function getLocations({ organizationId } = {}) {
+export function getLocations({
+  organizationId,
+} = {}) {
   return getOrganizationLocations(organizationId);
 }
 

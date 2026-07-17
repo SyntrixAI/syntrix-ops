@@ -18,7 +18,7 @@ export default async function LocationPage({ params }) {
   const requestContext = getRequestContext();
 
   const workspace = getLocationWorkspace(
-    requestContext.user,
+    requestContext,
     id,
   );
 

@@ -1,4 +1,6 @@
-import { districts } from "../../data/districts";
+import {
+  getDistrictRecords,
+} from "../datasources";
 
 function requireOrganizationId(organizationId) {
   if (!organizationId) {
@@ -11,13 +13,15 @@ function requireOrganizationId(organizationId) {
 function getOrganizationDistricts(organizationId) {
   requireOrganizationId(organizationId);
 
-  return districts.filter(
+  return getDistrictRecords().filter(
     (district) =>
       district.organizationId === organizationId,
   );
 }
 
-export function getDistricts({ organizationId } = {}) {
+export function getDistricts({
+  organizationId,
+} = {}) {
   return getOrganizationDistricts(organizationId);
 }
 
@@ -49,6 +53,7 @@ export function getDistrictsByRegion({
   }
 
   return getOrganizationDistricts(organizationId).filter(
-    (district) => district.regionId === regionId,
+    (district) =>
+      district.regionId === regionId,
   );
 }

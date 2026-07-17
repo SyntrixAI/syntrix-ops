@@ -1,4 +1,6 @@
-import { company } from "../../data/company";
+import {
+  getCompanyRecords,
+} from "../datasources";
 
 function requireOrganizationId(organizationId) {
   if (!organizationId) {
@@ -8,14 +10,21 @@ function requireOrganizationId(organizationId) {
   }
 }
 
-export function getCompany({ organizationId } = {}) {
+function getOrganizationCompany(organizationId) {
   requireOrganizationId(organizationId);
 
-  if (company.organizationId !== organizationId) {
-    return null;
-  }
+  return (
+    getCompanyRecords().find(
+      (company) =>
+        company.organizationId === organizationId,
+    ) ?? null
+  );
+}
 
-  return company;
+export function getCompany({
+  organizationId,
+} = {}) {
+  return getOrganizationCompany(organizationId);
 }
 
 export function getCompanyById({
@@ -30,10 +39,10 @@ export function getCompanyById({
     );
   }
 
-  if (
-    company.organizationId !== organizationId ||
-    company.id !== companyId
-  ) {
+  const company =
+    getOrganizationCompany(organizationId);
+
+  if (!company || company.id !== companyId) {
     return null;
   }
 

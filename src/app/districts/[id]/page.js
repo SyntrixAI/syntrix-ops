@@ -23,7 +23,7 @@ export default async function DistrictPage({ params }) {
   const requestContext = getRequestContext();
 
   const workspace = getDistrictWorkspace(
-    requestContext.user,
+    requestContext,
     id,
   );
 

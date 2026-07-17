@@ -14,16 +14,26 @@ export default function HierarchyTable({ rows = [] }) {
     <WorkspaceList>
       {rows.map((row) => (
         <ExecutiveRow
-          key={row.id}
-          title={row.name}
+          key={`${row.type ?? "entity"}-${row.id}`}
+          title={row.title ?? row.name}
           subtitle={row.subtitle}
           status={row.status}
-          situation={row.situation ?? getDefaultSituation(row)}
-          opportunity={`+$${(row.estimatedRecovery ?? 0).toLocaleString()}/wk`}
-          action={{
-            label: "Open",
-            href: row.href,
-          }}
+          situation={
+            row.situation ??
+            getDefaultSituation(row)
+          }
+          opportunity={
+            row.opportunity ??
+            `+$${(
+              row.estimatedRecovery ?? 0
+            ).toLocaleString()}/wk`
+          }
+          action={
+            row.action ?? {
+              label: "Open",
+              href: row.href,
+            }
+          }
         />
       ))}
     </WorkspaceList>

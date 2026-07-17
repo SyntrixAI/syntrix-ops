@@ -1,10 +1,42 @@
-import { getLocationById } from "../repositories";
-import { getSignalsByLocation, } from "../repositories/signalRepository";
-import { getAssessmentByLocation, } from "../repositories/assessmentRepository";
-import { getLocationTimeline, } from "./getLocationTimeline";
-import { getLocationHealth, } from "./getLocationHealth";
-import { getOperationalMemory, } from "./getOperationalMemory";
-import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
+import {
+  getLocationById,
+} from "../repositories";
+
+import {
+  getSignalsByLocation,
+} from "../repositories/signalRepository";
+
+import {
+  getAssessmentByLocation,
+} from "../repositories/assessmentRepository";
+
+import {
+  getRecommendationByPriorityId,
+} from "../repositories/recommendationRepository";
+
+import {
+  buildRecommendationContext,
+} from "../intelligence/buildRecommendationContext";
+
+import {
+  getLocationTimeline,
+} from "./getLocationTimeline";
+
+import {
+  getLocationHealth,
+} from "./getLocationHealth";
+
+import {
+  getOperationalMemory,
+} from "./getOperationalMemory";
+
+import {
+  getInvestigationContext,
+} from "./getInvestigationContext";
+
+import {
+  getScopedWorkspaceData,
+} from "./getScopedWorkspaceData";
 
 export function getLocationWorkspace(
   requestContext,
@@ -73,6 +105,84 @@ export function getLocationWorkspace(
     locationId: location.id,
   });
 
+  const primaryPriority =
+    [...locationPriorities].sort(
+      (a, b) =>
+        (b.priorityScore ?? 0) -
+        (a.priorityScore ?? 0),
+    )[0] ?? null;
+
+  const recommendation =
+    primaryPriority
+      ? getRecommendationByPriorityId({
+          organizationId:
+            scoped.organizationId,
+          priorityId: primaryPriority.id,
+        })
+      : null;
+
+  const context =
+    primaryPriority
+      ? getInvestigationContext({
+          organizationId:
+            scoped.organizationId,
+          priority: primaryPriority,
+        })
+      : null;
+
+  const intelligence =
+    primaryPriority
+      ? buildRecommendationContext(
+          primaryPriority,
+          {
+            recommendation,
+            memory,
+          },
+        )
+      : null;
+
+  const assessmentWorkspace =
+    assessment
+      ? {
+          assessment,
+
+          recommendation:
+            assessment?.recommendation ??
+            null,
+
+          analysis: {
+            headline:
+              context?.headline ?? null,
+
+            explanation:
+              context?.explanation ?? null,
+
+            factors:
+              context?.factors ?? [],
+
+            evidence:
+              assessment.evidence ??
+              locationSignals[0]?.evidence ??
+              [],
+
+            rootCauses:
+              intelligence?.rootCauses ?? [],
+
+            trends:
+              intelligence?.trends ?? [],
+
+            memory:
+              intelligence?.memory
+                ? [intelligence.memory]
+                : [],
+
+            memorySummary:
+              intelligence?.memorySummary ??
+              null,
+          },
+        }
+      : null;
+
   return {
     user: requestContext.user,
     membership: requestContext.membership,
@@ -81,7 +191,7 @@ export function getLocationWorkspace(
 
     overview: {
       health,
-      assessment,
+      assessment: assessmentWorkspace,
       memory,
     },
 
@@ -111,7 +221,8 @@ function requireActiveMembership(requestContext) {
   if (
     !requestContext?.authenticated ||
     !requestContext.membership ||
-    requestContext.membership.status !== "active"
+    requestContext.membership.status !==
+      "active"
   ) {
     throw new Error(
       "Location workspace requires an active organization membership.",

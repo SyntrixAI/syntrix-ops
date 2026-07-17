@@ -64,7 +64,9 @@ export default async function LocationPage({ params }) {
           }
           confidence={
             workspace.overview.assessment
-              ? `${workspace.overview.assessment.confidence}% confidence`
+              ?.assessment
+              ?.confidence != null
+              ? `${workspace.overview.assessment.assessment.confidence}% confidence`
               : null
           }
           actionLabel="Review Workspace"

@@ -2,9 +2,14 @@ import Link from "next/link";
 import Card from "../ui/Card";
 
 export default function ExecutionPlaybook({ execution }) {
-  const { priority, executionItem } = execution;
+  const {
+    priority,
+    playbook,
+  } = execution ?? {};
 
-  if (!executionItem) return null;
+  if (!priority || !playbook) {
+    return null;
+  }
 
   const {
     title,
@@ -19,7 +24,7 @@ export default function ExecutionPlaybook({ execution }) {
     risk,
     successCriteria = [],
     followUp,
-  } = executionItem;
+  } = playbook;
 
   return (
     <div className="space-y-6">

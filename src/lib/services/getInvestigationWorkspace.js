@@ -13,8 +13,12 @@ import {
 import {
   getInvestigationContext,
 } from "./getInvestigationContext";
-import { buildRecommendationContext } from "../intelligence/buildRecommendationContext";
-import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
+import {
+  buildRecommendationContext,
+} from "../intelligence/buildRecommendationContext";
+import {
+  getScopedWorkspaceData,
+} from "./getScopedWorkspaceData";
 import {
   getOperationalMemory,
 } from "./getOperationalMemory";
@@ -54,7 +58,7 @@ export function getInvestigationWorkspace(
     signalId: priority.id,
   });
 
-  const scopedRelatedSignal =
+  const signal =
     relatedSignal?.locationId ===
     priority.locationId
       ? relatedSignal
@@ -65,22 +69,15 @@ export function getInvestigationWorkspace(
     locationId: priority.locationId,
   });
 
-  const memory = getOperationalMemory({
-    organizationId: scoped.organizationId,
-    locationId: priority.locationId,
-  });
-
   const recommendation =
     getRecommendationByPriorityId({
       organizationId: scoped.organizationId,
       priorityId: priority.id,
     });
 
-  const activity = getInvestigationActivity({
-    priority,
-    signal: scopedRelatedSignal,
-    assessment,
-    executionItem,
+  const memory = getOperationalMemory({
+    organizationId: scoped.organizationId,
+    locationId: priority.locationId,
   });
 
   const context = getInvestigationContext({
@@ -94,52 +91,88 @@ export function getInvestigationWorkspace(
       memory,
     });
 
+  const activity = getInvestigationActivity({
+    priority,
+    signal,
+    assessment,
+    executionItem,
+  });
+
   return {
     id: priority.id,
 
     user: requestContext.user,
     membership: requestContext.membership,
 
-    header: {
+    situation: {
       priority,
-      signal: scopedRelatedSignal,
+      signal,
     },
 
-    assessmentSection: {
+    assessment: {
       assessment,
-      context,
-      intelligence,
+
+      recommendation:
+        assessment?.recommendation ??
+        null,
+
+      analysis: {
+        headline:
+          context?.headline ?? null,
+
+        explanation:
+          context?.explanation ?? null,
+
+        factors:
+          context?.factors ?? [],
+
+        evidence:
+          assessment?.evidence ??
+          signal?.evidence ??
+          [],
+
+        rootCauses:
+          intelligence?.rootCauses ?? [],
+
+        trends:
+          intelligence?.trends ?? [],
+
+        memory:
+          intelligence?.memory
+            ? [intelligence.memory]
+            : [],
+
+        memorySummary:
+          intelligence?.memorySummary ??
+          null,
+      },
     },
 
-    evidenceSection: {
-      assessment,
-      signal: scopedRelatedSignal,
-    },
-
-    timelineSection: {
-      signal: scopedRelatedSignal,
-      assessment,
+    execution: {
       priority,
-      executionItem,
-    },
-
-    executionSection: {
       recommendation,
-      executionItem,
-      priority,
+      playbook: executionItem,
     },
 
-    activitySection: {
+    history: {
+      timeline: {
+        signal,
+        assessment,
+        priority,
+        executionItem,
+      },
+
       activity,
     },
   };
-  }
+}
 
 function requireActiveMembership(requestContext) {
   if (
     !requestContext?.authenticated ||
     !requestContext.membership ||
-    requestContext.membership.status !== "active"
+    requestContext.membership.status !==
+      "active"
   ) {
     throw new Error(
       "Investigation workspace requires an active organization membership.",

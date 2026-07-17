@@ -11,6 +11,9 @@ import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 import {
   getOperationalMemory,
 } from "./getOperationalMemory";
+import {
+  getRecommendationByPriorityId,
+} from "../repositories/recommendationRepository";
 
 export function getInvestigationWorkspace(
   user,
@@ -62,6 +65,12 @@ export function getInvestigationWorkspace(
     locationId: priority.locationId,
   });
 
+  const recommendation =
+  getRecommendationByPriorityId({
+    organizationId: user.organizationId,
+    priorityId: priority.id,
+  });
+
   const activity =
     activityFeed[priority.id] ?? [];
 
@@ -69,8 +78,9 @@ export function getInvestigationWorkspace(
     contextInsights[priority.id] ?? null;
 
   const intelligence =
-  buildRecommendationContext(priority, {
-    memory,
+    buildRecommendationContext(priority, {
+      recommendation,
+      memory,
   });
 
   return {

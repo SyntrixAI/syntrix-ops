@@ -35,3 +35,8 @@ export {
   getAssessmentByLocation,
   getAssessmentsByLocationIds,
 } from "./assessmentRepository";
+
+export {
+  getRecommendationByPriorityId,
+  getRecommendationsByPriorityIds,
+} from "./recommendationRepository";

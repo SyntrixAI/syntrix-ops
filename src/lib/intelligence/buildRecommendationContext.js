@@ -1,17 +1,13 @@
-import { recommendations } from "../../data/recommendations";
-
 export function buildRecommendationContext(
   priority,
   {
+    recommendation = null,
     memory = null,
   } = {},
 ) {
   if (!priority) {
     return null;
   }
-
-  const recommendation =
-    recommendations[priority.id];
 
   return {
     priority,

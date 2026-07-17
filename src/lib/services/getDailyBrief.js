@@ -37,7 +37,7 @@ export function getDailyBrief(requestContext) {
     .slice(0, 3);
 
   const criticalInvestigations = scopedPriorities.filter(
-    (priority) => priority.priorityScore >= 90,
+    (priority) => priority.severity === "critical",
   );
 
   return {

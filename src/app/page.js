@@ -57,7 +57,7 @@ export default function Home() {
           title="Critical Investigations"
           description="The highest-priority investigations leadership should review first."
         >
-          <OperationsQueue operations={criticalInvestigations} />
+          <OperationsQueue priorities={criticalInvestigations} />
         </WorkspaceSection>
 
         <WorkspaceSection

@@ -42,3 +42,21 @@ export function getPriorityById({
     ) ?? null
   );
 }
+
+export function getPrioritiesByLocation({
+  organizationId,
+  locationId,
+} = {}) {
+  if (!locationId) {
+    throw new Error(
+      "Priority repository requires a location ID.",
+    );
+  }
+
+  return getOrganizationPriorities(
+    organizationId,
+  ).filter(
+    (priority) =>
+      priority.locationId === locationId,
+  );
+}

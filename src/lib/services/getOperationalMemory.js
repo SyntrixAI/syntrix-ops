@@ -1,7 +1,21 @@
-import { operationalMemory } from "../../data/operationalMemory";
+import {
+  generateOperationalMemory,
+} from "../engines/memoryEngine";
 import {
   getLocationById,
 } from "../repositories/locationRepository";
+import {
+  getSignalsByLocation,
+} from "../repositories/signalRepository";
+import {
+  getPrioritiesByLocation,
+} from "../repositories/priorityRepository";
+import {
+  getMemorySnapshotsByLocation,
+} from "../repositories/memoryRepository";
+import {
+  getLocationHealth,
+} from "./getLocationHealth";
 
 export function getOperationalMemory({
   organizationId,
@@ -24,7 +38,48 @@ export function getOperationalMemory({
     return null;
   }
 
-  return operationalMemory[location.id] ?? null;
+  const health = getLocationHealth({
+    organizationId,
+    locationId,
+  });
+
+  const signals = getSignalsByLocation({
+    organizationId,
+    locationId,
+  });
+
+  const priorities = getPrioritiesByLocation({
+    organizationId,
+    locationId,
+  });
+
+  const snapshots =
+    getMemorySnapshotsByLocation({
+      organizationId,
+      locationId,
+    });
+
+  const memoryByLocation =
+    generateOperationalMemory({
+      locations: [location],
+
+      locationHealth: health
+        ? {
+            [location.id]: health,
+          }
+        : {},
+
+      signals,
+      priorities,
+
+      memorySnapshots: snapshots
+        ? {
+            [location.id]: snapshots,
+          }
+        : {},
+    });
+
+  return memoryByLocation[location.id] ?? null;
 }
 
 export function getOperationalMemoryByLocationIds({

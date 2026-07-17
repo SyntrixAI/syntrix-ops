@@ -23,3 +23,9 @@ export {
   getLocationTimeline,
   getLocationTimelinesByIds,
 } from "./getLocationTimeline";
+export {
+  getInvestigationActivity,
+} from "./getInvestigationActivity";
+export {
+  getInvestigationContext,
+} from "./getInvestigationContext";

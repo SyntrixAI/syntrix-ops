@@ -1,4 +1,9 @@
-export { getPriorities } from "./priorityRepository";
+export {
+  getPriorities,
+  getPriorityById,
+  getPrioritiesByLocation,
+} from "./priorityRepository";
+
 export { getExecutionItems } from "./executionRepository";
 
 export {
@@ -40,3 +45,11 @@ export {
   getRecommendationByPriorityId,
   getRecommendationsByPriorityIds,
 } from "./recommendationRepository";
+
+export {
+  getContextFactorsByLocation,
+} from "./contextRepository";
+
+export {
+  getMemorySnapshotsByLocation,
+} from "./memoryRepository";

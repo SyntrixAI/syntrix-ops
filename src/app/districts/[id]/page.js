@@ -50,6 +50,7 @@ export default async function DistrictPage({ params }) {
     region,
     company,
     locations,
+    locationSummaries,
     overview,
     operations,
     execution,
@@ -107,22 +108,54 @@ export default async function DistrictPage({ params }) {
           description={`${district.name} includes ${locations.length} locations in ${region.name}.`}
         >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {locations.map((location) => (
+            {locationSummaries.map((location) => (
               <Card key={location.id}>
-                <p className="text-sm font-semibold text-cyan-400">
-                  {location.region}
-                </p>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-cyan-400">
+                      Location
+                    </p>
 
-                <h3 className="mt-3 text-2xl font-bold text-white">
-                  {location.name}
-                </h3>
+                    <h3 className="mt-3 text-2xl font-bold text-white">
+                      {location.name}
+                    </h3>
+                  </div>
 
-                <p className="mt-2 text-slate-400">
-                  {location.city}, {location.state}
-                </p>
+                  <div className="text-right">
+                    <p className="text-3xl font-bold text-white">
+                      {location.health.score ?? "—"}
+                    </p>
+
+                    <p className="mt-1 text-sm text-slate-400">
+                      {location.health.status}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-800 pt-5">
+                  <div>
+                    <p className="text-sm text-slate-400">
+                      Active Priorities
+                    </p>
+
+                    <p className="mt-1 text-xl font-bold text-white">
+                      {location.activePriorities}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-slate-400">
+                      Critical
+                    </p>
+
+                    <p className="mt-1 text-xl font-bold text-white">
+                      {location.criticalPriorities}
+                    </p>
+                  </div>
+                </div>
 
                 <Link
-                  href={`/locations/${location.id}`}
+                  href={location.href}
                   className="mt-5 inline-block font-semibold text-cyan-400 hover:text-cyan-300"
                 >
                   Open Location →
@@ -137,7 +170,7 @@ export default async function DistrictPage({ params }) {
           title="District Priority Queue"
           description="Prioritized investigations across locations in this district."
         >
-          <OperationsQueue operations={operations.priorities} />
+          <OperationsQueue priorities={operations.priorities} />
         </WorkspaceSection>
 
         <WorkspaceSection

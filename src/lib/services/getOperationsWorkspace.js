@@ -7,7 +7,7 @@ export function getOperationsWorkspace(requestContext) {
   const priorities = scoped.priorities;
 
   const criticalPriorities = priorities.filter(
-    (priority) => priority.priorityScore >= 90,
+    (priority) => priority.severity === "critical",
   );
 
   const monitoringPriorities = priorities.filter(

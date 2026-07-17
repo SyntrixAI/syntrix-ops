@@ -6,27 +6,29 @@ import {
   buildDecisionPipeline,
 } from "../../pipelines";
 
-const decisionPipeline = buildDecisionPipeline({
-  rawEvents,
-  memorySnapshots,
-});
+function getDecisionPipeline() {
+  return buildDecisionPipeline({
+    rawEvents,
+    memorySnapshots,
+  });
+}
 
 export function getSignalRecords() {
-  return decisionPipeline.signals;
+  return getDecisionPipeline().signals;
 }
 
 export function getPriorityRecords() {
-  return decisionPipeline.priorities;
+  return getDecisionPipeline().priorities;
 }
 
 export function getAssessmentRecords() {
-  return decisionPipeline.assessments;
+  return getDecisionPipeline().assessments;
 }
 
 export function getRecommendationRecords() {
-  return decisionPipeline.recommendations;
+  return getDecisionPipeline().recommendations;
 }
 
 export function getExecutionItemRecords() {
-  return decisionPipeline.executionItems;
+  return getDecisionPipeline().executionItems;
 }

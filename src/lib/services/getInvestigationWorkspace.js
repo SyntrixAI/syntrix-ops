@@ -7,8 +7,12 @@ import {
 import {
   getRecommendationByPriorityId,
 } from "../repositories/recommendationRepository";
-import { activityFeed } from "../../data/activityFeed";
-import { contextInsights } from "../../data/contextInsights";
+import {
+  getInvestigationActivity,
+} from "./getInvestigationActivity";
+import {
+  getInvestigationContext,
+} from "./getInvestigationContext";
 import { buildRecommendationContext } from "../intelligence/buildRecommendationContext";
 import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 import {
@@ -72,11 +76,17 @@ export function getInvestigationWorkspace(
       priorityId: priority.id,
     });
 
-  const activity =
-    activityFeed[priority.id] ?? [];
+  const activity = getInvestigationActivity({
+    priority,
+    signal: scopedRelatedSignal,
+    assessment,
+    executionItem,
+  });
 
-  const context =
-    contextInsights[priority.id] ?? null;
+  const context = getInvestigationContext({
+    organizationId: scoped.organizationId,
+    priority,
+  });
 
   const intelligence =
     buildRecommendationContext(priority, {

@@ -34,7 +34,7 @@ export default function OperationsPage() {
         title="Priority Queue"
         description="Ranked investigations based on severity, business impact, confidence, effort, and operational trend."
       >
-        <OperationsQueue operations={operations.priorities} />
+        <OperationsQueue priorities={operations.priorities} />
       </WorkspaceSection>
     </ExecutiveWorkspace>
   );

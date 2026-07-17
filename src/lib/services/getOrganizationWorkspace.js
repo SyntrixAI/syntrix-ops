@@ -80,7 +80,7 @@ export function getOrganizationWorkspace(requestContext) {
     operations: {
       priorities: scopedPriorities,
       criticalPriorities: scopedPriorities.filter(
-        (priority) => priority.priorityScore >= 90,
+        (priority) => priority.severity === "critical",
       ),
     },
 

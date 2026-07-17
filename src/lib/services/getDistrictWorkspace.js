@@ -84,6 +84,40 @@ export function getDistrictWorkspace(
         locationIds.has(priority.locationId),
     );
 
+  const locationSummaries = locations
+    .map((location) => {
+      const health =
+        districtHealth[location.id] ?? null;
+
+      const priorities =
+        districtPriorities.filter(
+          (priority) =>
+            priority.locationId === location.id,
+        );
+
+      const criticalPriorities =
+        priorities.filter(
+          (priority) =>
+            priority.severity === "critical",
+        );
+
+      return {
+        id: location.id,
+        name: location.name,
+        health: {
+          score: health?.score ?? null,
+          status: health?.status ?? "Unknown",
+        },
+        activePriorities: priorities.length,
+        criticalPriorities:
+          criticalPriorities.length,
+        highestPriorityScore:
+          priorities[0]?.priorityScore ?? 0,
+        href: `/locations/${location.id}`,
+      };
+    })
+    .sort(compareLocationSummaries);
+
   const districtExecutionItems =
     scoped.executionItems.filter(
       (item) =>
@@ -132,6 +166,7 @@ export function getDistrictWorkspace(
     region,
     company,
     locations,
+    locationSummaries,
 
     overview: {
       health: {
@@ -155,8 +190,7 @@ export function getDistrictWorkspace(
 
       criticalPriorities:
         districtPriorities.filter(
-          (priority) =>
-            priority.priorityScore >= 90,
+          (priority) => priority.severity === "critical",
         ),
     },
 
@@ -225,4 +259,37 @@ function getDistrictHealthSummary(
   }
 
   return `${districtName} requires immediate leadership attention.`;
+}
+
+function compareLocationSummaries(
+  first,
+  second,
+) {
+  if (
+    second.criticalPriorities !==
+    first.criticalPriorities
+  ) {
+    return (
+      second.criticalPriorities -
+      first.criticalPriorities
+    );
+  }
+
+  if (
+    second.highestPriorityScore !==
+    first.highestPriorityScore
+  ) {
+    return (
+      second.highestPriorityScore -
+      first.highestPriorityScore
+    );
+  }
+
+  const firstHealth =
+    first.health.score ?? 101;
+
+  const secondHealth =
+    second.health.score ?? 101;
+
+  return firstHealth - secondHealth;
 }

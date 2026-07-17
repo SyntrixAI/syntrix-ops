@@ -97,7 +97,7 @@ export default function OrganizationPage() {
         title="Priority Queue"
         description="Prioritized investigations within your organization scope."
       >
-        <OperationsQueue operations={operations.priorities} />
+        <OperationsQueue priorities={operations.priorities} />
       </WorkspaceSection>
 
       <WorkspaceSection

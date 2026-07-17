@@ -8,4 +8,6 @@ export {
   getAssessmentRecords,
   getRecommendationRecords,
   getExecutionItemRecords,
+  getContextFactorRecords,
+  getMemorySnapshotRecords,
 } from "./demo";

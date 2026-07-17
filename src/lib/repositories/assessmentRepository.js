@@ -1,4 +1,6 @@
-import { assessments } from "../../data/assessments";
+import {
+  getAssessmentRecords,
+} from "../datasources";
 import {
   getLocationById,
 } from "./locationRepository";
@@ -32,7 +34,9 @@ export function getAssessmentByLocation({
     return null;
   }
 
-  return assessments[location.id] ?? null;
+  return (
+    getAssessmentRecords()[location.id] ?? null
+  );
 }
 
 export function getAssessmentsByLocationIds({

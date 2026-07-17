@@ -1,4 +1,6 @@
-import { signals } from "../../data/signals";
+import {
+  getSignalRecords,
+} from "../datasources";
 
 function requireOrganizationId(organizationId) {
   if (!organizationId) {
@@ -11,7 +13,7 @@ function requireOrganizationId(organizationId) {
 function getOrganizationSignals(organizationId) {
   requireOrganizationId(organizationId);
 
-  return signals.filter(
+  return getSignalRecords().filter(
     (signal) =>
       signal.organizationId === organizationId,
   );

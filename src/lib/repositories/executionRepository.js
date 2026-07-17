@@ -1,13 +1,18 @@
-import { executionItems } from "../../data/executionItems";
+import {
+  getExecutionItemRecords,
+} from "../datasources";
 
-export function getExecutionItems({ organizationId } = {}) {
+export function getExecutionItems({
+  organizationId,
+} = {}) {
   if (!organizationId) {
     throw new Error(
       "Execution repository requires an organization ID.",
     );
   }
 
-  return executionItems.filter(
-    (item) => item.organizationId === organizationId,
+  return getExecutionItemRecords().filter(
+    (item) =>
+      item.organizationId === organizationId,
   );
 }

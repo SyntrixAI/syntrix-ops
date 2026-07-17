@@ -1,5 +1,9 @@
-import { recommendations } from "../../data/recommendations";
-import { getPriorities } from "./priorityRepository";
+import {
+  getRecommendationRecords,
+} from "../datasources";
+import {
+  getPriorityById,
+} from "./priorityRepository";
 
 export function getRecommendationByPriorityId({
   organizationId,
@@ -11,18 +15,18 @@ export function getRecommendationByPriorityId({
     return null;
   }
 
-  const priority = getPriorities({
+  const priority = getPriorityById({
     organizationId,
-  }).find(
-    (priority) =>
-      String(priority.id) === String(priorityId),
-  );
+    priorityId,
+  });
 
   if (!priority) {
     return null;
   }
 
-  return recommendations[priority.id] ?? null;
+  return (
+    getRecommendationRecords()[priority.id] ?? null
+  );
 }
 
 export function getRecommendationsByPriorityIds({

@@ -29,3 +29,6 @@ export {
 export {
   getInvestigationContext,
 } from "./getInvestigationContext";
+export {
+  getRegionWorkspace,
+} from "./getRegionWorkspace";

@@ -1,4 +1,8 @@
 export {
+  createAssessment,
+} from "./createAssessment";
+
+export {
   createDecisionPortfolio,
 } from "./createDecisionPortfolio";
 

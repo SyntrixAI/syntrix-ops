@@ -1,10 +1,8 @@
 import {
-  getLocationHealthByIds,
-} from "./getLocationHealth";
+  buildDecisionWorkspaceCore,
+} from "./buildDecisionWorkspaceCore";
 
 import {
-  buildDecisionPortfolio,
-  generateExecutiveMetrics,
   generateEntityMetrics,
   generateNarrative,
   getChildren,
@@ -86,14 +84,6 @@ export function getRegionWorkspace(
   const locationIdSet =
     new Set(locationIds);
 
-  const regionHealth =
-    getLocationHealthByIds({
-      organizationId:
-        scoped.organizationId,
-
-      locationIds,
-    });
-
   const regionPriorities =
     scoped.priorities.filter(
       (priority) =>
@@ -145,38 +135,6 @@ export function getRegionWorkspace(
         ),
     );
 
-  const metrics =
-    generateExecutiveMetrics({
-      locations,
-
-      locationHealth:
-        regionHealth,
-
-      priorities:
-        regionPriorities,
-
-      executionItems:
-        regionExecutionItems,
-    });
-
-  const portfolio =
-    buildDecisionPortfolio({
-      priorities:
-        regionPriorities,
-
-      assessments:
-        regionAssessments,
-
-      recommendations:
-        regionRecommendations,
-
-      executionItems:
-        regionExecutionItems,
-
-      operationalMemory:
-        regionOperationalMemory,
-    });
-
   const districts =
     getChildren({
       organizationId:
@@ -184,6 +142,30 @@ export function getRegionWorkspace(
 
       entity: region,
     });
+
+  const core =
+    buildDecisionWorkspaceCore({
+      organizationId: scoped.organizationId,
+
+      locations,
+
+      priorities: regionPriorities,
+
+      assessments: regionAssessments,
+
+      recommendations: regionRecommendations,
+
+      executionItems: regionExecutionItems,
+
+      operationalMemory: regionOperationalMemory,
+    });
+
+  const {
+    metrics,
+    portfolio,
+    operations,
+    execution,
+  } = core;
 
   const districtSummaries =
     districts.map(
@@ -200,27 +182,6 @@ export function getRegionWorkspace(
             regionPriorities,
         }),
     );
-
-  const insights =
-    regionPriorities
-      .flatMap(
-        (priority) =>
-          (
-            priority.insights ??
-            []
-          ).map(
-            (insight) => ({
-              ...insight,
-
-              id:
-                `${priority.id}-${insight.id}`,
-
-              title:
-                `${priority.location}: ${insight.title}`,
-            }),
-          ),
-      )
-      .slice(0, 5);
 
   return {
     user:
@@ -251,17 +212,16 @@ export function getRegionWorkspace(
           ),
       },
 
-      insights,
+      insights: core.overview.insights,
     },
 
     metrics,
 
     portfolio,
 
-    execution: {
-      items:
-        regionExecutionItems,
-    },
+    operations,
+
+    execution,
   };
 }
 

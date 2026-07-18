@@ -32,3 +32,6 @@ export {
 export {
   getRegionWorkspace,
 } from "./getRegionWorkspace";
+export {
+  buildDecisionWorkspaceCore,
+} from "./buildDecisionWorkspaceCore";

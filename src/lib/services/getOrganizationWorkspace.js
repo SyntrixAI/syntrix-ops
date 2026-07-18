@@ -1,9 +1,7 @@
 import {
-  getLocationHealthByIds,
-} from "./getLocationHealth";
+  buildDecisionWorkspaceCore,
+} from "./buildDecisionWorkspaceCore";
 import {
-  buildDecisionPortfolio,
-  generateExecutiveMetrics,
   generateEntityMetrics,
   generateNarrative,
   resolveHierarchyEntity,
@@ -28,41 +26,29 @@ export function getOrganizationWorkspace(requestContext) {
   const scopedPriorities = scoped.priorities;
   const scopedExecutionItems = scoped.executionItems;
 
-  const scopedHealth = getLocationHealthByIds({
-    organizationId: scoped.organizationId,
-    locationIds: accessible.locations.map(
-      (location) => location.id,
-    ),
-  });
+  const core =
+    buildDecisionWorkspaceCore({
+      organizationId: scoped.organizationId,
 
-  const metrics = generateExecutiveMetrics({
-    locations: accessible.locations,
-    locationHealth: scopedHealth,
-    priorities: scopedPriorities,
-    executionItems: scopedExecutionItems,
-  });
+      locations: accessible.locations,
 
-  const portfolio = buildDecisionPortfolio({
-    priorities: scopedPriorities,
-    assessments:
-      scoped.assessments,
-    recommendations:
-      scoped.recommendations,
-    executionItems:
-      scopedExecutionItems,
-    operationalMemory:
-      scoped.operationalMemory,
-  });
+      priorities: scopedPriorities,
 
-  const insights = scopedPriorities
-    .flatMap((priority) =>
-      (priority.insights ?? []).map((insight) => ({
-        ...insight,
-        id: `${priority.id}-${insight.id}`,
-        title: `${priority.location}: ${insight.title}`,
-      })),
-    )
-    .slice(0, 5);
+      assessments: scoped.assessments,
+
+      recommendations: scoped.recommendations,
+
+      executionItems: scopedExecutionItems,
+
+      operationalMemory: scoped.operationalMemory,
+    });
+
+  const {
+    metrics,
+    portfolio,
+    operations,
+    execution,
+  } = core;
 
   const entities = getOrganizationEntities({
     organizationId: scoped.organizationId,
@@ -77,31 +63,27 @@ export function getOrganizationWorkspace(requestContext) {
     scope: accessible,
 
     overview: {
-      health: {
-        score: metrics.operationalHealth,
-        status: metrics.healthStatus,
-        summary: getOrganizationHealthSummary(
+    health: {
+      score: metrics.operationalHealth,
+
+      status: metrics.healthStatus,
+
+      summary: getOrganizationHealthSummary(
           scoped.scope,
           metrics,
         ),
-      },
-      insights,
     },
+
+    insights: core.overview.insights,
+  },
 
     metrics,
 
     portfolio,
 
-    operations: {
-      priorities: scopedPriorities,
-      criticalPriorities: scopedPriorities.filter(
-        (priority) => priority.severity === "critical",
-      ),
-    },
+    operations,
 
-    execution: {
-      items: scopedExecutionItems,
-    },
+    execution,
 
     organization: {
       company: accessible.company,
@@ -214,7 +196,7 @@ function getOrganizationEntities({
 
 function getEntityHref(entity) {
   if (entity.type === "region") {
-    return null;
+    return `/regions/${entity.id}`;
   }
 
   if (entity.type === "district") {

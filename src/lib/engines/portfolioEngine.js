@@ -1,4 +1,5 @@
 import {
+  createDecisionPortfolio,
   createPortfolioDecision,
 } from "../models";
 
@@ -75,13 +76,15 @@ export function buildDecisionPortfolio({
       portfolioRank: index + 1,
     }));
 
-  return {
-    summary: buildPortfolioSummary(decisions),
+  return createDecisionPortfolio({
+    summary:
+      buildPortfolioSummary(decisions),
 
-    focus: buildExecutiveFocus(decisions),
+    focus:
+      buildExecutiveFocus(decisions),
 
     decisions,
-  };
+  });
 }
 
 export function calculatePortfolioScore({
@@ -459,23 +462,7 @@ function formatLabel(value) {
 }
 
 function createEmptyPortfolio() {
-  return {
-    summary: {
-      activeDecisions: 0,
-      criticalDecisions: 0,
-      totalWeeklyImpact: 0,
-      executableWeeklyImpact: 0,
-      averageConfidence: 0,
-    },
-
-    focus: {
-      primaryDecision: null,
-      nextDecisions: [],
-      deferredDecisions: [],
-    },
-
-    decisions: [],
-  };
+  return createDecisionPortfolio();
 }
 
 function resolveDecisionConfidence({ priority, assessment, executionItem }) {

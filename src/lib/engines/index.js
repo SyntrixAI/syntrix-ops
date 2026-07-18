@@ -1,5 +1,10 @@
 export { generateSignals } from "./signalEngine";
 export { prioritizeSignals } from "./decisionEngine";
+export {
+  buildDecisionPortfolio,
+  calculatePortfolioScore,
+  classifyDecision,
+} from "./portfolioEngine";
 export { generateExecutionItems } from "./executionEngine";
 export { generateIntelligenceBrief } from "./intelligenceEngine";
 export { generateAssessments } from "./assessmentEngine";

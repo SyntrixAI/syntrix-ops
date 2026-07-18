@@ -1,71 +1,215 @@
-export function generateExecutionItems(priorities, recommendations = {}) {
+import {
+  createExecutionPlaybook,
+} from "../models";
+
+export function generateExecutionItems(
+  priorities,
+  recommendations = {},
+) {
+  if (!Array.isArray(priorities)) {
+    throw new Error(
+      "Execution Engine requires priorities to be an array.",
+    );
+  }
+
   return priorities.map((priority) => {
-    const recommendation = recommendations[priority.id];
+    const recommendation =
+      recommendations[priority.id] ??
+      null;
 
-    return {
+    const confidence =
+      priority.confidence ??
+      getDefaultConfidence(priority);
+
+    const weeklyRecovery =
+      recommendation
+        ?.expectedImpact
+        ?.weeklyRecovery ??
+      priority.estimatedImpact ??
+      0;
+
+    return createExecutionPlaybook({
       id: `exec-${priority.id}`,
-      organizationId: priority.organizationId,
-      priorityId: priority.id,
 
-      title: recommendation?.title ?? priority.primaryAction,
-      location: priority.location,
-      locationId: priority.locationId,
+      organizationId:
+        priority.organizationId ??
+        null,
 
-      sourceAssessment: priority.title,
-      description: recommendation?.action ?? priority.title,
+      priorityId:
+        priority.id,
+
+      locationId:
+        priority.locationId ??
+        null,
+
+      location:
+        priority.location ??
+        null,
+
+      title:
+        recommendation?.title ??
+        priority.primaryAction ??
+        priority.title,
+
+      action:
+        recommendation?.action ??
+        priority.primaryAction ??
+        priority.title,
+
+      sourceAssessment:
+        priority.title ??
+        null,
+
+      description:
+        recommendation?.action ??
+        priority.title ??
+        null,
 
       businessImpact: {
-        weeklyRecovery:
-          recommendation?.expectedImpact?.weeklyRecovery ??
-          priority.estimatedImpact ??
-          0,
+        weeklyRecovery,
+
+        annualRecovery:
+          recommendation
+            ?.expectedImpact
+            ?.annualRecovery ??
+          weeklyRecovery * 52,
       },
 
-      confidence: priority.confidence ?? getDefaultConfidence(priority),
+      confidence,
 
-      whyNow: recommendation?.reasoning ?? getWhyNow(priority),
-      rootCauses: recommendation?.rootCauses ?? [],
-      trends: recommendation?.trends ?? [],
+      whyNow:
+        recommendation?.reasoning ??
+        getWhyNow(priority),
 
-      effort: recommendation?.effort ?? priority.effort,
-      estimatedTime: recommendation?.estimatedTime ?? priority.estimatedTime,
+      rootCauses:
+        recommendation?.rootCauses ??
+        [],
 
-      dependencies: recommendation?.dependencies ?? [],
-      risk: recommendation?.risk ?? null,
-      successCriteria: recommendation?.successCriteria ?? [],
-      followUp: recommendation?.followUp ?? null,
+      trends:
+        recommendation?.trends ??
+        [],
 
-      owner: getDefaultOwner(priority),
-      status: getExecutionStatus(priority),
-    };
+      effort:
+        recommendation?.effort ??
+        priority.effort ??
+        "Medium",
+
+      estimatedTime:
+        recommendation?.estimatedTime ??
+        priority.estimatedTime ??
+        null,
+
+      dependencies:
+        recommendation?.dependencies ??
+        [],
+
+      risk:
+        recommendation?.risk ??
+        null,
+
+      successCriteria:
+        recommendation?.successCriteria ??
+        [],
+
+      followUp:
+        recommendation?.followUp ??
+        null,
+
+      steps:
+        recommendation?.steps ??
+        [],
+
+      owner:
+        priority.owner ??
+        getDefaultOwner(priority),
+
+      status:
+        priority.executionStatus ??
+        getExecutionStatus(priority),
+
+      createdAt:
+        priority.createdAt ??
+        priority.detectedAt ??
+        null,
+
+      completedAt:
+        priority.completedAt ??
+        null,
+    });
   });
 }
 
 function getDefaultConfidence(priority) {
-  if (priority.severity === "critical") return 94;
-  if (priority.severity === "warning") return 88;
+  const severity =
+    normalizeText(priority?.severity);
+
+  if (severity === "critical") {
+    return 94;
+  }
+
+  if (severity === "warning") {
+    return 88;
+  }
+
   return 82;
 }
 
 function getWhyNow(priority) {
-  if (priority.severity === "critical") {
-    return "High-severity issue with immediate business impact.";
+  const severity =
+    normalizeText(priority?.severity);
+
+  if (severity === "critical") {
+    return (
+      "High-severity issue with " +
+      "immediate business impact."
+    );
   }
 
-  if (priority.severity === "warning") {
-    return "Operational variance is large enough to require investigation.";
+  if (severity === "warning") {
+    return (
+      "Operational variance is large " +
+      "enough to require investigation."
+    );
   }
 
-  return "Low-risk signal worth monitoring for pattern development.";
+  return (
+    "Low-risk signal worth monitoring " +
+    "for pattern development."
+  );
 }
 
 function getDefaultOwner(priority) {
-  if (priority.severity === "critical") return "District Manager";
-  if (priority.severity === "warning") return "General Manager";
+  const severity =
+    normalizeText(priority?.severity);
+
+  if (severity === "critical") {
+    return "District Manager";
+  }
+
+  if (severity === "warning") {
+    return "General Manager";
+  }
+
   return "Operations Lead";
 }
 
 function getExecutionStatus(priority) {
-  if (priority.status === "monitoring") return "Monitoring";
+  const priorityStatus =
+    normalizeText(priority?.status);
+
+  if (priorityStatus === "monitoring") {
+    return "Monitoring";
+  }
+
+  if (priorityStatus === "resolved") {
+    return "Completed";
+  }
+
   return "Recommended";
+}
+
+function normalizeText(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
 }

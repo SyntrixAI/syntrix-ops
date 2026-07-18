@@ -4,7 +4,7 @@ import WorkspaceStatus from "../../components/business/WorkspaceStatus";
 import HealthOverview from "../../components/business/HealthOverview";
 import KeyInsights from "../../components/business/KeyInsights";
 import WorkspaceSection from "../../components/business/WorkspaceSection";
-import OperationsQueue from "../../components/operations/InvestigationQueue";
+import DecisionPortfolio from "../../components/business/DecisionPortfolio";
 import ExecutionQueue from "../../components/execution/ExecutionQueue";
 import HierarchyToolbar from "../../components/business/HierarchyToolbar";
 import HierarchyTable from "../../components/business/HierarchyTable";
@@ -33,7 +33,7 @@ export default function OrganizationPage() {
   const {
     overview,
     metrics,
-    operations,
+    portfolio,
     execution,
     organization,
   } = workspace;
@@ -42,7 +42,7 @@ export default function OrganizationPage() {
     <ExecutiveWorkspace
       eyebrow={getWorkspaceEyebrow(scopeLevel)}
       title={getWorkspaceTitle(scopeLevel, organization,)}
-      decision="How is my organization performing, and where should I focus?"
+      decision="Where should leadership focus first?"
     >
 
       <WorkspaceStatus
@@ -50,6 +50,16 @@ export default function OrganizationPage() {
         activePriorities={metrics.activePriorities}
         criticalPriorities={metrics.criticalPriorities}          estimatedRecovery={metrics.estimatedRecovery}
       />
+
+      <WorkspaceSection
+        label="Executive Focus"
+        title="Decision Portfolio"
+        description="The highest-value decisions currently requiring leadership attention."
+      >
+        <DecisionPortfolio
+          portfolio={portfolio}
+        />
+      </WorkspaceSection>
 
        <HealthOverview health={overview.health} />
 
@@ -90,14 +100,6 @@ export default function OrganizationPage() {
 
           <HierarchyTable rows={organization.entities} />
         </div>
-      </WorkspaceSection>
-
-      <WorkspaceSection
-        label="Operations"
-        title="Priority Queue"
-        description="Prioritized investigations within your organization scope."
-      >
-        <OperationsQueue priorities={operations.priorities} />
       </WorkspaceSection>
 
       <WorkspaceSection

@@ -1,3 +1,7 @@
+import {
+  createPortfolioDecision,
+} from "../models";
+
 const PORTFOLIO_WEIGHTS = {
   urgency: 0.3,
   impact: 0.3,
@@ -178,13 +182,17 @@ function buildPortfolioDecision({
   memory,
   maximumImpact,
 }) {
-  const confidence = resolveDecisionConfidence({
-    priority,
-    assessment,
-    executionItem,
-  });
+  const confidence =
+    resolveDecisionConfidence({
+      priority,
+      assessment,
+      executionItem,
+    });
 
-  const { score, rationale } = calculatePortfolioScore({
+  const {
+    score,
+    rationale,
+  } = calculatePortfolioScore({
     priority,
     executionItem,
     memory,
@@ -192,67 +200,37 @@ function buildPortfolioDecision({
     confidence,
   });
 
-  return {
-    id: `portfolio-${priority.id}`,
-    priorityId: priority.id,
-    locationId: priority.locationId,
-
-    title: priority.title,
-    location: priority.location,
-
-    category: priority.category ?? null,
-
-    severity: priority.severity ?? "info",
-
-    status: priority.status ?? "active",
-
-    priorityScore: priority.priorityScore ?? 0,
-
-    portfolioScore: score,
-
-    portfolioRank: null,
-
-    estimatedImpact: priority.estimatedImpact ?? 0,
-
-    confidence,
-
-    effort:
-      executionItem?.effort ??
-      recommendation?.effort ??
-      priority.effort ??
-      "Medium",
-
-    estimatedTime:
-      executionItem?.estimatedTime ??
-      recommendation?.estimatedTime ??
-      priority.estimatedTime ??
-      null,
-
-    recommendation: recommendation ?? null,
-
-    assessment: assessment ?? null,
-
-    executionItem: executionItem ?? null,
-
-    classification: classifyDecision({
+  const classification =
+    classifyDecision({
       portfolioScore: score,
       severity: priority.severity,
       status: priority.status,
       confidence,
       executionItem,
-    }),
+    });
 
-    rationale,
-
-    explanation: buildPortfolioExplanation({
+  const explanation =
+    buildPortfolioExplanation({
       priority,
       score,
       confidence,
       rationale,
       executionItem,
       memory,
-    }),
-  };
+    });
+
+  return createPortfolioDecision({
+    priority,
+    assessment,
+    recommendation,
+    executionItem,
+
+    confidence,
+    portfolioScore: score,
+    classification,
+    rationale,
+    explanation,
+  });
 }
 
 function buildPortfolioSummary(decisions) {

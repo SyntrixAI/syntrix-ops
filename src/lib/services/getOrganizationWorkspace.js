@@ -2,6 +2,7 @@ import {
   getLocationHealthByIds,
 } from "./getLocationHealth";
 import {
+  buildDecisionPortfolio,
   generateExecutiveMetrics,
   generateEntityMetrics,
   generateNarrative,
@@ -41,6 +42,18 @@ export function getOrganizationWorkspace(requestContext) {
     executionItems: scopedExecutionItems,
   });
 
+  const portfolio = buildDecisionPortfolio({
+    priorities: scopedPriorities,
+    assessments:
+      scoped.assessments,
+    recommendations:
+      scoped.recommendations,
+    executionItems:
+      scopedExecutionItems,
+    operationalMemory:
+      scoped.operationalMemory,
+  });
+
   const insights = scopedPriorities
     .flatMap((priority) =>
       (priority.insights ?? []).map((insight) => ({
@@ -76,6 +89,8 @@ export function getOrganizationWorkspace(requestContext) {
     },
 
     metrics,
+
+    portfolio,
 
     operations: {
       priorities: scopedPriorities,

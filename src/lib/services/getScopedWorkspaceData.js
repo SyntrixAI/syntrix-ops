@@ -8,6 +8,9 @@ import {
 import {
   getPriorities,
   getExecutionItems,
+  getAssessmentsByLocationIds,
+  getRecommendationsByPriorityIds,
+  getMemorySnapshotsByLocation,
 } from "../repositories";
 
 export function getScopedWorkspaceData(requestContext) {
@@ -27,6 +30,7 @@ export function getScopedWorkspaceData(requestContext) {
 
   const locationIds = getScopedLocationIds(organization);
 
+  
   const organizationPriorities = getPriorities({
     organizationId: membership.organizationId,
   });
@@ -35,21 +39,58 @@ export function getScopedWorkspaceData(requestContext) {
     organizationId: membership.organizationId,
   });
 
+  const priorities = getScopedPriorities(
+    organizationPriorities,
+    locationIds,
+  );
+  
+  const assessments = getAssessmentsByLocationIds({
+    organizationId: membership.organizationId,
+    locationIds,
+  });
+
+  const recommendations = getRecommendationsByPriorityIds({
+    organizationId: membership.organizationId,
+    priorityIds: priorities.map( (priority) => priority.id,
+    ),
+  });
+
+  const operationalMemory =
+    locationIds.reduce(
+      ( memoryByLocation, locationId, ) => {
+        const memory =
+          getMemorySnapshotsByLocation({
+            organizationId:
+              membership.organizationId,
+
+            locationId,
+          });
+
+        if (memory) {
+          memoryByLocation[ locationId ] = memory;
+        }
+
+        return memoryByLocation;
+      },
+      {},
+    );
+
   return {
     organizationId: membership.organizationId,
     organization,
     scope,
     locationIds,
 
-    priorities: getScopedPriorities(
-      organizationPriorities,
-      locationIds,
-    ),
+    priorities,
+    assessments,
+    recommendations,
 
     executionItems: getScopedExecutionItems(
       organizationExecutionItems,
       locationIds,
     ),
+
+    operationalMemory,
   };
 }
 

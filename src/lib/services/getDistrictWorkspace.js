@@ -1,13 +1,16 @@
 import {
-  getLocationHealthByIds,
-} from "./getLocationHealth";
-import {
-  generateExecutiveMetrics,
   getAncestors,
   getDescendantLocations,
   resolveHierarchyEntity,
 } from "../engines";
-import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
+
+import {
+  buildDecisionWorkspaceCore,
+} from "./buildDecisionWorkspaceCore";
+
+import {
+  getScopedWorkspaceData,
+} from "./getScopedWorkspaceData";
 
 const DISTRICT_WORKSPACE_SCOPE_LEVELS = new Set([
   "company",
@@ -72,17 +75,90 @@ export function getDistrictWorkspace(
     locations.map((location) => location.id),
   );
 
-  const districtHealth =
-    getLocationHealthByIds({
-      organizationId: scoped.organizationId,
-      locationIds: [...locationIds],
-    });
-
   const districtPriorities =
     scoped.priorities.filter(
       (priority) =>
         locationIds.has(priority.locationId),
     );
+
+  
+
+  const districtExecutionItems =
+    scoped.executionItems.filter(
+      (item) =>
+        locationIds.has(item.locationId),
+    );
+
+  const priorityIds =
+    new Set(
+      districtPriorities.map(
+        (priority) =>
+          priority.id,
+      ),
+    );
+
+  const districtAssessments =
+    filterCollection(
+      scoped.assessments,
+      (assessment) =>
+        locationIds.has(
+          assessment.locationId,
+        ),
+    );
+
+  const districtRecommendations =
+    filterCollection(
+      scoped.recommendations,
+      (recommendation) =>
+        priorityIds.has(
+          recommendation.priorityId,
+        ),
+    );
+
+  const districtOperationalMemory =
+    filterCollection(
+      scoped.operationalMemory,
+      (memory) =>
+        locationIds.has(
+          memory.locationId,
+        ),
+    );
+    
+  const core =
+    buildDecisionWorkspaceCore({
+      organizationId:
+        scoped.organizationId,
+
+      locations,
+
+      priorities:
+        districtPriorities,
+
+      assessments:
+        districtAssessments,
+
+      recommendations:
+        districtRecommendations,
+
+      executionItems:
+        districtExecutionItems,
+
+      operationalMemory:
+        districtOperationalMemory,
+    });
+
+  const {
+    locationHealth:
+      districtHealth,
+
+    metrics,
+
+    portfolio,
+
+    operations,
+
+    execution,
+  } = core;
 
   const locationSummaries = locations
     .map((location) => {
@@ -118,46 +194,6 @@ export function getDistrictWorkspace(
     })
     .sort(compareLocationSummaries);
 
-  const districtExecutionItems =
-    scoped.executionItems.filter(
-      (item) =>
-        locationIds.has(item.locationId),
-    );
-
-  const metrics = generateExecutiveMetrics({
-    locations,
-    locationHealth: districtHealth,
-    priorities: districtPriorities,
-    executionItems: districtExecutionItems,
-  });
-
-  const executiveInsights = districtPriorities
-    .flatMap((priority) =>
-      (priority.insights ?? []).map(
-        (insight) => ({
-          ...insight,
-          id: `${priority.id}-${insight.id}`,
-          title: `${priority.location}: ${insight.title}`,
-        }),
-      ),
-    )
-    .slice(0, 5);
-
-  const healthScores = Object.values(
-    districtHealth,
-  );
-
-  const averageHealth =
-    healthScores.length > 0
-      ? Math.round(
-          healthScores.reduce(
-            (sum, health) =>
-              sum + health.score,
-            0,
-          ) / healthScores.length,
-        )
-      : null;
-
   return {
     user: requestContext.user,
     membership: requestContext.membership,
@@ -170,33 +206,24 @@ export function getDistrictWorkspace(
 
     overview: {
       health: {
-        score: averageHealth,
-        status: getDistrictHealthStatus(
-          averageHealth,
-        ),
+        score: metrics.operationalHealth,
+        status: metrics.healthStatus,
         summary: getDistrictHealthSummary(
           district.name,
-          averageHealth,
+          metrics.operationalHealth,
         ),
       },
 
-      insights: executiveInsights,
+      insights: core.overview.insights,
     },
 
     metrics,
 
-    operations: {
-      priorities: districtPriorities,
+    portfolio,
 
-      criticalPriorities:
-        districtPriorities.filter(
-          (priority) => priority.severity === "critical",
-        ),
-    },
+    operations,
 
-    execution: {
-      items: districtExecutionItems,
-    },
+    execution,
 
     counts: {
       locations: locations.length,
@@ -227,15 +254,6 @@ function canOpenDistrictWorkspace(
   return DISTRICT_WORKSPACE_SCOPE_LEVELS.has(
     requestContext.membership?.scopeLevel,
   );
-}
-
-function getDistrictHealthStatus(score) {
-  if (score === null) return "Unknown";
-  if (score >= 85) return "Healthy";
-  if (score >= 70) return "Watch";
-  if (score >= 50) return "At Risk";
-
-  return "Critical";
 }
 
 function getDistrictHealthSummary(
@@ -292,4 +310,31 @@ function compareLocationSummaries(
     second.health.score ?? 101;
 
   return firstHealth - secondHealth;
+}
+
+function filterCollection(
+  collection,
+  predicate,
+) {
+  if (
+    Array.isArray(
+      collection,
+    )
+  ) {
+    return collection.filter(
+      predicate,
+    );
+  }
+
+  if (
+    collection &&
+    typeof collection ===
+      "object"
+  ) {
+    return Object.values(
+      collection,
+    ).filter(predicate);
+  }
+
+  return [];
 }

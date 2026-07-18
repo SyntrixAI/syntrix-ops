@@ -15,6 +15,7 @@ import WorkspaceStatus from "../../../components/business/WorkspaceStatus";
 import OperationsQueue from "../../../components/operations/InvestigationQueue";
 import ExecutionQueue from "../../../components/execution/ExecutionQueue";
 import Card from "../../../components/ui/Card";
+import DecisionPortfolio from "../../../components/business/DecisionPortfolio";
 
 
 
@@ -52,6 +53,7 @@ export default async function DistrictPage({ params }) {
     locations,
     locationSummaries,
     overview,
+    portfolio,
     operations,
     execution,
     metrics,
@@ -75,6 +77,16 @@ export default async function DistrictPage({ params }) {
           criticalPriorities={metrics.criticalPriorities}
           estimatedRecovery={metrics.estimatedRecovery}
         />
+
+        <WorkspaceSection
+          label="District Focus"
+          title="Decision Portfolio"
+          description="The highest-value decisions currently requiring district leadership attention."
+        >
+          <DecisionPortfolio
+            portfolio={portfolio}
+          />
+        </WorkspaceSection>
 
         <HealthOverview health={overview.health} />
 

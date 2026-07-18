@@ -25,7 +25,13 @@ export default function Sidebar({ navigation = [] }) {
 
             <div className="space-y-1">
               {section.items.map((item) => {
-                const active = pathname === item.href;
+                const active =
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname === item.href ||
+                      pathname.startsWith(
+                        `${item.href}/`,
+                      );
 
                 return (
                   <Link

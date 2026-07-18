@@ -1,77 +1,139 @@
-export function getNavigation(user) {
+export function getNavigation(
+  requestContext,
+) {
   return [
     {
       title: "WORKFLOW",
+
       items: [
         {
-          label: "Daily Briefing",
-          href: "/",
+          label:
+            "Daily Briefing",
+
+          href:
+            "/",
         },
-        getOrganizationNavigationItem(user),
+
+        getLeadershipWorkspaceItem(
+          requestContext,
+        ),
+
         {
-          label: "Operations",
-          href: "/operations",
+          label:
+            "Operations",
+
+          href:
+            "/operations",
         },
+
         {
-          label: "Execution",
-          href: "/execution",
+          label:
+            "Execution",
+
+          href:
+            "/execution",
         },
       ].filter(Boolean),
     },
+
     {
       title: "INTELLIGENCE",
+
       items: [
         {
-          label: "Syntrix Intelligence",
-          href: "/intelligence",
+          label:
+            "Syntrix Intelligence",
+
+          href:
+            "/intelligence",
         },
       ],
     },
+
     {
       title: "SYSTEM",
+
       items: [
         {
-          label: "Settings",
-          href: "/settings",
+          label:
+            "Settings",
+
+          href:
+            "/settings",
         },
       ],
     },
   ];
 }
 
-function getOrganizationNavigationItem(user) {
-  const level = user?.scope?.level;
+function getLeadershipWorkspaceItem(
+  requestContext,
+) {
+  const membership =
+    requestContext?.membership;
 
-  if (level === "company") {
+  if (
+    !membership ||
+    membership.status !== "active"
+  ) {
+    return null;
+  }
+
+  const {
+    scopeLevel,
+    scopeEntityId,
+  } = membership;
+
+  if (
+    scopeLevel === "company"
+  ) {
     return {
-      label: "Organization",
-      href: "/organization",
+      label:
+        "Organization",
+
+      href:
+        "/organization",
     };
   }
 
-  if (level === "region") {
+  if (
+    scopeLevel === "region" &&
+    scopeEntityId
+  ) {
     return {
-      label: "Region",
-      href: "/organization",
+      label:
+        "Region",
+
+      href:
+        `/regions/${scopeEntityId}`,
     };
   }
 
-  if (level === "district") {
+  if (
+    scopeLevel === "district" &&
+    scopeEntityId
+  ) {
     return {
-      label: "District",
-      href: "/organization",
+      label:
+        "District",
+
+      href:
+        `/districts/${scopeEntityId}`,
     };
   }
 
-  if (level === "location") {
+  if (
+    scopeLevel === "location" &&
+    scopeEntityId
+  ) {
     return {
-      label: "Location",
-      href: "/organization",
+      label:
+        "Location",
+
+      href:
+        `/locations/${scopeEntityId}`,
     };
   }
 
-  return {
-    label: "Organization",
-    href: "/organization",
-  };
+  return null;
 }

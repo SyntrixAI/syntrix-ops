@@ -13,3 +13,7 @@ export {
 export {
   createPortfolioDecision,
 } from "./createPortfolioDecision";
+
+export {
+  createExecutiveDecision,
+} from "./createExecutiveDecision";

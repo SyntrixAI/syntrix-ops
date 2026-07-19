@@ -1,6 +1,6 @@
-import {
-  buildDecisionWorkspaceCore,
-} from "./buildDecisionWorkspaceCore";
+import { buildDecisionWorkspaceCore, } from "./buildDecisionWorkspaceCore";
+import { buildExecutiveDecision, } from "./buildExecutiveDecision";
+import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 import {
   generateEntityMetrics,
   generateNarrative,
@@ -9,7 +9,6 @@ import {
   getDescendantLocations,
   getScopedPriorities,
 } from "../engines";
-import { getScopedWorkspaceData } from "./getScopedWorkspaceData";
 
 const ORGANIZATION_WORKSPACE_SCOPE_LEVELS =
   new Set(["company"]);
@@ -50,12 +49,51 @@ export function getOrganizationWorkspace(requestContext) {
     execution,
   } = core;
 
+  const primaryPortfolioDecision =
+    portfolio.focus
+      ?.primaryDecision ??
+    null;
+
+  const primaryPriority =
+    primaryPortfolioDecision
+      ? scopedPriorities.find(
+          (priority) =>
+            priority.id ===
+            primaryPortfolioDecision
+              .priorityId,
+        )
+      : null;
+
+  const executiveDecision =
+    primaryPriority
+      ? buildExecutiveDecision({
+          priority:
+            primaryPriority,
+
+          portfolioDecision:
+            primaryPortfolioDecision,
+
+          assessments:
+            scoped.assessments,
+
+          recommendations:
+            scoped.recommendations,
+
+          executionItems:
+            scopedExecutionItems,
+
+          operationalMemory:
+            scoped.operationalMemory,
+        })
+      : null;
+console.log(executiveDecision);
   const entities = getOrganizationEntities({
     organizationId: scoped.organizationId,
     scope: scoped.scope,
     metrics,
     priorities: scopedPriorities,
   });
+  
 
   return {
     user: requestContext.user,
@@ -80,6 +118,8 @@ export function getOrganizationWorkspace(requestContext) {
     metrics,
 
     portfolio,
+
+    executiveDecision,
 
     operations,
 

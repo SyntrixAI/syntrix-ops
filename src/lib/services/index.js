@@ -35,3 +35,6 @@ export {
 export {
   buildDecisionWorkspaceCore,
 } from "./buildDecisionWorkspaceCore";
+export {
+  buildExecutiveDecision,
+} from "./buildExecutiveDecision";

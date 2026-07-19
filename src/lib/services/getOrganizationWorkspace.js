@@ -86,7 +86,7 @@ export function getOrganizationWorkspace(requestContext) {
             scoped.operationalMemory,
         })
       : null;
-console.log(executiveDecision);
+
   const entities = getOrganizationEntities({
     organizationId: scoped.organizationId,
     scope: scoped.scope,

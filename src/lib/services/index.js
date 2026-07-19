@@ -38,3 +38,6 @@ export {
 export {
   buildExecutiveDecision,
 } from "./buildExecutiveDecision";
+export {
+  getExecutiveDecision,
+} from "./getExecutiveDecision";

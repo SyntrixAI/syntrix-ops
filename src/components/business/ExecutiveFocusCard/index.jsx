@@ -25,10 +25,18 @@ export default function ExecutiveFocusCard({
     );
   }
 
+  const decisionId =
+    decision.id ??
+    (
+      decision.priorityId != null
+        ? `decision-${decision.priorityId}`
+        : null
+    );
+
   const actionHref =
-    decision.executionItem
-      ? "/execution"
-      : `/operations/investigations/${decision.priorityId}`;
+    decision.priorityId != null
+      ? `/decisions/decision-${decision.priorityId}`
+      : null;
 
   return (
     <Card className="border-cyan-500/30 bg-cyan-500/5">
@@ -105,14 +113,14 @@ export default function ExecutiveFocusCard({
         </div>
 
         <div className="flex shrink-0 flex-col gap-3 lg:min-w-[210px]">
-          <Link
-            href={actionHref}
-            className="rounded-xl bg-cyan-500 px-5 py-3 text-center font-semibold text-slate-950 transition hover:bg-cyan-400"
-          >
-            {decision.executionItem
-              ? "Open Execution"
-              : "Review Decision"}
-          </Link>
+          {actionHref && (
+            <Link
+              href={actionHref}
+              className="rounded-xl bg-cyan-500 px-5 py-3 text-center font-semibold text-slate-950 transition hover:bg-cyan-400"
+            >
+              Review Decision
+            </Link>
+          )}
 
           {decision.locationId && (
             <Link

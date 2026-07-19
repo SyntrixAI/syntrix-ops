@@ -79,9 +79,11 @@ export function createExecutiveDecision({
         null,
 
       whyNow:
-        priority.whyNow ??
-        executionItem?.whyNow ??
-        null,
+        buildWhyNow({
+          priority,
+          portfolioDecision,
+          executionItem,
+        }),
 
       description:
         priority.description ??
@@ -133,17 +135,19 @@ export function createExecutiveDecision({
     recommendation: {
       title:
         recommendation?.title ??
+        executionItem?.title ??
         priority.primaryAction ??
         null,
 
       description:
-        recommendation
-          ?.description ??
+        recommendation?.description ??
+        executionItem?.action ??
+        executionItem?.description ??
         null,
 
       rationale:
-        recommendation
-          ?.rationale ??
+        recommendation?.rationale ??
+        assessment?.summary ??
         null,
 
       effort:
@@ -153,10 +157,8 @@ export function createExecutiveDecision({
         "Medium",
 
       estimatedTime:
-        executionItem
-          ?.estimatedTime ??
-        recommendation
-          ?.estimatedTime ??
+        executionItem?.estimatedTime ??
+        recommendation?.estimatedTime ??
         priority.estimatedTime ??
         null,
     },
@@ -204,7 +206,8 @@ export function createExecutiveDecision({
 
       isExecutable:
         Boolean(
-          executionItem,
+          executionItem?.action ||
+          executionItem?.steps?.length,
         ),
     },
 
@@ -223,9 +226,12 @@ export function createExecutiveDecision({
           executionItem,
         }),
 
+      followUp:
+        executionItem?.followUp ??
+        null,
+
       reviewAt:
-        executionItem
-          ?.reviewAt ??
+        executionItem?.reviewAt ??
         null,
     },
   };
@@ -294,15 +300,12 @@ function resolveExpectedOutcome({
   executionItem,
 }) {
   return (
-    executionItem
-      ?.expectedOutcome ??
-    recommendation
-      ?.expectedOutcome ??
-    assessment
-      ?.expectedOutcome ??
-    executionItem
-      ?.followUp ??
-    null
+    executionItem?.expectedOutcome ??
+    recommendation?.expectedOutcome ??
+    assessment?.expectedOutcome ??
+    deriveExpectedOutcome(
+      executionItem,
+    )
   );
 }
 
@@ -376,4 +379,79 @@ function firstNonEmptyCollection(
         collection.length > 0,
     ) ?? []
   );
+}
+
+function buildWhyNow({
+  priority,
+  portfolioDecision,
+  executionItem,
+}) {
+  const rank =
+    portfolioDecision?.portfolioRank ??
+    null;
+
+  const score =
+    portfolioDecision?.portfolioScore ??
+    null;
+
+  const impact =
+    priority?.estimatedImpact ??
+    executionItem
+      ?.businessImpact
+      ?.weeklyRecovery ??
+    0;
+
+  const effort =
+    executionItem?.effort ??
+    priority?.effort ??
+    null;
+
+  const statements = [];
+
+  if (rank) {
+    statements.push(
+      `${priority.location ?? "This issue"} is ranked #${rank} in the current decision portfolio.`,
+    );
+  }
+
+  if (score !== null) {
+    statements.push(
+      `It has a portfolio score of ${score}.`,
+    );
+  }
+
+  if (impact > 0) {
+    statements.push(
+      `Syntrix estimates a weekly recovery opportunity of $${impact.toLocaleString()}.`,
+    );
+  }
+
+  if (effort) {
+    statements.push(
+      `The recommended response requires ${String(effort).toLowerCase()} effort.`,
+    );
+  }
+
+  return (
+    statements.join(" ") ||
+    priority?.whyNow ||
+    executionItem?.whyNow ||
+    null
+  );
+}
+
+function deriveExpectedOutcome(
+  executionItem,
+) {
+  const criteria =
+    executionItem?.successCriteria;
+
+  if (
+    !Array.isArray(criteria) ||
+    criteria.length === 0
+  ) {
+    return null;
+  }
+
+  return criteria.join(" ");
 }

@@ -12,7 +12,7 @@ import {
 
 export function getExecutiveDecision({
   decisionId,
-  user,
+  requestContext,
 }) {
   if (!decisionId) {
     return null;
@@ -24,9 +24,9 @@ export function getExecutiveDecision({
     );
 
   const scoped =
-    getScopedWorkspaceData({
-      user,
-    });
+    getScopedWorkspaceData(
+      requestContext,
+    );
 
   const priorities =
     normalizeCollection(

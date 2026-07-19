@@ -156,7 +156,7 @@ function PortfolioDecisionRow({
           </div>
 
           <Link
-            href={`/operations/investigations/${decision.priorityId}`}
+            href={getDecisionHref(decision)}
             className="rounded-xl border border-slate-700 px-4 py-2 text-center text-sm font-semibold text-slate-200 transition hover:border-cyan-500/50 hover:text-white"
           >
             Review
@@ -204,4 +204,16 @@ function getClassificationTone(
     default:
       return "default";
   }
+}
+
+function getDecisionHref(
+  decision,
+) {
+  if (
+    decision?.priorityId == null
+  ) {
+    return null;
+  }
+
+  return `/decisions/decision-${decision.priorityId}`;
 }
